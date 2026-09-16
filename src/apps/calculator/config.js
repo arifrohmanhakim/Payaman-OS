@@ -4,5 +4,5 @@ export const calculatorAppConfig = {
   iconType: 'calculator',
   defaultWidth: 260,
   defaultHeight: 290,
-  showOnDesktop: true,
+  showOnDesktop: false,
 }

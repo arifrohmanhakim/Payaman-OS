@@ -4,5 +4,5 @@ export const preferencesAppConfig = {
   iconType: 'terminal',
   defaultWidth: 540,
   defaultHeight: 460,
-  showOnDesktop: true,
+  showOnDesktop: false,
 }

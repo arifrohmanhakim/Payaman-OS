@@ -36,6 +36,7 @@ export default function MenuBar({ onSelectMenuAction }) {
     {
       label: "Payaman",
       items: [
+        { label: "Launchpad (Aplikasi)", action: "launchpad" },
         { label: "Tentang Payaman OS", action: "about" },
         { label: "Preferensi Sistem", action: "preferences" },
       ],
@@ -43,9 +44,11 @@ export default function MenuBar({ onSelectMenuAction }) {
     {
       label: "File",
       items: [
+        { label: "Buka Launchpad", action: "launchpad" },
         { label: "Buka Manajer Berkas", action: "files" },
         { label: "Buka Galeri Foto", action: "gallery" },
         { label: "Buka Photobot", action: "photobot" },
+        { label: "Buka MacPaint", action: "paint" },
         { label: "Buka Dokumen Baru", action: "new_note" },
         { label: "Buka Kalkulator", action: "calculator" },
         { label: "Buka Terminal", action: "terminal" },

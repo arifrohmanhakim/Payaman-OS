@@ -4,5 +4,5 @@ export const writeAppConfig = {
   iconType: 'document',
   defaultWidth: 460,
   defaultHeight: 340,
-  showOnDesktop: true,
+  showOnDesktop: false,
 }

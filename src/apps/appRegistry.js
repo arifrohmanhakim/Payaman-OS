@@ -25,10 +25,17 @@ import { galleryAppConfig } from './gallery/config.js'
 import PhotobotApp from './photobot/index.jsx'
 import { photobotAppConfig } from './photobot/config.js'
 
+import PaintApp from './paint/index.jsx'
+import { paintAppConfig } from './paint/config.js'
+
 export const appRegistry = [
   {
     ...fileManagerAppConfig,
     component: FileManagerApp,
+  },
+  {
+    ...paintAppConfig,
+    component: PaintApp,
   },
   {
     ...galleryAppConfig,

@@ -247,9 +247,28 @@ export async function executeShellCommand(commandLine, { osContext, onClose }) {
       break
     }
 
+    case 'launchpad':
+    case 'apps':
+      if (osContext.openLaunchpad) {
+        osContext.openLaunchpad()
+        outputLines.push('Membuka Launchpad...')
+      }
+      break
+
+    case 'paint':
+    case 'macpaint':
+      osContext.openApp('paint')
+      outputLines.push('Membuka aplikasi Payaman Paint (MacPaint)...')
+      break
+
     case 'open':
       if (!args[0]) {
-        outputLines.push("Gunakan: open <id_aplikasi> (contoh: 'open write', 'open calc')")
+        outputLines.push("Gunakan: open <id_aplikasi> (contoh: 'open write', 'open launchpad')")
+      } else if (args[0].toLowerCase() === 'launchpad') {
+        if (osContext.openLaunchpad) {
+          osContext.openLaunchpad()
+          outputLines.push('Membuka Launchpad...')
+        }
       } else {
         const targetApp = appRegistry.find(
           (a) => a.id.toLowerCase() === args[0].toLowerCase()
@@ -259,7 +278,7 @@ export async function executeShellCommand(commandLine, { osContext, onClose }) {
           outputLines.push(`Membuka aplikasi [${targetApp.title}]...`)
         } else {
           outputLines.push(
-            `Aplikasi '${args[0]}' tidak ditemukan. Pilihan: ` +
+            `Aplikasi '${args[0]}' tidak ditemukan. Pilihan: launchpad, ` +
               appRegistry.map((a) => a.id).join(', ')
           )
         }

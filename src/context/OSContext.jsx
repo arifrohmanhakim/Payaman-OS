@@ -6,30 +6,40 @@ import { useWindowManager } from '../hooks/useWindowManager.js'
 import { DEFAULT_DOCK_SETTINGS } from '../constants/dock.js'
 import { OSContext } from './OSContextInstance.js'
 
-const INITIAL_WINDOWS = [
-  {
-    id: 'about',
-    appId: 'about',
-    title: 'Tentang Payaman OS',
-    x: 80,
-    y: 70,
-    width: 320,
-    height: 310,
-    isMinimized: false,
-    zIndex: 10,
-  },
-  {
-    id: 'preferences',
-    appId: 'preferences',
-    title: 'Preferensi Sistem',
-    x: 340,
-    y: 90,
-    width: 500,
-    height: 380,
-    isMinimized: false,
-    zIndex: 11,
-  },
-]
+const getInitialWindows = () => {
+  const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1024
+  const screenHeight = typeof window !== 'undefined' ? window.innerHeight : 768
+
+  const aboutW = 320
+  const aboutH = 310
+  const prefW = 500
+  const prefH = 380
+
+  return [
+    {
+      id: 'about',
+      appId: 'about',
+      title: 'Tentang Payaman OS',
+      x: Math.max(12, Math.round((screenWidth - aboutW) / 2)),
+      y: Math.max(30, Math.round((screenHeight - aboutH) / 2)),
+      width: aboutW,
+      height: aboutH,
+      isMinimized: false,
+      zIndex: 10,
+    },
+    {
+      id: 'preferences',
+      appId: 'preferences',
+      title: 'Preferensi Sistem',
+      x: Math.max(12, Math.round((screenWidth - prefW) / 2)),
+      y: Math.max(30, Math.round((screenHeight - prefH) / 2)),
+      width: prefW,
+      height: prefH,
+      isMinimized: false,
+      zIndex: 11,
+    },
+  ]
+}
 
 export function OSProvider({ children }) {
   const [activeModal, setActiveModal] = useState(null)
@@ -43,6 +53,7 @@ export function OSProvider({ children }) {
     const saved = storageService.getItem('os_dock_settings', {})
     return { ...DEFAULT_DOCK_SETTINGS, ...saved }
   })
+  const [isLaunchpadOpen, setIsLaunchpadOpen] = useState(false)
 
   const {
     windows,
@@ -54,7 +65,7 @@ export function OSProvider({ children }) {
     toggleMaximizeWindow,
     updateWindowPosition,
     updateWindowSize,
-  } = useWindowManager(INITIAL_WINDOWS)
+  } = useWindowManager(getInitialWindows())
 
   const setTheme = useCallback((newTheme) => {
     setThemeState(newTheme)
@@ -122,6 +133,21 @@ export function OSProvider({ children }) {
     setActiveModal(null)
   }, [])
 
+  const openLaunchpad = useCallback(() => {
+    soundService.playClick()
+    setIsLaunchpadOpen(true)
+  }, [])
+
+  const closeLaunchpad = useCallback(() => {
+    soundService.playClick()
+    setIsLaunchpadOpen(false)
+  }, [])
+
+  const toggleLaunchpad = useCallback(() => {
+    soundService.playClick()
+    setIsLaunchpadOpen((prev) => !prev)
+  }, [])
+
   const contextValue = useMemo(
     () => ({
       windows,
@@ -130,6 +156,7 @@ export function OSProvider({ children }) {
       theme,
       pattern,
       dockSettings,
+      isLaunchpadOpen,
       setTheme,
       setPattern,
       updateDockSettings,
@@ -142,6 +169,9 @@ export function OSProvider({ children }) {
       updateWindowSize,
       showModal,
       closeModal,
+      openLaunchpad,
+      closeLaunchpad,
+      toggleLaunchpad,
     }),
     [
       windows,
@@ -150,6 +180,7 @@ export function OSProvider({ children }) {
       theme,
       pattern,
       dockSettings,
+      isLaunchpadOpen,
       setTheme,
       setPattern,
       updateDockSettings,
@@ -162,6 +193,9 @@ export function OSProvider({ children }) {
       updateWindowSize,
       showModal,
       closeModal,
+      openLaunchpad,
+      closeLaunchpad,
+      toggleLaunchpad,
     ]
   )
 

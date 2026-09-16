@@ -99,6 +99,40 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
           <path d="M16 20 L21 15 L28 22" />
         </svg>
       )
+    case 'launchpad':
+    case 'apps':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <rect x="5" y="5" width="5" height="5" rx="1" fill="currentColor" />
+          <rect x="13.5" y="5" width="5" height="5" rx="1" fill="currentColor" />
+          <rect x="22" y="5" width="5" height="5" rx="1" fill="currentColor" />
+          <rect x="5" y="13.5" width="5" height="5" rx="1" fill="currentColor" />
+          <rect x="13.5" y="13.5" width="5" height="5" rx="1" fill="currentColor" />
+          <rect x="22" y="13.5" width="5" height="5" rx="1" fill="currentColor" />
+          <rect x="5" y="22" width="5" height="5" rx="1" fill="currentColor" />
+          <rect x="13.5" y="22" width="5" height="5" rx="1" fill="currentColor" />
+          <rect x="22" y="22" width="5" height="5" rx="1" fill="currentColor" />
+        </svg>
+      )
+    case 'paint':
+    case 'macpaint':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <path d="M16 4 C9 4 4 9 4 16 C4 23 9 28 16 28 C18 28 19 26.5 19 25 C19 24.2 18.7 23.5 18.7 22.7 C18.7 21.2 20 20 21.5 20 H23 C26.8 20 30 16.8 30 13 C30 8 23.7 4 16 4 Z" />
+          <circle cx="9.5" cy="11.5" r="1.5" fill="currentColor" />
+          <circle cx="14.5" cy="9.5" r="1.5" fill="currentColor" />
+          <circle cx="20.5" cy="11.5" r="1.5" fill="currentColor" />
+          <circle cx="24.5" cy="15.5" r="1.5" fill="currentColor" />
+        </svg>
+      )
     default:
       return (
         <div

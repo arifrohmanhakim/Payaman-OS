@@ -33,15 +33,24 @@ export function useWindowManager(initialWindows = []) {
         setNextZIndex(newZ)
         setActiveWindowId(appConfig.id)
 
-        const offset = (prevWindows.length % 5) * 28
+        const winWidth = appConfig.defaultWidth || 400
+        const winHeight = appConfig.defaultHeight || 300
+        const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1024
+        const screenHeight = typeof window !== 'undefined' ? window.innerHeight : 768
+
+        const width = Math.min(winWidth, Math.max(280, screenWidth - 24))
+        const height = Math.min(winHeight, Math.max(200, screenHeight - 80))
+        const x = Math.max(12, Math.round((screenWidth - width) / 2))
+        const y = Math.max(30, Math.round((screenHeight - height) / 2))
+
         const newWindow = {
           id: appConfig.id,
           appId: appConfig.id,
           title: appConfig.title,
-          x: 60 + offset,
-          y: 60 + offset,
-          width: appConfig.defaultWidth || 400,
-          height: appConfig.defaultHeight || 300,
+          x,
+          y,
+          width,
+          height,
           isMinimized: false,
           zIndex: newZ,
         }

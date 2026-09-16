@@ -4,6 +4,7 @@ import DesktopIcon from '../DesktopIcon.jsx'
 import Window from '../Window.jsx'
 import ModalDialog from '../ModalDialog.jsx'
 import Dock from './Dock.jsx'
+import Launchpad from './Launchpad.jsx'
 import ErrorBoundary from '../common/ErrorBoundary.jsx'
 import { useOS } from '../../hooks/useOS.js'
 import { useDesktopIcons } from '../../hooks/useDesktopIcons.js'
@@ -26,6 +27,7 @@ export default function Desktop() {
     updateWindowSize,
     showModal,
     closeModal,
+    toggleLaunchpad,
   } = useOS()
 
   const desktopApps = getDesktopApps()
@@ -33,6 +35,9 @@ export default function Desktop() {
 
   const handleMenuAction = (action) => {
     switch (action) {
+      case 'launchpad':
+        toggleLaunchpad()
+        break
       case 'about':
         openApp('about')
         break
@@ -47,6 +52,9 @@ export default function Desktop() {
         break
       case 'photobot':
         openApp('photobot')
+        break
+      case 'paint':
+        openApp('paint')
         break
       case 'new_note':
         openApp('write')
@@ -148,6 +156,8 @@ export default function Desktop() {
       ))}
 
       <Dock />
+
+      <Launchpad />
 
       <ModalDialog
         isOpen={Boolean(activeModal)}

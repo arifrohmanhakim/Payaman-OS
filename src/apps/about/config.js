@@ -4,5 +4,5 @@ export const aboutAppConfig = {
   iconType: 'folder',
   defaultWidth: 320,
   defaultHeight: 310,
-  showOnDesktop: true,
+  showOnDesktop: false,
 }

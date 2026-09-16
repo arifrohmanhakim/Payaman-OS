@@ -4,5 +4,5 @@ export const terminalAppConfig = {
   iconType: 'terminal',
   defaultWidth: 520,
   defaultHeight: 360,
-  showOnDesktop: true,
+  showOnDesktop: false,
 }
