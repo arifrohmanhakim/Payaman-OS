@@ -9,9 +9,10 @@ const DEFAULT_ICON_POSITIONS = {
   calc: { x: 24, y: 228 },
   terminal: { x: 24, y: 320 },
   gallery: { x: 24, y: 412 },
-  preferences: { x: 120, y: 44 },
-  about: { x: 120, y: 136 },
-  wastebasket: { x: 120, y: 228 },
+  photobot: { x: 120, y: 44 },
+  preferences: { x: 120, y: 136 },
+  about: { x: 120, y: 228 },
+  wastebasket: { x: 120, y: 320 },
 }
 
 export function useDesktopIcons() {

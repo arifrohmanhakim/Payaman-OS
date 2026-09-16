@@ -72,6 +72,19 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
           <line x1="14" y1="21" x2="22" y2="21" />
         </svg>
       )
+    case 'camera':
+    case 'photobot':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <path d="M4 9 H9 L11 6 H21 L23 9 H28 V26 H4 Z" />
+          <circle cx="16" cy="17" r="5" />
+          <circle cx="24" cy="12" r="1" />
+        </svg>
+      )
     case 'gallery':
     case 'image':
       return (

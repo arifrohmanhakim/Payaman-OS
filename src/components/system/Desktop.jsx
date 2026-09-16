@@ -45,6 +45,9 @@ export default function Desktop() {
       case 'gallery':
         openApp('gallery')
         break
+      case 'photobot':
+        openApp('photobot')
+        break
       case 'new_note':
         openApp('write')
         break
