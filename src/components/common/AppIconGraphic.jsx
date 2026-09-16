@@ -381,6 +381,22 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
           <path d="M16 16 L16 19" />
         </svg>
       )
+    case 'chat':
+    case 'message':
+    case 'ai':
+    case 'bot':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <path d="M5 6 H27 C28.1 6 29 6.9 29 8 V21 C29 22.1 28.1 23 27 23 H11 L6 27 V23 H5 C3.9 23 3 22.1 3 21 V8 C3 6.9 3.9 6 5 6 Z" />
+          <circle cx="10" cy="14.5" r="1.2" fill="currentColor" />
+          <circle cx="16" cy="14.5" r="1.2" fill="currentColor" />
+          <circle cx="22" cy="14.5" r="1.2" fill="currentColor" />
+        </svg>
+      )
     default:
       return (
         <svg

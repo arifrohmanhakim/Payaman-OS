@@ -85,6 +85,10 @@ export default function Desktop() {
       case 'maps':
         openApp('maps')
         break
+      case 'chat':
+      case 'payamanchat':
+        openApp('chat')
+        break
       case 'files':
       case 'open_files':
         openApp('files')

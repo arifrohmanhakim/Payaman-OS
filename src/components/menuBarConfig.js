@@ -172,6 +172,39 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
       ]
       break
 
+    case 'chat':
+      dynamicMenus = [
+        {
+          label: 'Conversation',
+          items: [
+            { label: 'New Chat Session', action: 'chat:new', shortcut: '⌘K' },
+            { label: 'Clear Messages', action: 'chat:clear' },
+            { divider: true },
+            { label: 'Close Window', action: 'close_active', shortcut: '⌘W' },
+          ],
+        },
+        {
+          label: 'Edit',
+          items: [
+            { label: 'Focus Message Input', action: 'chat:focus_input', shortcut: '⌘L' },
+          ],
+        },
+        {
+          label: 'Window',
+          items: [
+            { label: 'Minimize', action: 'minimize_active', shortcut: '⌘M' },
+            { label: 'Zoom', action: 'zoom_active' },
+            { divider: true },
+            { label: 'Close Window', action: 'close_active', shortcut: '⌘W' },
+          ],
+        },
+        {
+          label: 'Help',
+          items: [{ label: 'Payaman Chat Help', action: 'help_app' }],
+        },
+      ]
+      break
+
     case 'files':
       dynamicMenus = [
         {
@@ -526,6 +559,7 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
           items: [
             { label: 'Open File Manager', action: 'files', shortcut: '⌘O' },
             { label: 'Open Browser', action: 'browser', shortcut: '⌘B' },
+            { label: 'Open Payaman Chat', action: 'chat' },
             { label: 'Open Maps', action: 'maps' },
             { label: 'Open Weather', action: 'weather', shortcut: '⌘W' },
             { label: 'Open Notes', action: 'new_note', shortcut: '⌘N' },

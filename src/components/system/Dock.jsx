@@ -34,10 +34,18 @@ export default function Dock() {
     pinnedApps: customPinnedApps,
   } = settings;
 
-  const basePinnedAppIds = customPinnedApps || ["files", "browser", "terminal"];
-  const pinnedAppIds = basePinnedAppIds.includes("browser")
-    ? basePinnedAppIds
-    : ["files", "browser", ...basePinnedAppIds.filter((id) => id !== "files")];
+  const DEFAULT_PINNED = ["files", "browser", "chat", "maps", "terminal"];
+  const basePinnedAppIds = customPinnedApps || DEFAULT_PINNED;
+  
+  // Pastikan app penting (browser, chat, maps) otomatis tersedia di Dock
+  const pinnedAppIds = Array.from(
+    new Set([
+      ...basePinnedAppIds,
+      'browser',
+      'chat',
+      'maps',
+    ])
+  );
 
   const pinnedApps = pinnedAppIds.map((id) => getAppById(id)).filter(Boolean);
 

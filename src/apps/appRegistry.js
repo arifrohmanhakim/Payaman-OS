@@ -40,10 +40,17 @@ import { weatherAppConfig } from './weather/config.js'
 import MapsApp from './maps/index.jsx'
 import { mapsAppConfig } from './maps/config.js'
 
+import PayamanChatApp from './chat/index.jsx'
+import { payamanChatConfig } from './chat/config.js'
+
 export const appRegistry = [
   {
     ...browserAppConfig,
     component: BrowserApp,
+  },
+  {
+    ...payamanChatConfig,
+    component: PayamanChatApp,
   },
   {
     ...weatherAppConfig,
