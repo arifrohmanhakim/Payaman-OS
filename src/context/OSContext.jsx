@@ -19,7 +19,7 @@ const getInitialWindows = () => {
     {
       id: 'about',
       appId: 'about',
-      title: 'Tentang Payaman OS',
+      title: 'About Payaman OS',
       x: Math.max(12, Math.round((screenWidth - aboutW) / 2)),
       y: Math.max(30, Math.round((screenHeight - aboutH) / 2)),
       width: aboutW,
@@ -30,7 +30,7 @@ const getInitialWindows = () => {
     {
       id: 'preferences',
       appId: 'preferences',
-      title: 'Preferensi Sistem',
+      title: 'System Preferences',
       x: Math.max(12, Math.round((screenWidth - prefW) / 2)),
       y: Math.max(30, Math.round((screenHeight - prefH) / 2)),
       width: prefW,
@@ -91,11 +91,11 @@ export function OSProvider({ children }) {
   }, [])
 
   const openApp = useCallback(
-    (appId) => {
+    (appId, customProps = {}) => {
       soundService.playClick()
       const appDef = getAppById(appId)
       if (appDef) {
-        openWindow(appDef)
+        openWindow({ ...appDef, ...customProps })
       }
     },
     [openWindow]

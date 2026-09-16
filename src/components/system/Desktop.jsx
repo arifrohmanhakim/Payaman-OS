@@ -40,8 +40,38 @@ export default function Desktop() {
         toggleLaunchpad()
         break
       case 'about':
-        openApp('about')
+      case 'about_os':
+        openApp('about', { targetAppId: 'system', title: 'About Payaman OS' })
         break
+      case 'about_finder':
+        openApp('about', { targetAppId: 'finder', title: 'About Finder' })
+        break
+      case 'about_app': {
+        const appDef = getAppById(activeAppId)
+        const appTitle = appDef?.title || activeAppId || 'Payaman OS'
+        openApp('about', {
+          targetAppId: activeAppId || 'system',
+          title: `About ${appTitle}`,
+        })
+        break
+      }
+      case 'help_os':
+        openApp('about', {
+          targetAppId: 'system',
+          title: 'Payaman OS Help',
+          initialTab: 'help',
+        })
+        break
+      case 'help_app': {
+        const appDef = getAppById(activeAppId)
+        const appTitle = appDef?.title || activeAppId || 'Payaman OS'
+        openApp('about', {
+          targetAppId: activeAppId || 'system',
+          title: `${appTitle} Help`,
+          initialTab: 'help',
+        })
+        break
+      }
       case 'preferences':
         openApp('preferences')
         break
@@ -144,7 +174,7 @@ export default function Desktop() {
     )
   }
 
-  const renderWindowContent = (appId, windowId) => {
+  const renderWindowContent = (appId, windowId, windowData) => {
     const appDef = getAppById(appId)
     if (!appDef || !appDef.component) {
       return null
@@ -152,7 +182,10 @@ export default function Desktop() {
     const AppComponent = appDef.component
     return (
       <ErrorBoundary>
-        <AppComponent onClose={() => closeWindow(windowId)} />
+        <AppComponent
+          onClose={() => closeWindow(windowId)}
+          windowData={windowData}
+        />
       </ErrorBoundary>
     )
   }
@@ -210,7 +243,7 @@ export default function Desktop() {
           onPositionChange={updateWindowPosition}
           onSizeChange={updateWindowSize}
         >
-          {renderWindowContent(win.appId, win.id)}
+          {renderWindowContent(win.appId, win.id, win)}
         </Window>
       ))}
 

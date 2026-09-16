@@ -76,7 +76,7 @@ export default function MenuBar({ onSelectMenuAction }) {
       ref={menuBarRef}
       className="fixed top-0 left-0 right-0 h-6 bg-[var(--os-bg)] text-[var(--os-fg)] border-b-2 border-[var(--os-border)] z-50 flex items-center justify-between px-2 text-xs font-mono select-none"
     >
-      <div className="flex items-center h-full overflow-hidden">
+      <div className="flex items-center h-full">
         {menuItems.map((menu, index) => {
           const isOpen = activeMenuIndex === index
           const isApple = Boolean(menu.isApple)

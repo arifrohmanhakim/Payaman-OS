@@ -6,7 +6,7 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
     label: '',
     isApple: true,
     items: [
-      { label: 'About Payaman OS', action: 'about' },
+      { label: 'About Payaman OS', action: 'about_os' },
       { label: 'System Preferences...', action: 'preferences', shortcut: '⌘,' },
       { divider: true },
       { label: 'Launchpad', action: 'launchpad', shortcut: 'F4' },
@@ -24,13 +24,13 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
     isAppName: true,
     items: isFinder
       ? [
-          { label: 'About Finder', action: 'about' },
+          { label: 'About Finder', action: 'about_finder' },
           { divider: true },
           { label: 'Preferences...', action: 'preferences', shortcut: '⌘,' },
           { label: 'Empty Trash...', action: 'empty_trash' },
         ]
       : [
-          { label: `About ${appName}`, action: 'about' },
+          { label: `About ${appName}`, action: 'about_app' },
           { divider: true },
           { label: `Hide ${appName}`, action: 'minimize_active', shortcut: '⌘H' },
           { divider: true },
@@ -372,7 +372,7 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
         },
         {
           label: 'Help',
-          items: [{ label: `${appName} Help`, action: 'about' }],
+          items: [{ label: `${appName} Help`, action: 'help_app' }],
         },
       ]
       break
@@ -434,7 +434,7 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
         },
         {
           label: 'Help',
-          items: [{ label: 'Payaman OS Help', action: 'about' }],
+          items: [{ label: 'Payaman OS Help', action: 'help_os' }],
         },
       ]
       break

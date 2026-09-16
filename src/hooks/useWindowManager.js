@@ -25,7 +25,7 @@ export function useWindowManager(initialWindows = []) {
     return initialWindows.length > 0 ? initialWindows[0].id : null
   })
 
-  const [nextZIndex, setNextZIndex] = useState(() => {
+  const [, setNextZIndex] = useState(() => {
     const maxZ = windows.reduce((max, w) => Math.max(max, w.zIndex || 10), 20)
     return maxZ + 1
   })
@@ -51,20 +51,25 @@ export function useWindowManager(initialWindows = []) {
     }
   }, [])
 
-  const openWindow = useCallback(
-    (appConfig) => {
+  const openWindow = useCallback((appConfig) => {
+    setNextZIndex((currentZ) => {
+      const newZ = currentZ + 1
+      setActiveWindowId(appConfig.id)
+
       setWindows((prevWindows) => {
         const existing = prevWindows.find((w) => w.appId === appConfig.id)
         if (existing) {
-          focusWindow(existing.id)
           return prevWindows.map((w) =>
-            w.id === existing.id ? { ...w, isMinimized: false } : w
+            w.id === existing.id
+              ? {
+                  ...w,
+                  ...appConfig,
+                  isMinimized: false,
+                  zIndex: newZ,
+                }
+              : w
           )
         }
-
-        const newZ = nextZIndex + 1
-        setNextZIndex(newZ)
-        setActiveWindowId(appConfig.id)
 
         const winWidth = appConfig.defaultWidth || 400
         const winHeight = appConfig.defaultHeight || 300
@@ -77,6 +82,7 @@ export function useWindowManager(initialWindows = []) {
         const y = Math.max(30, Math.round((screenHeight - height) / 2))
 
         const newWindow = {
+          ...appConfig,
           id: appConfig.id,
           appId: appConfig.id,
           title: appConfig.title,
@@ -85,14 +91,16 @@ export function useWindowManager(initialWindows = []) {
           width,
           height,
           isMinimized: false,
+          isMaximized: false,
           zIndex: newZ,
         }
 
         return [...prevWindows, newWindow]
       })
-    },
-    [focusWindow, nextZIndex]
-  )
+
+      return newZ
+    })
+  }, [])
 
   const closeWindow = useCallback(
     (windowId) => {
