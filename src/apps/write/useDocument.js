@@ -30,6 +30,24 @@ export function useDocument() {
     return () => clearTimeout(timer)
   }, [])
 
+  useEffect(() => {
+    const handleMenuAction = (e) => {
+      const action = e.detail?.action
+      if (!action || !action.startsWith('write:')) return
+
+      if (action === 'write:save') {
+        saveDocument()
+      } else if (action === 'write:new' || action === 'write:clear') {
+        clearDocument()
+      } else if (action === 'write:undo') {
+        document.execCommand('undo')
+      }
+    }
+
+    window.addEventListener('payaman-menu-action', handleMenuAction)
+    return () => window.removeEventListener('payaman-menu-action', handleMenuAction)
+  }, [saveDocument, clearDocument])
+
   const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0
   const charCount = content.length
 

@@ -78,6 +78,22 @@ export function useGallery(initialQuery = '') {
     setIsMonochrome((prev) => !prev)
   }, [])
 
+  useEffect(() => {
+    const handleMenuAction = (e) => {
+      const action = e.detail?.action
+      if (!action || !action.startsWith('gallery:')) return
+
+      if (action === 'gallery:reload') {
+        reloadPhotos(query)
+      } else if (action === 'gallery:toggle_mono') {
+        toggleMonochrome()
+      }
+    }
+
+    window.addEventListener('payaman-menu-action', handleMenuAction)
+    return () => window.removeEventListener('payaman-menu-action', handleMenuAction)
+  }, [reloadPhotos, query, toggleMonochrome])
+
   const selectedPhoto = selectedIndex !== null ? photos[selectedIndex] || null : null
 
   return {

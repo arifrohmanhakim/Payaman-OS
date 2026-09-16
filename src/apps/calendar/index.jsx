@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useCalendar } from './useCalendar.js'
 import Button from '../../components/ui/Button.jsx'
 import Input from '../../components/ui/Input.jsx'
@@ -19,6 +19,24 @@ export default function CalendarApp() {
     toggleEvent,
     deleteEvent,
   } = useCalendar()
+
+  useEffect(() => {
+    const handleMenuAction = (e) => {
+      const action = e.detail?.action
+      if (!action || !action.startsWith('calendar:')) return
+
+      if (action === 'calendar:today') {
+        goToToday()
+      } else if (action === 'calendar:prev') {
+        goToPrevMonth()
+      } else if (action === 'calendar:next') {
+        goToNextMonth()
+      }
+    }
+
+    window.addEventListener('payaman-menu-action', handleMenuAction)
+    return () => window.removeEventListener('payaman-menu-action', handleMenuAction)
+  }, [goToToday, goToPrevMonth, goToNextMonth])
 
   const [eventTitle, setEventTitle] = useState('')
   const [eventTime, setEventTime] = useState('')

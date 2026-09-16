@@ -34,7 +34,7 @@ export default function Desktop() {
   const desktopApps = getDesktopApps()
   const { getIconPosition, setIconPosition } = useDesktopIcons()
 
-  const handleMenuAction = (action) => {
+  const handleMenuAction = (action, activeAppId) => {
     switch (action) {
       case 'launchpad':
         toggleLaunchpad()
@@ -46,6 +46,7 @@ export default function Desktop() {
         openApp('preferences')
         break
       case 'files':
+      case 'open_files':
         openApp('files')
         break
       case 'gallery':
@@ -69,9 +70,27 @@ export default function Desktop() {
       case 'terminal':
         openApp('terminal')
         break
+      case 'wastebasket':
+        openApp('wastebasket')
+        break
       case 'close_active':
         if (activeWindowId) {
           closeWindow(activeWindowId)
+        }
+        break
+      case 'minimize_active':
+        if (activeWindowId) {
+          minimizeWindow(activeWindowId)
+        }
+        break
+      case 'zoom_active':
+        if (activeWindowId) {
+          toggleMaximizeWindow(activeWindowId)
+        }
+        break
+      case 'bring_all_front':
+        if (activeWindowId) {
+          focusWindow(activeWindowId)
         }
         break
       case 'clean_desktop':
@@ -108,9 +127,21 @@ export default function Desktop() {
           },
         })
         break
+      case 'go_home':
+      case 'go_documents':
+      case 'go_system':
+      case 'go_root':
+        openApp('files')
+        break
       default:
         break
     }
+
+    window.dispatchEvent(
+      new CustomEvent('payaman-menu-action', {
+        detail: { action, activeAppId },
+      })
+    )
   }
 
   const renderWindowContent = (appId, windowId) => {
@@ -131,13 +162,26 @@ export default function Desktop() {
   return (
     <div
       data-theme={theme || 'classic'}
-      onClick={() => setSelectedIconId(null)}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          setSelectedIconId(null)
+          focusWindow(null)
+        }
+      }}
       className={`relative w-screen h-screen overflow-hidden font-mono text-[var(--os-fg)] select-none ${patternClass}`}
     >
       <MenuBar onSelectMenuAction={handleMenuAction} />
 
       <main className="absolute inset-0 pt-6 pointer-events-none">
-        <div className="relative w-full h-full pointer-events-auto">
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setSelectedIconId(null)
+              focusWindow(null)
+            }
+          }}
+          className="relative w-full h-full pointer-events-auto"
+        >
           {desktopApps.map((app, index) => (
             <DesktopIcon
               key={app.id}

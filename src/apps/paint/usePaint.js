@@ -413,6 +413,66 @@ export function usePaint() {
     setStatusMessage('Image downloaded successfully.')
   }, [])
 
+  useEffect(() => {
+    const handleMenuAction = (e) => {
+      const action = e.detail?.action
+      if (!action || !action.startsWith('paint:')) return
+
+      switch (action) {
+        case 'paint:save':
+          saveToVFS()
+          break
+        case 'paint:download':
+          downloadImage()
+          break
+        case 'paint:undo':
+          undo()
+          break
+        case 'paint:redo':
+          redo()
+          break
+        case 'paint:clear':
+          clearCanvas()
+          break
+        case 'paint:invert':
+          invertCanvas()
+          break
+        case 'paint:tool_pencil':
+          setActiveTool('pencil')
+          break
+        case 'paint:tool_brush':
+          setActiveTool('brush')
+          break
+        case 'paint:tool_eraser':
+          setActiveTool('eraser')
+          break
+        case 'paint:tool_bucket':
+          setActiveTool('bucket')
+          break
+        case 'paint:tool_spray':
+          setActiveTool('spray')
+          break
+        case 'paint:tool_line':
+          setActiveTool('line')
+          break
+        case 'paint:tool_rect':
+          setActiveTool('rect')
+          break
+        case 'paint:tool_circle':
+          setActiveTool('circle')
+          break
+        case 'paint:tool_text':
+          setActiveTool('text')
+          break
+        default:
+          break
+      }
+    }
+
+    window.addEventListener('payaman-menu-action', handleMenuAction)
+    return () => window.removeEventListener('payaman-menu-action', handleMenuAction)
+  }, [saveToVFS, downloadImage, undo, redo, clearCanvas, invertCanvas])
+
   return {
     canvasRef,
     canvasWidth: CANVAS_WIDTH,

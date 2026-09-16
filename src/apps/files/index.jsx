@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useFileManager } from './useFileManager.js'
 import { useGoogleDrive } from './useGoogleDrive.js'
 import { useOS } from '../../hooks/useOS.js'
@@ -157,13 +157,13 @@ export default function FileManagerApp() {
     setDialogSecondaryInput('')
   }
 
-  const openRenameDialog = () => {
+  const openRenameDialog = useCallback(() => {
     if (!selectedItem) return
     setDialogInput(selectedItem.name)
     setActiveDialog('rename')
-  }
+  }, [selectedItem])
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = useCallback(() => {
     if (!selectedItem) return
     if (storageSource === 'local') {
       deleteItem(selectedItem.name)
@@ -171,12 +171,73 @@ export default function FileManagerApp() {
       gdrive.deleteFile(selectedItem.id, selectedItem.name)
       setSelectedItem(null)
     }
-  }
+  }, [selectedItem, storageSource, deleteItem, gdrive, setSelectedItem])
 
   const handleImportGdriveSelected = async () => {
     if (!selectedItem) return
     await gdrive.importToVFS(selectedItem, '/home/arif')
   }
+
+  useEffect(() => {
+    const handleMenuAction = (e) => {
+      const action = e.detail?.action
+      if (!action || !action.startsWith('files:')) return
+
+      switch (action) {
+        case 'files:new_folder':
+          setDialogInput('')
+          setActiveDialog('new_folder')
+          break
+        case 'files:new_file':
+          setDialogInput('')
+          setActiveDialog('new_file')
+          break
+        case 'files:upload':
+          fileInputRef.current?.click()
+          break
+        case 'files:view_grid':
+          setViewMode('grid')
+          break
+        case 'files:view_list':
+          setViewMode('list')
+          break
+        case 'files:refresh':
+          if (storageSource === 'local') {
+            navigateTo(currentPath)
+          } else {
+            gdrive.fetchFiles(gdrive.currentFolder.id)
+          }
+          break
+        case 'files:go_home':
+          setStorageSource('local')
+          navigateTo('/home/arif')
+          break
+        case 'files:go_documents':
+          setStorageSource('local')
+          navigateTo('/home/arif/dokumen')
+          break
+        case 'files:go_system':
+          setStorageSource('local')
+          navigateTo('/system')
+          break
+        case 'files:go_root':
+          setStorageSource('local')
+          navigateTo('/')
+          break
+        case 'files:rename':
+          openRenameDialog()
+          break
+        case 'files:delete':
+          handleDeleteSelected()
+          break
+        default:
+          break
+      }
+    }
+
+    window.addEventListener('payaman-menu-action', handleMenuAction)
+    return () => window.removeEventListener('payaman-menu-action', handleMenuAction)
+  }, [currentPath, navigateTo, setViewMode, storageSource, gdrive, selectedItem, openRenameDialog, handleDeleteSelected])
 
   const pathParts = currentPath.split('/').filter(Boolean)
 

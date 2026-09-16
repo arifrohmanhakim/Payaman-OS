@@ -191,6 +191,25 @@ export function usePhotobot() {
     [selectedCapture]
   )
 
+  useEffect(() => {
+    const handleMenuAction = (e) => {
+      const action = e.detail?.action
+      if (!action || !action.startsWith('photobot:')) return
+
+      if (action === 'photobot:snap') {
+        triggerCountdownAndSnap()
+      } else if (action === 'photobot:reload') {
+        startCamera()
+      } else if (action.startsWith('photobot:filter_')) {
+        const filterId = action.replace('photobot:filter_', '')
+        setCurrentFilter(filterId)
+      }
+    }
+
+    window.addEventListener('payaman-menu-action', handleMenuAction)
+    return () => window.removeEventListener('payaman-menu-action', handleMenuAction)
+  }, [triggerCountdownAndSnap, startCamera])
+
   return {
     videoRef,
     cameraState,

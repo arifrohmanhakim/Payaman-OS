@@ -40,13 +40,15 @@ export function useWindowManager(initialWindows = []) {
 
   const focusWindow = useCallback((windowId) => {
     setActiveWindowId(windowId)
-    setNextZIndex((prevZ) => {
-      const updatedZ = prevZ + 1
-      setWindows((prev) =>
-        prev.map((w) => (w.id === windowId ? { ...w, zIndex: updatedZ } : w))
-      )
-      return updatedZ
-    })
+    if (windowId) {
+      setNextZIndex((prevZ) => {
+        const updatedZ = prevZ + 1
+        setWindows((prev) =>
+          prev.map((w) => (w.id === windowId ? { ...w, zIndex: updatedZ } : w))
+        )
+        return updatedZ
+      })
+    }
   }, [])
 
   const openWindow = useCallback(
