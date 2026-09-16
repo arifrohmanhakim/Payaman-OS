@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+:root {
+  --os-fg: #000000;
+  --os-bg: #ffffff;
+  --os-desktop-bg: #f2f2f2;
+  --os-border: #000000;
+  --os-shadow: #000000;
+  --os-active-stripe: #000000;
+}
+
+[data-theme="dark"] {
+  --os-fg: #ffffff;
+  --os-bg: #141414;
+  --os-desktop-bg: #000000;
+  --os-border: #ffffff;
+  --os-shadow: #ffffff;
+  --os-active-stripe: #ffffff;
+}
+
+[data-theme="amber"] {
+  --os-fg: #ffb000;
+  --os-bg: #181106;
+  --os-desktop-bg: #0d0903;
+  --os-border: #ffb000;
+  --os-shadow: #ffb000;
+  --os-active-stripe: #ffb000;
+}
+
+[data-theme="green"] {
+  --os-fg: #33ff66;
+  --os-bg: #07170c;
+  --os-desktop-bg: #030a05;
+  --os-border: #33ff66;
+  --os-shadow: #33ff66;
+  --os-active-stripe: #33ff66;
+}
+
+[data-theme="paper"] {
+  --os-fg: #2c251e;
+  --os-bg: #f5f0e6;
+  --os-desktop-bg: #eae3d3;
+  --os-border: #2c251e;
+  --os-shadow: #2c251e;
+  --os-active-stripe: #2c251e;
+}
+
+@layer utilities {
+  .pattern-halftone {
+    background-color: var(--os-desktop-bg);
+    background-image: radial-gradient(var(--os-fg) 0.85px, transparent 0.85px);
+    background-size: 3px 3px;
+  }
+
+  .pattern-checkerboard {
+    background-color: var(--os-desktop-bg);
+    background-image: 
+      linear-gradient(45deg, var(--os-fg) 25%, transparent 25%), 
+      linear-gradient(-45deg, var(--os-fg) 25%, transparent 25%), 
+      linear-gradient(45deg, transparent 75%, var(--os-fg) 75%), 
+      linear-gradient(-45deg, transparent 75%, var(--os-fg) 75%);
+    background-size: 4px 4px;
+    background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+  }
+
+  .pattern-stipple {
+    background-color: var(--os-desktop-bg);
+    background-image: radial-gradient(var(--os-fg) 0.75px, transparent 0.75px);
+    background-size: 6px 6px;
+  }
+
+  .pattern-stripes {
+    background-color: var(--os-desktop-bg);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--os-fg) 0px,
+      var(--os-fg) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+  }
+
+  .pattern-grid {
+    background-color: var(--os-desktop-bg);
+    background-image: 
+      linear-gradient(to right, var(--os-fg) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--os-fg) 1px, transparent 1px);
+    background-size: 8px 8px;
+  }
+
+  .pattern-solid {
+    background-color: var(--os-desktop-bg);
+    background-image: none;
+  }
+
+  .os-titlebar-stripes {
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--os-fg) 0px,
+      var(--os-fg) 1px,
+      var(--os-bg) 1px,
+      var(--os-bg) 3px
+    );
+  }
+
+  .os-window-shadow {
+    box-shadow: 3px 3px 0px var(--os-shadow);
+  }
+
+  .os-dialog-shadow {
+    box-shadow: 5px 5px 0px var(--os-shadow);
+  }
+}
+
+* {
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+input, textarea {
+  user-select: text;
+}
