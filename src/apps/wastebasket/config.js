@@ -4,5 +4,5 @@ export const wastebasketAppConfig = {
   iconType: 'trash',
   defaultWidth: 380,
   defaultHeight: 250,
-  showOnDesktop: true,
+  showOnDesktop: false,
 }

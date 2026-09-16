@@ -3,22 +3,44 @@ import { storageService } from '../services/storageService.js'
 
 const STORAGE_KEY_POSITIONS = 'desktop_icon_positions'
 
-const DEFAULT_ICON_POSITIONS = {
-  files: { x: 24, y: 44 },
-  write: { x: 24, y: 136 },
-  calc: { x: 24, y: 228 },
-  terminal: { x: 24, y: 320 },
-  gallery: { x: 24, y: 412 },
-  photobot: { x: 120, y: 44 },
-  preferences: { x: 120, y: 136 },
-  about: { x: 120, y: 228 },
-  wastebasket: { x: 120, y: 320 },
+const ICON_WIDTH = 96
+const ICON_HEIGHT = 92
+const MARGIN_RIGHT = 24
+const MARGIN_TOP = 44
+
+function generateRightAlignedPositions(appIds) {
+  const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1280
+  const startX = screenWidth - ICON_WIDTH - MARGIN_RIGHT
+  const positions = {}
+
+  appIds.forEach((id, index) => {
+    positions[id] = {
+      x: startX,
+      y: MARGIN_TOP + index * ICON_HEIGHT,
+    }
+  })
+
+  return positions
 }
+
+const DEFAULT_APP_ORDER = [
+  'write', 'paint', 'calendar', 'calc', 'gallery', 'photobot', 'terminal', 'preferences', 'about',
+]
 
 export function useDesktopIcons() {
   const [positions, setPositions] = useState(() => {
-    const saved = storageService.getItem(STORAGE_KEY_POSITIONS, {})
-    return { ...DEFAULT_ICON_POSITIONS, ...saved }
+    const saved = storageService.getItem(STORAGE_KEY_POSITIONS, null)
+    if (saved && Object.keys(saved).length > 0) {
+      const firstAppPos = saved[DEFAULT_APP_ORDER[0]]
+      const isLegacyLeftLayout = firstAppPos && firstAppPos.x < 200
+      if (isLegacyLeftLayout) {
+        const fresh = generateRightAlignedPositions(DEFAULT_APP_ORDER)
+        storageService.setItem(STORAGE_KEY_POSITIONS, fresh)
+        return fresh
+      }
+      return saved
+    }
+    return generateRightAlignedPositions(DEFAULT_APP_ORDER)
   })
 
   useEffect(() => {
@@ -30,7 +52,8 @@ export function useDesktopIcons() {
       if (positions[appId]) {
         return positions[appId]
       }
-      return { x: 24, y: 44 + index * 92 }
+      const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1280
+      return { x: screenWidth - ICON_WIDTH - MARGIN_RIGHT, y: MARGIN_TOP + index * ICON_HEIGHT }
     },
     [positions]
   )
@@ -45,8 +68,14 @@ export function useDesktopIcons() {
     }))
   }, [])
 
+  const resetPositions = useCallback(() => {
+    const freshPositions = generateRightAlignedPositions(DEFAULT_APP_ORDER)
+    setPositions(freshPositions)
+  }, [])
+
   return {
     getIconPosition,
     setIconPosition,
+    resetPositions,
   }
 }

@@ -66,6 +66,27 @@ export const APPS_INFO = {
       { key: '⌘D', desc: 'Toggle Bookmark' },
     ],
   },
+  weather: {
+    id: 'weather',
+    title: 'Weather',
+    version: '1.0',
+    iconType: 'weather',
+    category: 'Weather & Climate',
+    tagline: 'Global Real-time Weather & Atmospheric Forecast',
+    description:
+      'Live weather conditions, 24-hour hourly timeline, 7-day extended forecasts, and atmospheric telemetry powered by Open-Meteo.',
+    specs: [
+      { label: 'Data Source', value: 'Open-Meteo Global API' },
+      { label: 'Forecast Period', value: '7 Days / 24 Hours' },
+      { label: 'Telemetry', value: 'Humidity, Wind, UV, Pressure' },
+    ],
+    shortcuts: [
+      { key: '⌘R', desc: 'Refresh Weather Data' },
+      { key: '⌘F', desc: 'Search City' },
+      { key: '⌘U', desc: 'Toggle Celsius / Fahrenheit' },
+      { key: '⌘W', desc: 'Close Window' },
+    ],
+  },
   files: {
     id: 'files',
     title: 'File Manager',

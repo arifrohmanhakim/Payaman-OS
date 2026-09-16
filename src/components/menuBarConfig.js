@@ -102,6 +102,40 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
       ]
       break
 
+    case 'weather':
+      dynamicMenus = [
+        {
+          label: 'File',
+          items: [
+            { label: 'Search City...', action: 'weather:search', shortcut: '⌘F' },
+            { label: 'Refresh Data', action: 'weather:refresh', shortcut: '⌘R' },
+            { divider: true },
+            { label: 'Close Window', action: 'close_active', shortcut: '⌘W' },
+          ],
+        },
+        {
+          label: 'View',
+          items: [
+            { label: 'Toggle °C / °F Unit', action: 'weather:toggle_unit', shortcut: '⌘U' },
+            { label: 'Reload Forecast', action: 'weather:refresh', shortcut: '⌘R' },
+          ],
+        },
+        {
+          label: 'Window',
+          items: [
+            { label: 'Minimize', action: 'minimize_active', shortcut: '⌘M' },
+            { label: 'Zoom', action: 'zoom_active' },
+            { divider: true },
+            { label: 'Close Window', action: 'close_active', shortcut: '⌘W' },
+          ],
+        },
+        {
+          label: 'Help',
+          items: [{ label: 'Weather Help', action: 'help_app' }],
+        },
+      ]
+      break
+
     case 'files':
       dynamicMenus = [
         {
@@ -302,6 +336,16 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
           ],
         },
         {
+          label: 'Profiles',
+          items: [
+            { label: 'Basic', action: 'terminal:profile_basic' },
+            { label: 'Pro', action: 'terminal:profile_pro' },
+            { label: 'Grass', action: 'terminal:profile_grass' },
+            { label: 'Homebrew', action: 'terminal:profile_homebrew' },
+            { label: 'Ocean', action: 'terminal:profile_ocean' },
+          ],
+        },
+        {
           label: 'Window',
           items: [
             { label: 'Minimize', action: 'minimize_active', shortcut: '⌘M' },
@@ -446,6 +490,7 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
           items: [
             { label: 'Open File Manager', action: 'files', shortcut: '⌘O' },
             { label: 'Open Browser', action: 'browser', shortcut: '⌘B' },
+            { label: 'Open Weather', action: 'weather', shortcut: '⌘W' },
             { label: 'Open Notes', action: 'new_note', shortcut: '⌘N' },
             { label: 'Open Terminal', action: 'terminal' },
             { label: 'Open Calendar', action: 'calendar' },

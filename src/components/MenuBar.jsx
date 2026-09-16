@@ -1,75 +1,82 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
-import { useOS } from '../hooks/useOS.js'
-import { getAppById } from '../apps/appRegistry.js'
-import { getMenuBarConfig } from './menuBarConfig.js'
+import { useState, useEffect, useRef, useMemo } from "react";
+import { useOS } from "../hooks/useOS.js";
+import { getAppById } from "../apps/appRegistry.js";
+import { getMenuBarConfig } from "./menuBarConfig.js";
+import { useWeather } from "../apps/weather/useWeather.js";
+import AppIconGraphic from "./common/AppIconGraphic.jsx";
 
 export default function MenuBar({ onSelectMenuAction }) {
-  const { windows, activeWindowId } = useOS()
-  const [activeMenuIndex, setActiveMenuIndex] = useState(null)
-  const [currentDate, setCurrentDate] = useState('')
-  const [currentTime, setCurrentTime] = useState('')
-  const menuBarRef = useRef(null)
+  const { windows, activeWindowId } = useOS();
+  const { weatherData, location, formatTemp } = useWeather();
+  const [activeMenuIndex, setActiveMenuIndex] = useState(null);
+  const [currentDate, setCurrentDate] = useState("");
+  const [currentTime, setCurrentTime] = useState("");
+  const menuBarRef = useRef(null);
 
-  const activeWindow = windows.find((w) => w.id === activeWindowId && !w.isMinimized)
-  const activeAppId = activeWindow ? activeWindow.appId : null
-  const activeApp = activeAppId ? getAppById(activeAppId) : null
-  const activeAppTitle = activeApp ? activeApp.title : null
+  const activeWindow = windows.find(
+    (w) => w.id === activeWindowId && !w.isMinimized,
+  );
+  const activeAppId = activeWindow ? activeWindow.appId : null;
+  const activeApp = activeAppId ? getAppById(activeAppId) : null;
+  const activeAppTitle = activeApp ? activeApp.title : null;
 
   const menuItems = useMemo(
     () => getMenuBarConfig(activeAppId, activeAppTitle),
-    [activeAppId, activeAppTitle]
-  )
+    [activeAppId, activeAppTitle],
+  );
 
-  const [prevAppId, setPrevAppId] = useState(activeAppId)
+  const [prevAppId, setPrevAppId] = useState(activeAppId);
   if (prevAppId !== activeAppId) {
-    setPrevAppId(activeAppId)
-    setActiveMenuIndex(null)
+    setPrevAppId(activeAppId);
+    setActiveMenuIndex(null);
   }
 
   useEffect(() => {
     const updateTime = () => {
-      const now = new Date()
-      const formattedDate = now.toLocaleDateString('id-ID', {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short',
-      })
-      const formattedTime = now.toLocaleTimeString('id-ID', {
-        hour: '2-digit',
-        minute: '2-digit',
+      const now = new Date();
+      const formattedDate = now.toLocaleDateString("id-ID", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+      });
+      const formattedTime = now.toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
         hour12: false,
-      })
-      setCurrentDate(formattedDate)
-      setCurrentTime(formattedTime)
-    }
+      });
+      setCurrentDate(formattedDate);
+      setCurrentTime(formattedTime);
+    };
 
-    updateTime()
-    const timer = setInterval(updateTime, 1000)
-    return () => clearInterval(timer)
-  }, [])
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuBarRef.current && !menuBarRef.current.contains(event.target)) {
-        setActiveMenuIndex(null)
+        setActiveMenuIndex(null);
       }
-    }
+    };
 
-    window.addEventListener('mousedown', handleClickOutside)
-    return () => window.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+    window.addEventListener("mousedown", handleClickOutside);
+    return () => window.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleMenuClick = (index) => {
-    setActiveMenuIndex((prevIndex) => (prevIndex === index ? null : index))
-  }
+    setActiveMenuIndex((prevIndex) => (prevIndex === index ? null : index));
+  };
 
   const handleMenuItemClick = (action, disabled) => {
-    if (disabled || !action) return
-    setActiveMenuIndex(null)
+    if (disabled || !action) return;
+    setActiveMenuIndex(null);
     if (onSelectMenuAction) {
-      onSelectMenuAction(action, activeAppId)
+      onSelectMenuAction(action, activeAppId);
     }
-  }
+  };
+
+  const currentWeather = weatherData?.current;
 
   return (
     <nav
@@ -78,9 +85,9 @@ export default function MenuBar({ onSelectMenuAction }) {
     >
       <div className="flex items-center h-full">
         {menuItems.map((menu, index) => {
-          const isOpen = activeMenuIndex === index
-          const isApple = Boolean(menu.isApple)
-          const isAppName = Boolean(menu.isAppName)
+          const isOpen = activeMenuIndex === index;
+          const isApple = Boolean(menu.isApple);
+          const isAppName = Boolean(menu.isAppName);
 
           return (
             <div key={`${menu.label}-${index}`} className="relative h-full">
@@ -88,18 +95,18 @@ export default function MenuBar({ onSelectMenuAction }) {
                 type="button"
                 onClick={() => handleMenuClick(index)}
                 onMouseEnter={() => {
-                  if (activeMenuIndex !== null) setActiveMenuIndex(index)
+                  if (activeMenuIndex !== null) setActiveMenuIndex(index);
                 }}
                 className={`h-full px-2.5 flex items-center tracking-tight cursor-default transition-none ${
                   isApple
-                    ? 'text-base font-bold'
+                    ? "text-base font-bold"
                     : isAppName
-                      ? 'font-black tracking-normal'
-                      : 'font-semibold'
+                      ? "font-black tracking-normal"
+                      : "font-semibold"
                 } ${
                   isOpen
-                    ? 'bg-[var(--os-fg)] text-[var(--os-bg)]'
-                    : 'bg-[var(--os-bg)] text-[var(--os-fg)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)]'
+                    ? "bg-[var(--os-fg)] text-[var(--os-bg)]"
+                    : "bg-[var(--os-bg)] text-[var(--os-fg)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)]"
                 }`}
               >
                 {menu.label}
@@ -114,7 +121,7 @@ export default function MenuBar({ onSelectMenuAction }) {
                           key={`sep-${itemIdx}`}
                           className="my-1 border-t border-[var(--os-border)]/40 mx-1"
                         />
-                      )
+                      );
                     }
 
                     return (
@@ -122,11 +129,13 @@ export default function MenuBar({ onSelectMenuAction }) {
                         key={`${item.label}-${itemIdx}`}
                         type="button"
                         disabled={item.disabled}
-                        onClick={() => handleMenuItemClick(item.action, item.disabled)}
+                        onClick={() =>
+                          handleMenuItemClick(item.action, item.disabled)
+                        }
                         className={`w-full flex items-center justify-between px-3 py-1 text-xs font-mono cursor-default text-left ${
                           item.disabled
-                            ? 'opacity-35 cursor-not-allowed'
-                            : 'hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] active:bg-[var(--os-fg)] active:text-[var(--os-bg)]'
+                            ? "opacity-35 cursor-not-allowed"
+                            : "hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] active:bg-[var(--os-fg)] active:text-[var(--os-bg)]"
                         }`}
                       >
                         <span className="truncate">{item.label}</span>
@@ -136,25 +145,43 @@ export default function MenuBar({ onSelectMenuAction }) {
                           </span>
                         )}
                       </button>
-                    )
+                    );
                   })}
                 </div>
               )}
             </div>
-          )
+          );
         })}
       </div>
 
-      <button
-        type="button"
-        onClick={() => onSelectMenuAction?.('calendar')}
-        title="Open Calendar"
-        className="flex items-center gap-1.5 font-mono font-bold text-[var(--os-fg)] px-1.5 py-0.5 hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] text-xs shrink-0"
-      >
-        <span>📅</span>
-        <span>{currentDate}</span>
-        <span>{currentTime}</span>
-      </button>
+      <div className="flex items-center gap-1 shrink-0">
+        <button
+          type="button"
+          onClick={() => onSelectMenuAction?.("weather")}
+          title={
+            currentWeather
+              ? `${location?.name || 'Weather'}: ${currentWeather.condition?.label || ''} ${formatTemp(currentWeather.temp)} (Click to open Weather)`
+              : 'Open Weather'
+          }
+          className="flex items-center gap-1 font-mono font-bold text-[var(--os-fg)] px-1.5 py-0.5 hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] text-xs"
+        >
+          <AppIconGraphic
+            iconType={currentWeather?.condition?.iconType || 'weather'}
+            className="w-3.5 h-3.5"
+          />
+          <span>{currentWeather ? formatTemp(currentWeather.temp) : 'Weather'}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => onSelectMenuAction?.("calendar")}
+          title="Open Calendar"
+          className="flex items-center gap-1.5 font-mono font-bold text-[var(--os-fg)] px-1.5 py-0.5 hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] text-xs"
+        >
+          <span>{currentDate}</span>
+          <span>{currentTime}</span>
+        </button>
+      </div>
     </nav>
-  )
+  );
 }

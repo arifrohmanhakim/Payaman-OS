@@ -78,6 +78,7 @@ export async function executeShellCommand(commandLine, { osContext, onClose }) {
           theme: 'theme [name] : Set OS theme palette (classic, dark, amber, green, paper).',
           pattern: 'pattern [name] : Set desktop wallpaper pattern (halftone, checkerboard, etc).',
           dock: 'dock [size|pos|autohide] [val] : Configure dock settings via shell.',
+          profile: 'profile [name] : Change terminal color profile (basic, pro, grass, homebrew, ocean).',
         }
         outputLines.push(topicHelps[topic] || `Help for '${topic}' not found.`)
       } else {
@@ -90,6 +91,9 @@ export async function executeShellCommand(commandLine, { osContext, onClose }) {
           '',
           'System & Settings Commands:',
           '  theme, pattern, dock, uname, whoami, uptime, date, reboot',
+          '',
+          'Terminal Commands:',
+          '  profile - Change terminal color profile (basic, pro, grass, homebrew, ocean)',
           '',
           'Utilities & Network:',
           '  curl, calc, beep, history, clear, exit',

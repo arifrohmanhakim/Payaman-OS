@@ -1,8 +1,8 @@
 export const browserAppConfig = {
-  id: 'browser',
-  title: 'Browser',
-  iconType: 'browser',
+  id: "browser",
+  title: "Browser",
+  iconType: "browser",
   defaultWidth: 780,
   defaultHeight: 540,
-  showOnDesktop: true,
-}
+  showOnDesktop: false,
+};

@@ -78,6 +78,9 @@ export default function Desktop() {
       case 'browser':
         openApp('browser')
         break
+      case 'weather':
+        openApp('weather')
+        break
       case 'files':
       case 'open_files':
         openApp('files')

@@ -34,10 +34,17 @@ import { calendarAppConfig } from './calendar/config.js'
 import BrowserApp from './browser/index.jsx'
 import { browserAppConfig } from './browser/config.js'
 
+import WeatherApp from './weather/index.jsx'
+import { weatherAppConfig } from './weather/config.js'
+
 export const appRegistry = [
   {
     ...browserAppConfig,
     component: BrowserApp,
+  },
+  {
+    ...weatherAppConfig,
+    component: WeatherApp,
   },
   {
     ...fileManagerAppConfig,
