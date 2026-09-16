@@ -1,6 +1,6 @@
 export const writeAppConfig = {
   id: 'write',
-  title: 'Catatan',
+  title: 'Notes',
   iconType: 'document',
   defaultWidth: 460,
   defaultHeight: 340,

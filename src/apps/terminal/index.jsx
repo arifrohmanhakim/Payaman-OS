@@ -90,7 +90,7 @@ export default function TerminalApp({ onClose }) {
     const promptText = () => `${getPrompt()} `
 
     term.writeln('Payaman OS Terminal (Powered by xterm.js)')
-    term.writeln("Ketik 'help' untuk daftar perintah yang tersedia.")
+    term.writeln("Type 'help' for a list of available commands.")
     term.writeln('')
     term.write(promptText())
 

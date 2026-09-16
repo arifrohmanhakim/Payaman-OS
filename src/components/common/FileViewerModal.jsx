@@ -65,10 +65,10 @@ export default function FileViewerModal({
     if (!textContent) return
     try {
       await navigator.clipboard.writeText(textContent)
-      setCopyFeedback('Tersalin!')
+      setCopyFeedback('Copied!')
       setTimeout(() => setCopyFeedback(''), 2000)
     } catch {
-      setCopyFeedback('Gagal salin')
+      setCopyFeedback('Failed to copy')
       setTimeout(() => setCopyFeedback(''), 2000)
     }
   }
@@ -164,7 +164,7 @@ export default function FileViewerModal({
             <button
               type="button"
               onClick={() => setIsMaximized((prev) => !prev)}
-              title={isMaximized ? 'Pulihkan ukuran' : 'Perbesar layar'}
+              title={isMaximized ? 'Restore window' : 'Maximize window'}
               className="w-4 h-4 border border-current flex items-center justify-center font-bold text-[9px] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)]"
             >
               {isMaximized ? '❐' : '□'}
@@ -172,7 +172,7 @@ export default function FileViewerModal({
             <button
               type="button"
               onClick={onClose}
-              title="Tutup (Esc)"
+              title="Close (Esc)"
               className="w-4 h-4 border border-current flex items-center justify-center font-bold text-[10px] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)]"
             >
               ×
@@ -223,7 +223,7 @@ export default function FileViewerModal({
                 className="py-0.5 px-2 text-[10px]"
                 onClick={() => setMarkdownView((v) => !v)}
               >
-                {markdownView ? 'Lihat Teks Asli' : 'Pratinjau Format'}
+                {markdownView ? 'Raw Text' : 'Formatted Preview'}
               </Button>
             )}
 
@@ -233,7 +233,7 @@ export default function FileViewerModal({
                 className="py-0.5 px-2 text-[10px]"
                 onClick={handleCopyText}
               >
-                {copyFeedback || 'Salin Teks'}
+                {copyFeedback || 'Copy Text'}
               </Button>
             )}
 
@@ -246,7 +246,7 @@ export default function FileViewerModal({
                   onOpenInWrite(textContent)
                 }}
               >
-                Edit di Catatan
+                Edit in Notes
               </Button>
             )}
 
@@ -256,7 +256,7 @@ export default function FileViewerModal({
                 className="py-0.5 px-2 text-[10px]"
                 onClick={() => window.open(fileUrl, '_blank')}
               >
-                Buka di Tab Baru ↗
+                Open in New Tab ↗
               </Button>
             )}
 
@@ -266,7 +266,7 @@ export default function FileViewerModal({
                 className="py-0.5 px-2 text-[10px]"
                 onClick={() => window.open(file.webViewLink, '_blank')}
               >
-                Buka di Google Drive ↗
+                Open in Google Drive ↗
               </Button>
             )}
           </div>
@@ -277,7 +277,7 @@ export default function FileViewerModal({
               className="py-0.5 px-2 text-[10px]"
               onClick={handleDownload}
             >
-              Unduh Berkas 💾
+              Download File 💾
             </Button>
           </div>
         </div>
@@ -309,13 +309,13 @@ export default function FileViewerModal({
             ) : (
               <div className="h-full flex flex-col items-center justify-center p-6 text-center space-y-3">
                 <AppIconGraphic iconType="pdf" className="w-12 h-12" />
-                <p>Tidak dapat memuat pratinjau PDF langsung.</p>
+                <p>Cannot load direct PDF preview.</p>
                 {file?.webViewLink && (
                   <Button
                     variant="primary"
                     onClick={() => window.open(file.webViewLink, '_blank')}
                   >
-                    Buka di Google Drive
+                    Open in Google Drive
                   </Button>
                 )}
               </div>
@@ -340,7 +340,7 @@ export default function FileViewerModal({
                 <AppIconGraphic iconType="document" className="w-12 h-12" />
                 <div className="font-bold">{filename}</div>
                 <p className="opacity-75 max-w-md">
-                  Dokumen Office ({ext.toUpperCase()}) dapat diunduh atau dibuka melalui aplikasi Google Docs.
+                  Office documents ({ext.toUpperCase()}) can be downloaded or opened via Google Docs.
                 </p>
                 <div className="flex gap-2">
                   {file?.webViewLink && (
@@ -348,11 +348,11 @@ export default function FileViewerModal({
                       variant="primary"
                       onClick={() => window.open(file.webViewLink, '_blank')}
                     >
-                      Buka di Google Drive
+                      Open in Google Drive
                     </Button>
                   )}
                   <Button variant="default" onClick={handleDownload}>
-                    Unduh Dokumen
+                    Download Document
                   </Button>
                 </div>
               </div>
@@ -386,7 +386,7 @@ export default function FileViewerModal({
                 </div>
                 {/* Code / Text Body */}
                 <div className="flex-1 p-3 overflow-auto whitespace-pre font-mono text-[11px] leading-relaxed">
-                  {textContent || '(Berkas kosong)'}
+                  {textContent || '(Empty file)'}
                 </div>
               </div>
             )
@@ -395,10 +395,10 @@ export default function FileViewerModal({
               <AppIconGraphic iconType="document" className="w-14 h-14" />
               <div className="font-bold">{filename}</div>
               <p className="opacity-75 max-w-sm">
-                Format berkas tidak mendukung pratinjau langsung. Anda dapat mengunduh berkas ini ke komputer.
+                File format does not support direct preview. You can download this file to your computer.
               </p>
               <Button variant="primary" onClick={handleDownload}>
-                Unduh Berkas
+                Download File
               </Button>
             </div>
           )}
@@ -406,8 +406,8 @@ export default function FileViewerModal({
 
         {/* Footer Bar */}
         <footer className="h-7 border-t border-[var(--os-border)] px-3 flex items-center justify-between bg-[var(--os-bg)] text-[10px] opacity-75 shrink-0">
-          <span>Kategori: {category.toUpperCase()}</span>
-          <span>{textContent ? `${textContent.split('\n').length} baris | ${textContent.length} karakter` : ''}</span>
+          <span>Category: {category.toUpperCase()}</span>
+          <span>{textContent ? `${textContent.split('\n').length} lines | ${textContent.length} characters` : ''}</span>
           <span>Payaman File Viewer</span>
         </footer>
       </div>

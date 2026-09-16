@@ -136,8 +136,8 @@ export default function Window({
         <div className="flex items-center gap-1.5 z-10">
           <button
             type="button"
-            aria-label="Tutup Jendela"
-            title="Tutup"
+            aria-label="Close Window"
+            title="Close"
             onClick={(e) => {
               e.stopPropagation();
               onClose(id);
@@ -151,8 +151,8 @@ export default function Window({
 
           <button
             type="button"
-            aria-label="Minimalkan Jendela"
-            title="Minimalkan"
+            aria-label="Minimize Window"
+            title="Minimize"
             onClick={(e) => {
               e.stopPropagation();
               if (onMinimize) {
@@ -169,9 +169,9 @@ export default function Window({
           <button
             type="button"
             aria-label={
-              isMaximized ? "Pulihkan Jendela" : "Perbesar 1 Layar Penuh"
+              isMaximized ? "Restore Window" : "Maximize Window"
             }
-            title={isMaximized ? "Pulihkan Ukuran" : "Perbesar 1 Layar Penuh"}
+            title={isMaximized ? "Restore" : "Maximize"}
             onClick={handleToggleMaximize}
             className="w-3.5 h-3.5 border border-[var(--os-border)] bg-[var(--os-bg)] flex items-center justify-center hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] active:bg-[var(--os-fg)] group cursor-default"
           >
@@ -181,14 +181,14 @@ export default function Window({
           </button>
         </div>
 
-        {/* Judul Jendela: Klik ganda untuk layar penuh seperti macOS */}
+        {/* Window Title */}
         <div
           onDoubleClick={handleToggleMaximize}
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
         >
           <span
             onDoubleClick={handleToggleMaximize}
-            title="Klik ganda untuk memperbesar 1 layar penuh"
+            title="Double-click to toggle fullscreen"
             className={`px-2 text-xs font-bold pointer-events-auto cursor-pointer ${
               isActive
                 ? "bg-[var(--os-bg)] text-[var(--os-fg)] border-x border-[var(--os-border)]"
@@ -208,13 +208,13 @@ export default function Window({
 
       <footer className="h-4 border-t border-[var(--os-border)] bg-[var(--os-bg)] flex justify-between items-center px-1 shrink-0 relative">
         <span className="text-[10px] opacity-40 select-none">
-          {isMaximized ? "Payaman OS (Layar Penuh)" : "Payaman OS"}
+          {isMaximized ? "Payaman OS (Fullscreen)" : "Payaman OS"}
         </span>
 
         {!isMaximized && (
           <div
             onMouseDown={(e) => handleResizeMouseDown(e, "corner")}
-            title="Tarik untuk mengubah ukuran jendela"
+            title="Drag to resize window"
             className="w-3.5 h-3.5 border border-[var(--os-border)] bg-[var(--os-bg)] flex items-center justify-center cursor-nwse-resize hover:bg-[var(--os-fg)] active:bg-[var(--os-fg)] group"
           >
             <div className="w-1.5 h-1.5 border-r border-b border-[var(--os-border)] group-hover:border-[var(--os-bg)]" />

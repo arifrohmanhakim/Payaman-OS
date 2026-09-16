@@ -1,6 +1,6 @@
 export const preferencesAppConfig = {
   id: 'preferences',
-  title: 'Preferensi Sistem',
+  title: 'System Preferences',
   iconType: 'terminal',
   defaultWidth: 540,
   defaultHeight: 460,

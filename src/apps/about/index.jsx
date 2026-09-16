@@ -9,9 +9,9 @@ export default function AboutApp({ onClose }) {
 
       <div className="space-y-1">
         <h2 className="text-base font-bold tracking-tight">Payaman OS</h2>
-        <p className="text-xs opacity-75">Sistem Operasi Desktop Monokrom</p>
+        <p className="text-xs opacity-75">Monochrome Desktop Operating System</p>
         <p className="text-[11px] opacity-60">
-          Versi 1.0 (Arsitektur Web Modular)
+          Version 1.0 (Modular Web Architecture)
         </p>
       </div>
 
@@ -22,14 +22,14 @@ export default function AboutApp({ onClose }) {
         </div>
         <div className="flex justify-between">
           <span className="opacity-70">Styling Engine:</span>
-          <span className="font-bold">Tailwind CSS (Monokrom)</span>
+          <span className="font-bold">Tailwind CSS (Monochrome)</span>
         </div>
         <div className="flex justify-between">
-          <span className="opacity-70">Penyimpanan:</span>
-          <span className="font-bold">LocalStorage (Aktif)</span>
+          <span className="opacity-70">Storage:</span>
+          <span className="font-bold">LocalStorage (Active)</span>
         </div>
         <div className="flex justify-between">
-          <span className="opacity-70">Arsitektur:</span>
+          <span className="opacity-70">Architecture:</span>
           <span className="font-bold">Modular App Registry</span>
         </div>
       </div>

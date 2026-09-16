@@ -82,11 +82,11 @@ export default function PhotobotApp() {
             <div className="text-3xl">📷</div>
             <div className="font-bold text-sm">
               {cameraState === 'idle'
-                ? 'Menghubungkan ke Webcam...'
-                : 'Akses Kamera Tidak Tersedia'}
+                ? 'Connecting to Webcam...'
+                : 'Camera Access Unavailable'}
             </div>
             {errorMessage && <p className="text-xs text-neutral-300">{errorMessage}</p>}
-            <Button onClick={startCamera}>Muat Ulang Kamera</Button>
+            <Button onClick={startCamera}>Reload Camera</Button>
           </div>
         )}
       </div>
@@ -123,7 +123,7 @@ export default function PhotobotApp() {
             className="w-full sm:w-80 py-2 border-2 border-[var(--os-border)] bg-[var(--os-bg)] text-[var(--os-fg)] font-bold text-sm flex items-center justify-center gap-2 hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] active:scale-98 disabled:opacity-40 disabled:cursor-not-allowed os-window-shadow transition-none"
           >
             <span>📸</span>
-            <span>{countdown !== null ? `MENGAMBIL FOTO (${countdown})...` : 'AMBIL FOTO (TIMER 3D)'}</span>
+            <span>{countdown !== null ? `CAPTURING PHOTO (${countdown})...` : 'TAKE PHOTO (3S TIMER)'}</span>
           </button>
         </div>
       </div>
@@ -132,7 +132,7 @@ export default function PhotobotApp() {
       <div className="h-20 bg-[var(--os-bg)] p-2 flex items-center gap-2 overflow-x-auto shrink-0">
         {captures.length === 0 ? (
           <div className="w-full text-center text-[10px] opacity-50">
-            Belum ada foto. Tekan tombol &quot;Ambil Foto&quot; di atas.
+            No photos yet. Click &quot;Take Photo&quot; above.
           </div>
         ) : (
           captures.map((photo) => (
@@ -148,7 +148,7 @@ export default function PhotobotApp() {
                 className="w-full h-full object-cover"
               />
               <span className="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[8px] text-center opacity-0 group-hover:opacity-100 truncate">
-                Lihat
+                View
               </span>
             </button>
           ))
@@ -157,8 +157,8 @@ export default function PhotobotApp() {
 
       {/* Status Bar */}
       <footer className="border-t border-[var(--os-border)] bg-[var(--os-bg)] px-3 py-1 flex items-center justify-between text-[10px] opacity-70 shrink-0">
-        <span>{captures.length} foto tersimpan di sesi</span>
-        <span>{statusMessage || 'Siap membidik foto'}</span>
+        <span>{captures.length} photos saved in session</span>
+        <span>{statusMessage || 'Ready to capture'}</span>
       </footer>
 
       {/* Modal Preview Foto Hasil Jepretan */}
@@ -172,10 +172,10 @@ export default function PhotobotApp() {
             className="bg-[var(--os-bg)] border-2 border-[var(--os-border)] os-window-shadow max-w-lg w-full max-h-[90%] flex flex-col overflow-hidden text-[var(--os-fg)]"
           >
             <header className="h-7 border-b-2 border-[var(--os-border)] px-3 flex items-center justify-between bg-[var(--os-bg)] shrink-0">
-              <span className="font-bold text-xs">Hasil Foto: {selectedCapture.id}</span>
+              <span className="font-bold text-xs">Photo Capture: {selectedCapture.id}</span>
               <button
                 type="button"
-                aria-label="Tutup"
+                aria-label="Close"
                 onClick={() => setSelectedCapture(null)}
                 className="w-4 h-4 border border-current flex items-center justify-center font-bold text-xs hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)]"
               >
@@ -198,16 +198,16 @@ export default function PhotobotApp() {
 
               <div className="flex items-center gap-1.5">
                 <Button variant="default" onClick={() => saveToVFS(selectedCapture)}>
-                  Simpan ke VFS
+                  Save to VFS
                 </Button>
                 <Button variant="default" onClick={() => downloadPhoto(selectedCapture)}>
-                  Unduh PNG
+                  Download PNG
                 </Button>
                 <Button variant="default" onClick={() => deleteCapture(selectedCapture.id)}>
-                  Hapus
+                  Delete
                 </Button>
                 <Button variant="default" onClick={() => setSelectedCapture(null)}>
-                  Tutup
+                  Close
                 </Button>
               </div>
             </footer>

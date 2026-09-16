@@ -50,9 +50,9 @@ export default function FileManagerApp() {
   const [filePreview, setFilePreview] = useState(null)
 
   const quickLinks = [
-    { name: 'Beranda (~)', path: '/home/arif', icon: 'folder' },
-    { name: 'Dokumen', path: '/home/arif/dokumen', icon: 'folder' },
-    { name: 'Sistem', path: '/system', icon: 'folder' },
+    { name: 'Home (~)', path: '/home/arif', icon: 'folder' },
+    { name: 'Documents', path: '/home/arif/dokumen', icon: 'folder' },
+    { name: 'System', path: '/system', icon: 'folder' },
     { name: 'Root (/)', path: '/', icon: 'folder' },
     { name: 'Temp (/tmp)', path: '/tmp', icon: 'folder' },
   ]
@@ -192,7 +192,7 @@ export default function FileManagerApp() {
                 disabled={!canGoBack}
                 onClick={navigateBack}
                 className="px-2 py-0.5"
-                title="Kembali"
+                title="Back"
               >
                 ←
               </Button>
@@ -201,7 +201,7 @@ export default function FileManagerApp() {
                 disabled={!canGoForward}
                 onClick={navigateForward}
                 className="px-2 py-0.5"
-                title="Maju"
+                title="Forward"
               >
                 →
               </Button>
@@ -210,7 +210,7 @@ export default function FileManagerApp() {
                 disabled={currentPath === '/'}
                 onClick={navigateUp}
                 className="px-2 py-0.5"
-                title="Ke Direktori Induk"
+                title="Parent Directory"
               >
                 ↑
               </Button>
@@ -218,7 +218,7 @@ export default function FileManagerApp() {
                 variant="default"
                 onClick={() => navigateTo('/home/arif')}
                 className="px-2 py-0.5"
-                title="Ke Folder Beranda"
+                title="Home Folder"
               >
                 ~
               </Button>
@@ -230,7 +230,7 @@ export default function FileManagerApp() {
                 disabled={gdrive.folderHistory.length <= 1}
                 onClick={gdrive.navigateBack}
                 className="px-2 py-0.5"
-                title="Kembali ke Folder Sebelumnya"
+                title="Back to Previous Folder"
               >
                 ←
               </Button>
@@ -238,7 +238,7 @@ export default function FileManagerApp() {
                 variant="default"
                 onClick={() => gdrive.fetchFiles(gdrive.currentFolder.id)}
                 className="px-2 py-0.5"
-                title="Segarkan Google Drive"
+                title="Refresh Google Drive"
               >
                 ⟳
               </Button>
@@ -298,9 +298,9 @@ export default function FileManagerApp() {
             variant="default"
             onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
             className="px-2 py-0.5"
-            title="Ganti Tampilan Grid/Daftar"
+            title="Toggle Grid/List View"
           >
-            {viewMode === 'grid' ? '≡ Daftar' : '▦ Kisi'}
+            {viewMode === 'grid' ? '≡ List' : '▦ Grid'}
           </Button>
 
           {storageSource === 'local' ? (
@@ -319,7 +319,7 @@ export default function FileManagerApp() {
                   setActiveDialog('new_folder')
                 }}
                 className="px-2 py-0.5"
-                title="Buat Folder Baru"
+                title="New Folder"
               >
                 + Folder
               </Button>
@@ -330,17 +330,17 @@ export default function FileManagerApp() {
                   setActiveDialog('new_file')
                 }}
                 className="px-2 py-0.5"
-                title="Buat Berkas Baru"
+                title="New File"
               >
-                + Berkas
+                + File
               </Button>
               <Button
                 variant="default"
                 onClick={() => fileInputRef.current?.click()}
                 className="px-2 py-0.5"
-                title="Unggah Berkas dari Komputer (Gambar, PDF, Dokumen, dll)"
+                title="Upload Files from Computer (Image, PDF, Document, etc)"
               >
-                + Unggah
+                + Upload
               </Button>
             </>
           ) : (
@@ -353,21 +353,21 @@ export default function FileManagerApp() {
                     setActiveDialog('gdrive_new_folder')
                   }}
                   className="px-2 py-0.5"
-                  title="Buat Folder di Google Drive"
+                  title="Create Folder in Google Drive"
                 >
                   + Folder
                 </Button>
                 <Button
                   variant="default"
                   onClick={() => {
-                    setDialogInput('dokumen_baru.txt')
+                    setDialogInput('new_document.txt')
                     setDialogSecondaryInput('')
                     setActiveDialog('gdrive_upload')
                   }}
                   className="px-2 py-0.5"
-                  title="Unggah Berkas ke Google Drive"
+                  title="Upload File to Google Drive"
                 >
-                  + Unggah
+                  + Upload
                 </Button>
               </>
             )
@@ -381,7 +381,7 @@ export default function FileManagerApp() {
         <aside className="w-40 border-r-2 border-[var(--os-border)] bg-[var(--os-bg)] p-2 space-y-3 overflow-y-auto shrink-0 hidden sm:block">
           <div>
             <span className="text-[10px] font-bold opacity-60 uppercase block mb-1">
-              Penyimpanan
+              Storage
             </span>
             <div className="space-y-1">
               <button
@@ -397,7 +397,7 @@ export default function FileManagerApp() {
                 }`}
               >
                 <span>💾</span>
-                <span className="truncate">Lokal (VFS)</span>
+                <span className="truncate">Local (VFS)</span>
               </button>
 
               <button
@@ -417,7 +417,7 @@ export default function FileManagerApp() {
                   <span className="truncate">Google Drive</span>
                 </span>
                 {gdrive.isConnected && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" title="Terhubung" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" title="Connected" />
                 )}
               </button>
             </div>
@@ -427,7 +427,7 @@ export default function FileManagerApp() {
             <>
               <div>
                 <span className="text-[10px] font-bold opacity-60 uppercase block mb-1">
-                  Pintasan
+                  Shortcuts
                 </span>
                 <div className="space-y-1">
                   {quickLinks.map((link) => {
@@ -452,7 +452,7 @@ export default function FileManagerApp() {
               </div>
 
               <div className="border-t border-[var(--os-border)] pt-2 text-[10px] opacity-70">
-                <div>Kapasitas VFS:</div>
+                <div>VFS Storage:</div>
                 <div className="font-bold">
                   {storageStats.usedKb} KB / {storageStats.totalKb} KB
                 </div>
@@ -460,13 +460,13 @@ export default function FileManagerApp() {
             </>
           ) : (
             <div className="border-t border-[var(--os-border)] pt-2 text-[10px] space-y-2">
-              <div>Akun Terhubung:</div>
+              <div>Connected Account:</div>
               {gdrive.userProfile?.email ? (
                 <div className="truncate font-bold text-[10px]" title={gdrive.userProfile.email}>
                   {gdrive.userProfile.email}
                 </div>
               ) : (
-                <div className="opacity-60">Belum terhubung</div>
+                <div className="opacity-60">Not connected</div>
               )}
               {gdrive.isConnected && (
                 <button
@@ -474,7 +474,7 @@ export default function FileManagerApp() {
                   onClick={gdrive.disconnect}
                   className="w-full text-center px-1 py-1 border border-[var(--os-border)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] text-[10px]"
                 >
-                  Keluar
+                  Disconnect
                 </button>
               )}
             </div>
@@ -490,7 +490,7 @@ export default function FileManagerApp() {
             /* Explorer Penyimpanan Lokal VFS */
             items.length === 0 ? (
               <div className="h-full flex items-center justify-center text-center opacity-50">
-                Folder ini kosong.
+                This folder is empty.
               </div>
             ) : viewMode === 'grid' ? (
               <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
@@ -545,9 +545,9 @@ export default function FileManagerApp() {
               <table className="w-full text-left border-collapse text-[11px]">
                 <thead>
                   <tr className="border-b-2 border-[var(--os-border)] opacity-70">
-                    <th className="py-1 px-2 font-bold">Nama</th>
-                    <th className="py-1 px-2 font-bold w-20">Tipe</th>
-                    <th className="py-1 px-2 font-bold w-24">Ukuran</th>
+                    <th className="py-1 px-2 font-bold">Name</th>
+                    <th className="py-1 px-2 font-bold w-20">Type</th>
+                    <th className="py-1 px-2 font-bold w-24">Size</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -615,7 +615,7 @@ export default function FileManagerApp() {
                 <div>
                   <h3 className="text-sm font-bold">Google Drive</h3>
                   <p className="text-[11px] opacity-70 mt-1">
-                    Hubungkan akun Google Drive Anda untuk mengakses, membuka, dan mengimpor berkas langsung ke Payaman OS.
+                    Connect your Google Drive account to access, view, and import files directly into Payaman OS.
                   </p>
                 </div>
 
@@ -632,16 +632,16 @@ export default function FileManagerApp() {
                   className="w-full py-2 flex items-center justify-center gap-2"
                 >
                   <span>🔑</span>
-                  <span>{gdrive.isLoading ? 'Menghubungkan...' : 'Hubungkan Google Drive'}</span>
+                  <span>{gdrive.isLoading ? 'Connecting...' : 'Connect Google Drive'}</span>
                 </Button>
               </div>
             ) : gdrive.isLoading ? (
               <div className="h-full flex items-center justify-center text-center space-y-2">
-                <div className="animate-pulse">Memuat berkas dari Google Drive...</div>
+                <div className="animate-pulse">Loading files from Google Drive...</div>
               </div>
             ) : gdrive.files.length === 0 ? (
               <div className="h-full flex items-center justify-center text-center opacity-50">
-                Folder Google Drive ini kosong.
+                This Google Drive folder is empty.
               </div>
             ) : viewMode === 'grid' ? (
               /* Langsung masuk ke tampilan grid berkas */
@@ -698,9 +698,9 @@ export default function FileManagerApp() {
               <table className="w-full text-left border-collapse text-[11px]">
                 <thead>
                   <tr className="border-b-2 border-[var(--os-border)] opacity-70">
-                    <th className="py-1 px-2 font-bold">Nama</th>
-                    <th className="py-1 px-2 font-bold w-28">Tipe</th>
-                    <th className="py-1 px-2 font-bold w-24">Ukuran</th>
+                    <th className="py-1 px-2 font-bold">Name</th>
+                    <th className="py-1 px-2 font-bold w-28">Type</th>
+                    <th className="py-1 px-2 font-bold w-24">Size</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -760,7 +760,7 @@ export default function FileManagerApp() {
       {selectedItem && (
         <div className="border-t-2 border-[var(--os-border)] bg-[var(--os-bg)] px-3 py-1.5 flex items-center justify-between text-xs shrink-0 flex-wrap gap-2">
           <div className="flex items-center gap-2 truncate">
-            <span className="font-bold">Terpilih:</span>
+            <span className="font-bold">Selected:</span>
             <span className="truncate">{selectedItem.name}</span>
           </div>
 
@@ -772,21 +772,21 @@ export default function FileManagerApp() {
                   onClick={() => handleOpenLocalItem(selectedItem)}
                   className="px-2 py-0.5"
                 >
-                  Buka
+                  Open
                 </Button>
                 <Button
                   variant="default"
                   onClick={openRenameDialog}
                   className="px-2 py-0.5"
                 >
-                  Ganti Nama
+                  Rename
                 </Button>
                 <Button
                   variant="default"
                   onClick={handleDeleteSelected}
                   className="px-2 py-0.5"
                 >
-                  Hapus
+                  Delete
                 </Button>
               </>
             ) : (
@@ -797,8 +797,8 @@ export default function FileManagerApp() {
                   className="px-2 py-0.5"
                 >
                   {selectedItem.mimeType === 'application/vnd.google-apps.folder'
-                    ? 'Buka Folder'
-                    : 'Buka / Pratinjau'}
+                    ? 'Open Folder'
+                    : 'Open / Preview'}
                 </Button>
 
                 {selectedItem.mimeType !== 'application/vnd.google-apps.folder' && (
@@ -806,9 +806,9 @@ export default function FileManagerApp() {
                     variant="primary"
                     onClick={handleImportGdriveSelected}
                     className="px-2 py-0.5"
-                    title="Salin berkas Google Drive ke penyimpanan VFS lokal (/home/arif/)"
+                    title="Copy Google Drive file to local VFS storage (/home/arif/)"
                   >
-                    Salin ke VFS Lokal
+                    Copy to Local VFS
                   </Button>
                 )}
 
@@ -817,7 +817,7 @@ export default function FileManagerApp() {
                   onClick={handleDeleteSelected}
                   className="px-2 py-0.5"
                 >
-                  Hapus
+                  Delete
                 </Button>
               </>
             )}
@@ -829,8 +829,8 @@ export default function FileManagerApp() {
       <footer className="border-t border-[var(--os-border)] bg-[var(--os-bg)] px-3 py-1 flex items-center justify-between text-[10px] opacity-70 shrink-0">
         <span>
           {storageSource === 'local'
-            ? `${items.length} item di VFS`
-            : `${gdrive.files.length} item di Google Drive`}
+            ? `${items.length} items in VFS`
+            : `${gdrive.files.length} items in Google Drive`}
         </span>
         <span className="truncate max-w-md">
           {storageSource === 'local'
@@ -847,11 +847,11 @@ export default function FileManagerApp() {
             className="bg-[var(--os-bg)] border-2 border-[var(--os-border)] os-window-shadow p-4 w-80 space-y-3 font-mono text-xs text-[var(--os-fg)]"
           >
             <div className="font-bold border-b border-[var(--os-border)] pb-1">
-              {activeDialog === 'new_folder' && 'Buat Folder Lokal Baru'}
-              {activeDialog === 'new_file' && 'Buat Berkas Lokal Baru'}
-              {activeDialog === 'rename' && 'Ganti Nama Item'}
-              {activeDialog === 'gdrive_new_folder' && 'Buat Folder di Google Drive'}
-              {activeDialog === 'gdrive_upload' && 'Unggah Berkas ke Google Drive'}
+              {activeDialog === 'new_folder' && 'Create New Folder'}
+              {activeDialog === 'new_file' && 'Create New File'}
+              {activeDialog === 'rename' && 'Rename Item'}
+              {activeDialog === 'gdrive_new_folder' && 'Create Folder in Google Drive'}
+              {activeDialog === 'gdrive_upload' && 'Upload File to Google Drive'}
             </div>
 
             {activeDialog === 'gdrive_upload' ? (
@@ -859,13 +859,13 @@ export default function FileManagerApp() {
                 <Input
                   value={dialogInput}
                   onChange={(e) => setDialogInput(e.target.value)}
-                  placeholder="Nama berkas (contoh: berkas.txt)"
+                  placeholder="File name (e.g. document.txt)"
                   autoFocus
                 />
                 <textarea
                   value={dialogSecondaryInput}
                   onChange={(e) => setDialogSecondaryInput(e.target.value)}
-                  placeholder="Isi teks berkas..."
+                  placeholder="File text content..."
                   rows={4}
                   className="w-full p-1.5 text-xs font-mono bg-[var(--os-bg)] text-[var(--os-fg)] border border-[var(--os-border)] focus:outline-none"
                 />
@@ -874,7 +874,7 @@ export default function FileManagerApp() {
               <Input
                 value={dialogInput}
                 onChange={(e) => setDialogInput(e.target.value)}
-                placeholder="Masukkan nama..."
+                placeholder="Enter name..."
                 autoFocus
               />
             )}
@@ -889,10 +889,10 @@ export default function FileManagerApp() {
                   setDialogSecondaryInput('')
                 }}
               >
-                Batal
+                Cancel
               </Button>
               <Button variant="primary" type="submit">
-                Simpan
+                Save
               </Button>
             </div>
           </form>

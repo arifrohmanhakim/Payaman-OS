@@ -58,7 +58,7 @@ class GoogleDriveService {
       if (existing) {
         existing.addEventListener('load', () => resolve(true))
         existing.addEventListener('error', () =>
-          reject(new Error('Gagal memuat Google Identity Services script.'))
+          reject(new Error('Failed to load Google Identity Services script.'))
         )
         return
       }
@@ -69,7 +69,7 @@ class GoogleDriveService {
       script.defer = true
       script.onload = () => resolve(true)
       script.onerror = () =>
-        reject(new Error('Gagal memuat Google Identity Services script.'))
+        reject(new Error('Failed to load Google Identity Services script.'))
       document.body.appendChild(script)
     })
   }
@@ -148,7 +148,7 @@ class GoogleDriveService {
         this.disconnect()
         return {
           success: false,
-          error: 'Sesi login Google Drive telah berakhir. Silakan login kembali.',
+          error: 'Google Drive session has expired. Please reconnect.',
         }
       }
 
@@ -156,20 +156,20 @@ class GoogleDriveService {
         const errJson = await response.json().catch(() => ({}))
         return {
           success: false,
-          error: errJson.error?.message || `HTTP ${response.status}: Gagal memuat berkas.`,
+          error: errJson.error?.message || `HTTP ${response.status}: Failed to load files.`,
         }
       }
 
       const data = await response.json()
       return { success: true, files: data.files || [] }
     } catch (err) {
-      return { success: false, error: `Koneksi gagal: ${err.message}` }
+      return { success: false, error: `Connection failed: ${err.message}` }
     }
   }
 
   async readFileContent(fileId, mimeType = '') {
     if (!this.token) {
-      return { success: false, error: 'Google Drive belum terhubung.' }
+      return { success: false, error: 'Google Drive is not connected.' }
     }
 
     try {
@@ -183,7 +183,7 @@ class GoogleDriveService {
       })
 
       if (!response.ok) {
-        return { success: false, error: `Gagal membaca isi berkas (HTTP ${response.status}).` }
+        return { success: false, error: `Failed to read file content (HTTP ${response.status}).` }
       }
 
       const text = await response.text()
@@ -195,7 +195,7 @@ class GoogleDriveService {
 
   async readFileBlob(fileId, mimeType = '') {
     if (!this.token) {
-      return { success: false, error: 'Google Drive belum terhubung.' }
+      return { success: false, error: 'Google Drive is not connected.' }
     }
 
     try {
@@ -209,7 +209,7 @@ class GoogleDriveService {
       })
 
       if (!response.ok) {
-        return { success: false, error: `Gagal mengunduh berkas (HTTP ${response.status}).` }
+        return { success: false, error: `Failed to download file (HTTP ${response.status}).` }
       }
 
       const blob = await response.blob()
@@ -222,7 +222,7 @@ class GoogleDriveService {
 
   async createFolder(name, parentId = 'root') {
     if (!this.token) {
-      return { success: false, error: 'Google Drive belum terhubung.' }
+      return { success: false, error: 'Google Drive is not connected.' }
     }
 
     try {
@@ -243,7 +243,7 @@ class GoogleDriveService {
         const errJson = await response.json().catch(() => ({}))
         return {
           success: false,
-          error: errJson.error?.message || 'Gagal membuat folder di Google Drive.',
+          error: errJson.error?.message || 'Failed to create folder in Google Drive.',
         }
       }
 
@@ -256,7 +256,7 @@ class GoogleDriveService {
 
   async uploadFile(name, content, parentId = 'root') {
     if (!this.token) {
-      return { success: false, error: 'Google Drive belum terhubung.' }
+      return { success: false, error: 'Google Drive is not connected.' }
     }
 
     try {
@@ -294,7 +294,7 @@ class GoogleDriveService {
         const errJson = await response.json().catch(() => ({}))
         return {
           success: false,
-          error: errJson.error?.message || 'Gagal mengunggah berkas ke Google Drive.',
+          error: errJson.error?.message || 'Failed to upload file to Google Drive.',
         }
       }
 
@@ -307,7 +307,7 @@ class GoogleDriveService {
 
   async deleteFile(fileId) {
     if (!this.token) {
-      return { success: false, error: 'Google Drive belum terhubung.' }
+      return { success: false, error: 'Google Drive is not connected.' }
     }
 
     try {
@@ -317,7 +317,7 @@ class GoogleDriveService {
       })
 
       if (!response.ok) {
-        return { success: false, error: 'Gagal menghapus berkas di Google Drive.' }
+        return { success: false, error: 'Failed to delete file in Google Drive.' }
       }
 
       return { success: true }

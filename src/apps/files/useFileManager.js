@@ -89,7 +89,7 @@ export function useFileManager(initialPath = '/home/arif') {
       const targetPath = `${currentPath}/${trimmed}`
       const res = fileSystemService.createDirectory(targetPath)
       if (res.success) {
-        setStatusMessage(`Folder '${trimmed}' berhasil dibuat.`)
+        setStatusMessage(`Folder '${trimmed}' created.`)
       } else {
         setStatusMessage(res.error)
         soundService.playErrorAlert()
@@ -106,7 +106,7 @@ export function useFileManager(initialPath = '/home/arif') {
       const targetPath = `${currentPath}/${trimmed}`
       const res = fileSystemService.writeFile(targetPath, content, false)
       if (res.success) {
-        setStatusMessage(`Berkas '${trimmed}' berhasil dibuat.`)
+        setStatusMessage(`File '${trimmed}' created.`)
       } else {
         setStatusMessage(res.error)
         soundService.playErrorAlert()
@@ -121,7 +121,7 @@ export function useFileManager(initialPath = '/home/arif') {
       const targetPath = `${currentPath}/${itemName}`
       const res = fileSystemService.remove(targetPath, true)
       if (res.success) {
-        setStatusMessage(`'${itemName}' berhasil dihapus.`)
+        setStatusMessage(`'${itemName}' deleted.`)
         setSelectedItem(null)
       } else {
         setStatusMessage(res.error)
@@ -137,7 +137,7 @@ export function useFileManager(initialPath = '/home/arif') {
       const targetPath = `${currentPath}/${oldName}`
       const res = fileSystemService.rename(targetPath, newName)
       if (res.success) {
-        setStatusMessage(`Nama '${oldName}' diubah menjadi '${newName}'.`)
+        setStatusMessage(`Renamed '${oldName}' to '${newName}'.`)
         setSelectedItem(null)
       } else {
         setStatusMessage(res.error)
@@ -189,10 +189,10 @@ export function useFileManager(initialPath = '/home/arif') {
 
       if (count > 0) {
         soundService.playClick()
-        setStatusMessage(`${count} berkas berhasil diunggah ke '${currentPath}'.`)
+        setStatusMessage(`${count} file(s) uploaded to '${currentPath}'.`)
       } else {
         soundService.playErrorAlert()
-        setStatusMessage('Gagal mengunggah berkas.')
+        setStatusMessage('Failed to upload files.')
       }
     },
     [currentPath]

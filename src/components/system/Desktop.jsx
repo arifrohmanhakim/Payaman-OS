@@ -80,8 +80,8 @@ export default function Desktop() {
       case 'reset_session':
         showModal({
           type: 'reset_session',
-          title: 'Atur Ulang Sesi Jendela',
-          message: 'Apakah Anda ingin mengembalikan susunan jendela desktop ke kondisi awal?',
+          title: 'Reset Window Session',
+          message: 'Do you want to restore desktop window arrangement to default?',
           onConfirm: () => {
             resetSession()
             closeModal()
@@ -91,8 +91,8 @@ export default function Desktop() {
       case 'empty_trash':
         showModal({
           type: 'empty_trash',
-          title: 'Kosongkan Tong Sampah',
-          message: 'Apakah Anda yakin ingin menghapus semua berkas secara permanen?',
+          title: 'Empty Trash',
+          message: 'Are you sure you want to permanently delete all items in trash?',
           onConfirm: () => {
             closeModal()
           },
@@ -101,8 +101,8 @@ export default function Desktop() {
       case 'restart':
         showModal({
           type: 'restart',
-          title: 'Mulai Ulang Sistem',
-          message: 'Payaman OS akan memuat ulang sesi desktop Anda.',
+          title: 'Restart System',
+          message: 'Payaman OS will reload your desktop session.',
           onConfirm: () => {
             window.location.reload()
           },

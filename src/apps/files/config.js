@@ -1,6 +1,6 @@
 export const fileManagerAppConfig = {
   id: 'files',
-  title: 'Manajer Berkas',
+  title: 'File Manager',
   iconType: 'folder',
   defaultWidth: 580,
   defaultHeight: 400,

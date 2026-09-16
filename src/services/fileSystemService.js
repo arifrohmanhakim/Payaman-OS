@@ -14,17 +14,17 @@ const INITIAL_VFS = {
             children: {
               'catatan.txt': {
                 type: 'file',
-                content: 'Selamat datang di Payaman OS.\nSistem operasi web monokrom siap pakai.',
+                content: 'Welcome to Payaman OS.\nA monochrome web-based desktop operating system.',
                 createdAt: new Date().toISOString(),
               },
               'todo.txt': {
                 type: 'file',
-                content: '1. Desain antarmuka monokrom\n2. Optimasi kinerja\n3. Uji coba terminal',
+                content: '1. Monochrome UI design\n2. Performance optimization\n3. Terminal verification',
                 createdAt: new Date().toISOString(),
               },
-              'panduan.md': {
+              'guide.md': {
                 type: 'file',
-                content: '# Panduan Pengguna Payaman OS\n\nSelamat datang di sistem operasi desktop berbasis web monokrom.\n\n## Fitur Utama\n- **Penampil Berkas Serbaguna**: Mendukung gambar (PNG, JPG, SVG), dokumen PDF, teks, dan berkas Office.\n- **Integrasi Google Drive**: Akses dan buka berkas Google Drive langsung dari sistem.\n- **MacPaint**: Aplikasi gambar retro klasik dengan aneka kuas dan pola.\n- **Terminal CLI**: Bekerja dengan terminal UNIX virtual.\n\n## Tips Pintasan\n- Klik dua kali berkas apa saja untuk membuka pratinjau langsung.\n- Tekan `Esc` untuk menutup jendela pratinjau.',
+                content: '# Payaman OS User Guide\n\nWelcome to the monochrome web desktop operating system.\n\n## Key Features\n- **Multi-Format File Viewer**: Supports images (PNG, JPG, SVG), PDF documents, text, and Office files.\n- **Google Drive Integration**: Access and open your Google Drive files directly inside the OS.\n- **MacPaint**: Classic retro drawing studio with various tools and fill patterns.\n- **Terminal CLI**: Work with a virtual UNIX terminal shell.\n\n## Quick Tips\n- Double-click any file to open an instant preview.\n- Press `Esc` to close preview modal windows.',
                 createdAt: new Date().toISOString(),
               },
               'logo.svg': {
@@ -118,12 +118,12 @@ class FileSystemService {
   rename(targetPath, newName) {
     const trimmed = (newName || '').trim()
     if (!trimmed || trimmed.includes('/')) {
-      return { success: false, error: 'Nama berkas atau folder baru tidak valid.' }
+      return { success: false, error: 'New file or folder name is invalid.' }
     }
 
     const resolved = this.resolvePath(targetPath)
     if (resolved === '/' || resolved === '/home' || resolved === '/home/arif') {
-      return { success: false, error: 'Tidak dapat mengubah nama direktori inti.' }
+      return { success: false, error: 'Cannot rename core system directory.' }
     }
 
     const lastSlash = resolved.lastIndexOf('/')
@@ -132,11 +132,11 @@ class FileSystemService {
 
     const parentNode = this.getNode(parentPath)
     if (!parentNode || !parentNode.children[oldName]) {
-      return { success: false, error: `'${oldName}' tidak ditemukan.` }
+      return { success: false, error: `'${oldName}' not found.` }
     }
 
     if (parentNode.children[trimmed]) {
-      return { success: false, error: `'${trimmed}' sudah ada di lokasi ini.` }
+      return { success: false, error: `'${trimmed}' already exists in this location.` }
     }
 
     parentNode.children[trimmed] = parentNode.children[oldName]
@@ -197,10 +197,10 @@ class FileSystemService {
     const node = this.getNode(resolved)
 
     if (!node) {
-      return { success: false, error: `Direktori '${targetPath}' tidak ditemukan.` }
+      return { success: false, error: `Directory '${targetPath}' not found.` }
     }
     if (node.type !== 'dir') {
-      return { success: false, error: `'${targetPath}' bukan direktori.` }
+      return { success: false, error: `'${targetPath}' is not a directory.` }
     }
 
     this.currentPath = resolved
@@ -212,10 +212,10 @@ class FileSystemService {
     const node = this.getNode(resolved)
 
     if (!node) {
-      return { success: false, error: `Direktori '${targetPath}' tidak ditemukan.` }
+      return { success: false, error: `Directory '${targetPath}' not found.` }
     }
     if (node.type !== 'dir') {
-      return { success: false, error: `'${targetPath}' bukan direktori.` }
+      return { success: false, error: `'${targetPath}' is not a directory.` }
     }
 
     const items = Object.entries(node.children || {}).map(([name, item]) => ({
@@ -233,10 +233,10 @@ class FileSystemService {
     const node = this.getNode(resolved)
 
     if (!node) {
-      return { success: false, error: `Berkas '${targetPath}' tidak ditemukan.` }
+      return { success: false, error: `File '${targetPath}' not found.` }
     }
     if (node.type !== 'file') {
-      return { success: false, error: `'${targetPath}' adalah direktori, bukan berkas.` }
+      return { success: false, error: `'${targetPath}' is a directory, not a file.` }
     }
 
     return { success: true, content: node.content || '' }
@@ -249,17 +249,17 @@ class FileSystemService {
     const fileName = resolved.slice(lastSlash + 1)
 
     if (!fileName) {
-      return { success: false, error: 'Nama berkas tidak valid.' }
+      return { success: false, error: 'Invalid file name.' }
     }
 
     const dirNode = this.getNode(dirPath)
     if (!dirNode || dirNode.type !== 'dir') {
-      return { success: false, error: `Direktori tujuan '${dirPath}' tidak ditemukan.` }
+      return { success: false, error: `Target directory '${dirPath}' not found.` }
     }
 
     const existing = dirNode.children[fileName]
     if (existing && existing.type === 'dir') {
-      return { success: false, error: `'${fileName}' adalah direktori yang sudah ada.` }
+      return { success: false, error: `'${fileName}' is an existing directory.` }
     }
 
     const finalContent = append && existing ? (existing.content || '') + '\n' + content : content
@@ -282,16 +282,16 @@ class FileSystemService {
     const dirName = resolved.slice(lastSlash + 1)
 
     if (!dirName) {
-      return { success: false, error: 'Nama direktori tidak valid.' }
+      return { success: false, error: 'Invalid directory name.' }
     }
 
     const parentNode = this.getNode(parentPath)
     if (!parentNode || parentNode.type !== 'dir') {
-      return { success: false, error: `Direktori induk '${parentPath}' tidak ditemukan.` }
+      return { success: false, error: `Parent directory '${parentPath}' not found.` }
     }
 
     if (parentNode.children[dirName]) {
-      return { success: false, error: `Berkas atau folder '${dirName}' sudah ada.` }
+      return { success: false, error: `File or folder '${dirName}' already exists.` }
     }
 
     parentNode.children[dirName] = {
@@ -307,7 +307,7 @@ class FileSystemService {
   remove(targetPath, recursive = false) {
     const resolved = this.resolvePath(targetPath)
     if (resolved === '/' || resolved === '/home' || resolved === '/home/arif') {
-      return { success: false, error: 'Tidak dapat menghapus direktori sistem inti.' }
+      return { success: false, error: 'Cannot delete core system directory.' }
     }
 
     const lastSlash = resolved.lastIndexOf('/')
@@ -316,14 +316,14 @@ class FileSystemService {
 
     const parentNode = this.getNode(parentPath)
     if (!parentNode || !parentNode.children[itemName]) {
-      return { success: false, error: `'${targetPath}' tidak ditemukan.` }
+      return { success: false, error: `'${targetPath}' not found.` }
     }
 
     const targetNode = parentNode.children[itemName]
     if (targetNode.type === 'dir' && Object.keys(targetNode.children || {}).length > 0 && !recursive) {
       return {
         success: false,
-        error: `Direktori '${itemName}' tidak kosong. Gunakan flag '-r' atau '-rf' untuk menghapus.`,
+        error: `Directory '${itemName}' is not empty. Use '-r' or '-rf' to remove.`,
       }
     }
 

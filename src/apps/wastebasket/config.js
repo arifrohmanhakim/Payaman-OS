@@ -1,6 +1,6 @@
 export const wastebasketAppConfig = {
   id: 'wastebasket',
-  title: 'Tong Sampah',
+  title: 'Trash',
   iconType: 'trash',
   defaultWidth: 380,
   defaultHeight: 250,

@@ -1,6 +1,6 @@
 export const aboutAppConfig = {
   id: 'about',
-  title: 'Tentang Payaman OS',
+  title: 'About Payaman OS',
   iconType: 'folder',
   defaultWidth: 320,
   defaultHeight: 310,

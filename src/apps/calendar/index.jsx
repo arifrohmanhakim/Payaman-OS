@@ -31,7 +31,7 @@ export default function CalendarApp() {
     }
   }
 
-  const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab']
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
   const formattedSelectedDate = () => {
     const [y, m, d] = selectedDateKey.split('-').map(Number)
@@ -51,15 +51,15 @@ export default function CalendarApp() {
         <div className="flex items-center gap-2">
           <span className="font-bold text-sm">📅 {monthLabel}</span>
           <Button variant="default" className="py-0.5 px-2 text-[10px]" onClick={goToToday}>
-            Hari Ini
+            Today
           </Button>
         </div>
 
         <div className="flex items-center gap-1">
-          <Button variant="default" className="py-0.5 px-2 text-[10px]" onClick={goToPrevMonth} title="Bulan Sebelumnya">
+          <Button variant="default" className="py-0.5 px-2 text-[10px]" onClick={goToPrevMonth} title="Previous Month">
             &lt;
           </Button>
-          <Button variant="default" className="py-0.5 px-2 text-[10px]" onClick={goToNextMonth} title="Bulan Berikutnya">
+          <Button variant="default" className="py-0.5 px-2 text-[10px]" onClick={goToNextMonth} title="Next Month">
             &gt;
           </Button>
           <div className="ml-2 font-bold text-[11px] px-2 py-0.5 border border-[var(--os-border)] bg-[var(--os-bg)]">
@@ -70,7 +70,7 @@ export default function CalendarApp() {
 
       {/* Main Split Body: Calendar Grid + Daily Agenda */}
       <div className="flex-1 flex flex-col md:flex-row gap-3 min-h-0 overflow-hidden">
-        {/* Kalender Bulanan */}
+        {/* Month Calendar Grid */}
         <div className="flex-1 flex flex-col min-w-0 border-2 border-[var(--os-border)] p-2">
           {/* Day Headers */}
           <div className="grid grid-cols-7 gap-1 text-center font-bold text-[10px] pb-1 border-b border-[var(--os-border)]">
@@ -114,41 +114,41 @@ export default function CalendarApp() {
           </div>
         </div>
 
-        {/* Panel Agenda Harian */}
+        {/* Daily Agenda Panel */}
         <div className="w-full md:w-56 flex flex-col border-2 border-[var(--os-border)] p-2 min-w-0">
           <div className="border-b border-[var(--os-border)] pb-1 mb-2">
-            <div className="text-[10px] opacity-70">Agenda Tanggal:</div>
+            <div className="text-[10px] opacity-70">Events for:</div>
             <div className="font-bold text-[11px] truncate" title={formattedSelectedDate()}>
               {formattedSelectedDate()}
             </div>
           </div>
 
-          {/* Form Tambah Agenda */}
+          {/* Add Event Form */}
           <form onSubmit={handleCreateEvent} className="space-y-1.5 mb-2 pb-2 border-b border-[var(--os-border)]">
             <Input
               value={eventTitle}
               onChange={(e) => setEventTitle(e.target.value)}
-              placeholder="Catatan / agenda..."
+              placeholder="Event / note..."
               className="text-[10px] py-1"
             />
             <div className="flex gap-1">
               <Input
                 value={eventTime}
                 onChange={(e) => setEventTime(e.target.value)}
-                placeholder="Jam (cth: 09:00)"
+                placeholder="Time (e.g. 09:00)"
                 className="text-[10px] py-1 flex-1"
               />
               <Button type="submit" variant="primary" className="py-1 px-2 text-[10px]">
-                + Tambah
+                + Add
               </Button>
             </div>
           </form>
 
-          {/* List Agenda */}
+          {/* Event List */}
           <div className="flex-1 overflow-y-auto space-y-1.5 pr-0.5">
             {selectedDayEvents.length === 0 ? (
               <div className="text-[10px] opacity-50 text-center py-4">
-                Belum ada agenda pada tanggal ini.
+                No events on this date.
               </div>
             ) : (
               selectedDayEvents.map((evt) => (
@@ -176,7 +176,7 @@ export default function CalendarApp() {
                   <button
                     type="button"
                     onClick={() => deleteEvent(evt.id)}
-                    title="Hapus agenda"
+                    title="Delete event"
                     className="opacity-40 hover:opacity-100 hover:text-red-500 text-[10px] px-1"
                   >
                     ×

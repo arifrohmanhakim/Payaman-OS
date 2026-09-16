@@ -47,11 +47,11 @@ export default function GalleryApp() {
           <Input
             value={searchInputValue}
             onChange={(e) => setSearchInputValue(e.target.value)}
-            placeholder="Cari foto Unsplash..."
+            placeholder="Search Unsplash photos..."
             className="text-xs py-1"
           />
           <Button type="submit" variant="default" className="py-1">
-            Cari
+            Search
           </Button>
           {query && (
             <Button
@@ -62,7 +62,7 @@ export default function GalleryApp() {
                 loadPhotos('')
               }}
               className="py-1"
-              title="Reset pencarian"
+              title="Reset search"
             >
               Reset
             </Button>
@@ -75,18 +75,18 @@ export default function GalleryApp() {
             variant="default"
             onClick={toggleMonochrome}
             className="py-1"
-            title="Ubah gaya visual foto"
+            title="Toggle photo visual style"
           >
-            {isMonochrome ? 'Mode: B&W' : 'Mode: Warna'}
+            {isMonochrome ? 'Mode: B&W' : 'Mode: Color'}
           </Button>
           <Button
             type="button"
             variant="default"
             onClick={() => loadPhotos(query)}
             className="py-1"
-            title="Muat ulang foto"
+            title="Reload photos"
           >
-            ↻ Segarkan
+            ↻ Refresh
           </Button>
         </div>
       </header>
@@ -96,19 +96,19 @@ export default function GalleryApp() {
         {loading ? (
           <div className="h-full flex flex-col items-center justify-center space-y-2 opacity-60">
             <div className="w-8 h-8 border-2 border-[var(--os-border)] border-t-transparent animate-spin rounded-full" />
-            <span>Memuat foto dari Unsplash...</span>
+            <span>Loading photos from Unsplash...</span>
           </div>
         ) : error ? (
           <div className="h-full flex flex-col items-center justify-center text-center p-4 space-y-3">
             <div className="border-2 border-[var(--os-border)] p-4 max-w-md bg-[var(--os-bg)] os-window-shadow">
-              <span className="font-bold text-sm block mb-1">Gagal Memuat Galeri</span>
+              <span className="font-bold text-sm block mb-1">Failed to Load Gallery</span>
               <p className="opacity-80 text-xs mb-3">{error}</p>
-              <Button onClick={() => loadPhotos(query)}>Coba Lagi</Button>
+              <Button onClick={() => loadPhotos(query)}>Try Again</Button>
             </div>
           </div>
         ) : photos.length === 0 ? (
           <div className="h-full flex items-center justify-center text-center opacity-60">
-            Tidak ada foto yang ditemukan untuk &quot;{query}&quot;.
+            No photos found for &quot;{query}&quot;.
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
@@ -131,7 +131,7 @@ export default function GalleryApp() {
                   />
                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <span className="bg-[var(--os-bg)] text-[var(--os-fg)] border border-[var(--os-border)] px-2 py-0.5 text-[10px] font-bold shadow-[2px_2px_0px_var(--os-shadow)]">
-                      Perbesar
+                      Zoom
                     </span>
                   </div>
                 </div>
@@ -150,9 +150,9 @@ export default function GalleryApp() {
 
       {/* Footer Info */}
       <footer className="border-t border-[var(--os-border)] bg-[var(--os-bg)] px-3 py-1 flex items-center justify-between text-[10px] opacity-70 shrink-0">
-        <span>{photos.length} foto ditampilkan</span>
+        <span>{photos.length} photos displayed</span>
         <span>
-          Foto oleh{' '}
+          Photos by{' '}
           <a
             href="https://unsplash.com/?utm_source=payaman_os&utm_medium=referral"
             target="_blank"
@@ -177,11 +177,11 @@ export default function GalleryApp() {
             {/* Header Lightbox */}
             <header className="h-7 border-b-2 border-[var(--os-border)] px-2.5 flex items-center justify-between bg-[var(--os-bg)] shrink-0">
               <span className="font-bold truncate text-xs">
-                {selectedPhoto.title || 'Foto Unsplash'} ({selectedIndex + 1}/{photos.length})
+                {selectedPhoto.title || 'Unsplash Photo'} ({selectedIndex + 1}/{photos.length})
               </span>
               <button
                 type="button"
-                aria-label="Tutup"
+                aria-label="Close"
                 onClick={closeLightbox}
                 className="w-4 h-4 border border-current flex items-center justify-center font-bold text-xs hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)]"
               >
@@ -207,7 +207,7 @@ export default function GalleryApp() {
                   selectPrev()
                 }}
                 className="absolute left-2 top-1/2 -translate-y-1/2 bg-[var(--os-bg)] text-[var(--os-fg)] border-2 border-[var(--os-border)] w-8 h-8 flex items-center justify-center font-bold hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] active:scale-95 shadow-[2px_2px_0px_var(--os-shadow)]"
-                title="Foto Sebelumnya (Panah Kiri)"
+                title="Previous Photo (Left Arrow)"
               >
                 ←
               </button>
@@ -219,7 +219,7 @@ export default function GalleryApp() {
                   selectNext()
                 }}
                 className="absolute right-2 top-1/2 -translate-y-1/2 bg-[var(--os-bg)] text-[var(--os-fg)] border-2 border-[var(--os-border)] w-8 h-8 flex items-center justify-center font-bold hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] active:scale-95 shadow-[2px_2px_0px_var(--os-shadow)]"
-                title="Foto Berikutnya (Panah Kanan)"
+                title="Next Photo (Right Arrow)"
               >
                 →
               </button>
@@ -229,7 +229,7 @@ export default function GalleryApp() {
             <footer className="border-t-2 border-[var(--os-border)] p-3 bg-[var(--os-bg)] flex flex-wrap items-center justify-between gap-2 shrink-0">
               <div className="space-y-0.5">
                 <div className="font-bold text-xs">
-                  Fotografer:{' '}
+                  Photographer:{' '}
                   <a
                     href={`${selectedPhoto.user.profileUrl}?utm_source=payaman_os&utm_medium=referral`}
                     target="_blank"
@@ -253,10 +253,10 @@ export default function GalleryApp() {
                   rel="noreferrer"
                   className="px-3 py-1 text-xs font-bold border-2 border-[var(--os-border)] bg-[var(--os-bg)] text-[var(--os-fg)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)]"
                 >
-                  Buka di Unsplash ↗
+                  Open in Unsplash ↗
                 </a>
                 <Button variant="default" onClick={closeLightbox}>
-                  Tutup
+                  Close
                 </Button>
               </div>
             </footer>

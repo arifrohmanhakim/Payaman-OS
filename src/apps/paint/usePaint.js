@@ -93,7 +93,7 @@ export function usePaint() {
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
     saveHistorySnapshot()
     soundService.playClick()
-    setStatusMessage('Kanvas dibersihkan.')
+    setStatusMessage('Canvas cleared.')
   }, [getCanvasContext, saveHistorySnapshot])
 
   const invertCanvas = useCallback(() => {
@@ -109,7 +109,7 @@ export function usePaint() {
     ctx.putImageData(imgData, 0, 0)
     saveHistorySnapshot()
     soundService.playClick()
-    setStatusMessage('Warna kanvas dibalikkan.')
+    setStatusMessage('Colors inverted.')
   }, [getCanvasContext, saveHistorySnapshot])
 
   const getPointerPos = (e) => {
@@ -390,10 +390,10 @@ export function usePaint() {
     const result = fileSystemService.writeFile(path, dataUrl)
     if (result.success) {
       soundService.playClick()
-      setStatusMessage(`Tersimpan di: ${path}`)
+      setStatusMessage(`Saved to: ${path}`)
     } else {
       soundService.playErrorAlert()
-      setStatusMessage(`Gagal menyimpan: ${result.error}`)
+      setStatusMessage(`Failed to save: ${result.error}`)
     }
   }, [])
 
@@ -410,7 +410,7 @@ export function usePaint() {
     document.body.removeChild(link)
 
     soundService.playClick()
-    setStatusMessage('Gambar berhasil diunduh.')
+    setStatusMessage('Image downloaded successfully.')
   }, [])
 
   return {

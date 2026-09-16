@@ -3,7 +3,7 @@ export default function ModalDialog({
   title,
   message,
   confirmLabel = 'OK',
-  cancelLabel = 'Batal',
+  cancelLabel = 'Cancel',
   onConfirm,
   onCancel,
 }) {

@@ -77,10 +77,10 @@ export function useGoogleDrive() {
       soundService.playClick()
       await googleDriveService.connectWithGoogle()
       setIsLoading(false)
-      setStatusMessage('Berhasil login ke Google Drive.')
+      setStatusMessage('Connected to Google Drive.')
     } catch (err) {
       setIsLoading(false)
-      setErrorMessage(err.message || 'Gagal login Google Drive.')
+      setErrorMessage(err.message || 'Failed to connect to Google Drive.')
       soundService.playErrorAlert()
     }
   }, [])
@@ -90,7 +90,7 @@ export function useGoogleDrive() {
     googleDriveService.disconnect()
     setCurrentFolder({ id: 'root', name: 'Google Drive' })
     setFolderHistory([{ id: 'root', name: 'Google Drive' }])
-    setStatusMessage('Koneksi Google Drive terputus.')
+    setStatusMessage('Google Drive disconnected.')
   }, [])
 
   const navigateToFolder = useCallback(
@@ -122,7 +122,7 @@ export function useGoogleDrive() {
       setIsLoading(false)
       if (res.success) {
         soundService.playClick()
-        setStatusMessage(`Folder '${name}' berhasil dibuat di Google Drive.`)
+        setStatusMessage(`Folder '${name}' created in Google Drive.`)
         fetchFiles(currentFolder.id)
       } else {
         setErrorMessage(res.error)
@@ -140,7 +140,7 @@ export function useGoogleDrive() {
       setIsLoading(false)
       if (res.success) {
         soundService.playClick()
-        setStatusMessage(`Berkas '${name}' berhasil diunggah ke Google Drive.`)
+        setStatusMessage(`File '${name}' uploaded to Google Drive.`)
         fetchFiles(currentFolder.id)
       } else {
         setErrorMessage(res.error)
@@ -157,7 +157,7 @@ export function useGoogleDrive() {
       setIsLoading(false)
       if (res.success) {
         soundService.playClick()
-        setStatusMessage(`Berkas '${fileName}' dihapus dari Google Drive.`)
+        setStatusMessage(`File '${fileName}' deleted from Google Drive.`)
         fetchFiles(currentFolder.id)
       } else {
         setErrorMessage(res.error)
@@ -174,17 +174,17 @@ export function useGoogleDrive() {
 
     const content = contentRes.success
       ? contentRes.content
-      : `[Berkas ${driveFile.name} dari Google Drive]`
+      : `[File ${driveFile.name} from Google Drive]`
     const targetPath = `${targetVfsFolder}/${driveFile.name}`
 
     const writeRes = fileSystemService.writeFile(targetPath, content, false)
     if (writeRes.success) {
       soundService.playClick()
-      setStatusMessage(`'${driveFile.name}' disalin ke VFS lokal (${targetPath}).`)
+      setStatusMessage(`'${driveFile.name}' copied to local VFS (${targetPath}).`)
       return true
     } else {
       soundService.playErrorAlert()
-      setErrorMessage(`Gagal menyalin ke VFS: ${writeRes.error}`)
+      setErrorMessage(`Failed to copy to VFS: ${writeRes.error}`)
       return false
     }
   }, [])

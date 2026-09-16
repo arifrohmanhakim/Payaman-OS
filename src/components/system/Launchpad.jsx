@@ -50,7 +50,7 @@ function LaunchpadOverlay() {
 
   return (
     <section
-      aria-label="Launchpad Payaman OS"
+      aria-label="Payaman OS Launchpad"
       className="fixed inset-0 z-45 flex flex-col items-center justify-start pt-14 pb-20 px-6 select-none bg-[var(--os-bg)]/90 backdrop-blur-md transition-all duration-200"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
@@ -62,10 +62,10 @@ function LaunchpadOverlay() {
         <button
           type="button"
           onClick={closeLaunchpad}
-          aria-label="Tutup Launchpad"
+          aria-label="Close Launchpad"
           className="px-3 py-1 text-xs font-mono border-2 border-[var(--os-border)] bg-[var(--os-bg)] text-[var(--os-fg)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] os-window-shadow active:translate-x-0.5 active:translate-y-0.5 transition-all"
         >
-          Tutup [Esc]
+          Close [Esc]
         </button>
       </div>
 
@@ -80,7 +80,7 @@ function LaunchpadOverlay() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleSearchKeyDown}
-            placeholder="Cari aplikasi... (tekan Enter untuk buka)"
+            placeholder="Search applications... (press Enter to open)"
             className="w-full pl-8 pr-8 py-2 text-sm font-mono bg-[var(--os-bg)] text-[var(--os-fg)] border-2 border-[var(--os-border)] os-window-shadow focus:outline-none focus:ring-1 focus:ring-[var(--os-border)] placeholder:text-[var(--os-fg)]/40"
           />
           {searchQuery && (
@@ -90,7 +90,7 @@ function LaunchpadOverlay() {
                 setSearchQuery('')
                 searchInputRef.current?.focus()
               }}
-              aria-label="Bersihkan pencarian"
+              aria-label="Clear search"
               className="absolute inset-y-0 right-2 flex items-center px-1.5 text-xs text-[var(--os-fg)]/60 hover:text-[var(--os-fg)]"
             >
               ×
@@ -109,9 +109,9 @@ function LaunchpadOverlay() {
       >
         {filteredApps.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed border-[var(--os-border)]/40 p-8 text-center text-xs font-mono">
-            <p className="mb-2 text-sm font-bold">Aplikasi tidak ditemukan</p>
+            <p className="mb-2 text-sm font-bold">No applications found</p>
             <p className="text-[var(--os-fg)]/60">
-              Tidak ada aplikasi yang cocok dengan "{searchQuery}"
+              No applications matching "{searchQuery}"
             </p>
           </div>
         ) : (

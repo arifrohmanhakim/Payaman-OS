@@ -39,7 +39,7 @@ export default function PaintApp() {
   const tools = [
     {
       id: 'pencil',
-      label: 'Pensil (1px)',
+      label: 'Pencil (1px)',
       icon: (
         <svg className="w-4 h-4 stroke-current fill-none stroke-[1.5]" viewBox="0 0 24 24">
           <path d="M17 3 L21 7 L7 21 L3 21 L3 17 Z" />
@@ -49,7 +49,7 @@ export default function PaintApp() {
     },
     {
       id: 'brush',
-      label: 'Kuas Lukis',
+      label: 'Paint Brush',
       icon: (
         <svg className="w-4 h-4 stroke-current fill-none stroke-[1.5]" viewBox="0 0 24 24">
           <path d="M18 3 L21 6 L12 15 C10 17 7 18 5 18 C4 18 3 17 3 16 C3 14 4 11 6 9 Z" />
@@ -59,7 +59,7 @@ export default function PaintApp() {
     },
     {
       id: 'eraser',
-      label: 'Penghapus',
+      label: 'Eraser',
       icon: (
         <svg className="w-4 h-4 stroke-current fill-none stroke-[1.5]" viewBox="0 0 24 24">
           <rect x="4" y="6" width="16" height="12" rx="1" />
@@ -69,7 +69,7 @@ export default function PaintApp() {
     },
     {
       id: 'bucket',
-      label: 'Ember Cat (Isi Pola)',
+      label: 'Paint Bucket (Fill)',
       icon: (
         <svg className="w-4 h-4 stroke-current fill-none stroke-[1.5]" viewBox="0 0 24 24">
           <path d="M5 10 L10 5 L18 13 L13 18 Z" />
@@ -80,7 +80,7 @@ export default function PaintApp() {
     },
     {
       id: 'spray',
-      label: 'Semprotan Cat',
+      label: 'Spray Can',
       icon: (
         <svg className="w-4 h-4 stroke-current fill-none stroke-[1.5]" viewBox="0 0 24 24">
           <rect x="6" y="8" width="10" height="13" rx="1" />
@@ -93,7 +93,7 @@ export default function PaintApp() {
     },
     {
       id: 'line',
-      label: 'Garis Lurus',
+      label: 'Straight Line',
       icon: (
         <svg className="w-4 h-4 stroke-current stroke-[2]" viewBox="0 0 24 24">
           <line x1="4" y1="20" x2="20" y2="4" />
@@ -102,7 +102,7 @@ export default function PaintApp() {
     },
     {
       id: 'rect',
-      label: 'Persegi Garis',
+      label: 'Rectangle Outline',
       icon: (
         <svg className="w-4 h-4 stroke-current fill-none stroke-[1.5]" viewBox="0 0 24 24">
           <rect x="4" y="5" width="16" height="14" />
@@ -111,7 +111,7 @@ export default function PaintApp() {
     },
     {
       id: 'rect-fill',
-      label: 'Persegi Isi Pola',
+      label: 'Rectangle Fill',
       icon: (
         <svg className="w-4 h-4 stroke-current stroke-[1.5]" viewBox="0 0 24 24">
           <rect x="4" y="5" width="16" height="14" fill="currentColor" fillOpacity="0.3" />
@@ -120,7 +120,7 @@ export default function PaintApp() {
     },
     {
       id: 'circle',
-      label: 'Lingkaran Garis',
+      label: 'Circle Outline',
       icon: (
         <svg className="w-4 h-4 stroke-current fill-none stroke-[1.5]" viewBox="0 0 24 24">
           <ellipse cx="12" cy="12" rx="8" ry="7" />
@@ -129,7 +129,7 @@ export default function PaintApp() {
     },
     {
       id: 'circle-fill',
-      label: 'Lingkaran Isi Pola',
+      label: 'Circle Fill',
       icon: (
         <svg className="w-4 h-4 stroke-current stroke-[1.5]" viewBox="0 0 24 24">
           <ellipse cx="12" cy="12" rx="8" ry="7" fill="currentColor" fillOpacity="0.3" />
@@ -138,7 +138,7 @@ export default function PaintApp() {
     },
     {
       id: 'text',
-      label: 'Tulis Teks (A)',
+      label: 'Text Tool (A)',
       icon: (
         <svg className="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
           <path d="M6 19 L12 4 L18 19" />
@@ -172,27 +172,27 @@ export default function PaintApp() {
       {/* Toolbar Atas */}
       <header className="p-2 border-b-2 border-[var(--os-border)] flex items-center justify-between gap-2 flex-wrap bg-[var(--os-bg)]">
         <div className="flex items-center gap-1">
-          <Button size="small" onClick={undo} disabled={!canUndo} title="Urungkan (Undo)">
+          <Button size="small" onClick={undo} disabled={!canUndo} title="Undo">
             ↶ Undo
           </Button>
-          <Button size="small" onClick={redo} disabled={!canRedo} title="Ulangi (Redo)">
+          <Button size="small" onClick={redo} disabled={!canRedo} title="Redo">
             ↷ Redo
           </Button>
           <div className="w-[1px] h-4 bg-[var(--os-border)]/40 mx-1" />
-          <Button size="small" onClick={clearCanvas} title="Bersihkan kanvas">
-            Bersihkan
+          <Button size="small" onClick={clearCanvas} title="Clear canvas">
+            Clear
           </Button>
-          <Button size="small" onClick={invertCanvas} title="Balikkan warna hitam/putih">
+          <Button size="small" onClick={invertCanvas} title="Invert colors">
             Invert
           </Button>
         </div>
 
         <div className="flex items-center gap-1">
-          <Button size="small" onClick={saveToVFS} title="Simpan ke Berkas VFS (/home/arif/)">
-            Simpan VFS
+          <Button size="small" onClick={saveToVFS} title="Save to VFS file (/home/arif/)">
+            Save VFS
           </Button>
-          <Button size="small" onClick={downloadImage} title="Unduh gambar PNG">
-            Unduh PNG
+          <Button size="small" onClick={downloadImage} title="Download PNG image">
+            Download PNG
           </Button>
         </div>
       </header>
@@ -201,11 +201,11 @@ export default function PaintApp() {
       <div className="flex-1 flex overflow-hidden p-2 gap-2">
         {/* Palet Alat 2-Kolom Klasik */}
         <aside
-          aria-label="Palet Alat MacPaint"
+          aria-label="MacPaint Tool Palette"
           className="w-24 flex-shrink-0 flex flex-col gap-1 p-1 border-2 border-[var(--os-border)] bg-[var(--os-bg)] os-window-shadow rounded-sm"
         >
           <div className="text-[10px] text-center font-bold pb-1 border-b border-[var(--os-border)]/40">
-            ALAT
+            TOOLS
           </div>
           <div className="grid grid-cols-2 gap-1 overflow-y-auto">
             {tools.map((t) => {
@@ -231,7 +231,7 @@ export default function PaintApp() {
 
           {/* Pemilih Ketebalan Garis */}
           <div className="mt-auto pt-2 border-t border-[var(--os-border)]/40">
-            <div className="text-[9px] text-center font-bold mb-1">GARIS</div>
+            <div className="text-[9px] text-center font-bold mb-1">LINE</div>
             <div className="flex flex-col gap-1">
               {lineSizes.map((size) => (
                 <button
@@ -274,7 +274,7 @@ export default function PaintApp() {
           {textPrompt && (
             <div className="absolute inset-0 bg-black/40 flex items-center justify-center p-4 z-30">
               <div className="bg-[var(--os-bg)] border-2 border-[var(--os-border)] p-4 max-w-sm w-full os-window-shadow flex flex-col gap-3">
-                <div className="font-bold text-xs">Masukkan Teks MacPaint:</div>
+                <div className="font-bold text-xs">Enter MacPaint Text:</div>
                 <input
                   type="text"
                   autoFocus
@@ -288,12 +288,12 @@ export default function PaintApp() {
                       setTextPrompt(null)
                     }
                   }}
-                  placeholder="Ketik teks di sini..."
+                  placeholder="Type text here..."
                   className="px-2 py-1 text-xs font-mono bg-[var(--os-bg)] text-[var(--os-fg)] border border-[var(--os-border)] focus:outline-none focus:ring-1 focus:ring-[var(--os-border)]"
                 />
                 <div className="flex justify-end gap-2">
                   <Button size="small" onClick={() => setTextPrompt(null)}>
-                    Batal
+                    Cancel
                   </Button>
                   <Button
                     size="small"
@@ -303,7 +303,7 @@ export default function PaintApp() {
                       setTextInputValue('')
                     }}
                   >
-                    Terapkan
+                    Apply
                   </Button>
                 </div>
               </div>
@@ -316,11 +316,11 @@ export default function PaintApp() {
       <footer className="p-2 border-t-2 border-[var(--os-border)] flex flex-col gap-2 bg-[var(--os-bg)]">
         {/* Baris Palet Warna */}
         <div className="flex items-center gap-2 overflow-x-auto py-0.5">
-          <span className="text-[10px] font-bold whitespace-nowrap">WARNA:</span>
+          <span className="text-[10px] font-bold whitespace-nowrap">COLOR:</span>
 
           {/* Indikator Warna Aktif */}
           <div
-            title={`Warna Aktif: ${activeColor}`}
+            title={`Active Color: ${activeColor}`}
             className="w-6 h-6 flex-shrink-0 border-2 border-[var(--os-fg)] os-window-shadow rounded-xs"
             style={{ backgroundColor: activeColor }}
           />
@@ -347,7 +347,7 @@ export default function PaintApp() {
 
             {/* Custom Color Picker */}
             <label
-              title="Pilih warna bebas"
+              title="Pick custom color"
               className="w-5 h-5 border border-[var(--os-border)] bg-[var(--os-bg)] hover:border-[var(--os-fg)] flex items-center justify-center cursor-pointer text-[10px] font-bold"
             >
               +
@@ -369,7 +369,7 @@ export default function PaintApp() {
 
         {/* Baris Palet Pola */}
         <div className="flex items-center gap-2 overflow-x-auto py-0.5 border-t border-[var(--os-border)]/30 pt-1.5">
-          <span className="text-[10px] font-bold whitespace-nowrap">POLA:</span>
+          <span className="text-[10px] font-bold whitespace-nowrap">PATTERN:</span>
           <div className="flex gap-1">
             {patterns.map((p) => {
               const isSelected = activePatternId === p.id

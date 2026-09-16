@@ -1,9 +1,9 @@
 export const PHOTO_FILTERS = [
-  { id: 'normal', name: 'Warna Asli', cssClass: '' },
-  { id: 'monochrome', name: 'Monokrom', cssClass: 'grayscale' },
+  { id: 'normal', name: 'Original', cssClass: '' },
+  { id: 'monochrome', name: 'Monochrome', cssClass: 'grayscale' },
   { id: 'dither_1bit', name: '1-Bit Retro', cssClass: 'grayscale contrast-150' },
-  { id: 'invert', name: 'Negatif Film', cssClass: 'invert' },
-  { id: 'scanline', name: 'Tabung CRT', cssClass: 'grayscale contrast-125' },
+  { id: 'invert', name: 'Negative', cssClass: 'invert' },
+  { id: 'scanline', name: 'CRT Scanline', cssClass: 'grayscale contrast-125' },
 ]
 
 export function processCanvasImage(canvas, filterType) {

@@ -1,6 +1,6 @@
 export const calendarAppConfig = {
   id: 'calendar',
-  title: 'Kalender',
+  title: 'Calendar',
   iconType: 'calendar',
   defaultWidth: 540,
   defaultHeight: 460,

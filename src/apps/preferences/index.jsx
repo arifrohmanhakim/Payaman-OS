@@ -53,7 +53,7 @@ export default function PreferencesApp() {
               : "bg-[var(--os-bg)]/40 text-[var(--os-fg)]/70 hover:text-[var(--os-fg)]"
           }`}
         >
-          Tampilan (Appearance)
+          Appearance
         </button>
         <button
           type="button"
@@ -81,7 +81,7 @@ export default function PreferencesApp() {
               : "bg-[var(--os-bg)]/40 text-[var(--os-fg)]/70 hover:text-[var(--os-fg)]"
           }`}
         >
-          Suara (Sound)
+          Sound
         </button>
         <button
           type="button"
@@ -95,13 +95,13 @@ export default function PreferencesApp() {
               : "bg-[var(--os-bg)]/40 text-[var(--os-fg)]/70 hover:text-[var(--os-fg)]"
           }`}
         >
-          Sistem
+          System
         </button>
       </nav>
 
       {activeTab === "appearance" && (
         <div className="flex-1 overflow-auto space-y-4 pr-1">
-          <Panel title="Pratinjau Tampilan (Live Preview)">
+          <Panel title="Live Preview">
             <div className="flex flex-col sm:flex-row gap-3 items-center">
               <div
                 className={`w-48 h-32 border-2 border-[var(--os-border)] pattern-${
@@ -119,32 +119,31 @@ export default function PreferencesApp() {
                   <div className="p-1.5 text-[9px] text-center space-y-1">
                     <div>Payaman OS</div>
                     <div className="px-1 py-0.5 border border-[var(--os-border)] inline-block text-[8px] font-bold">
-                      Tombol
+                      Button
                     </div>
                   </div>
                 </div>
               </div>
               <div className="flex-1 text-[11px] space-y-1 opacity-80">
                 <p>
-                  <strong>Tema Aktif:</strong>{" "}
+                  <strong>Active Theme:</strong>{" "}
                   {THEMES.find((t) => t.id === (theme || "classic"))?.name}
                 </p>
                 <p>
-                  <strong>Pola Latar:</strong>{" "}
+                  <strong>Background Pattern:</strong>{" "}
                   {PATTERNS.find((p) => p.id === (pattern || "halftone"))?.name}
                 </p>
                 <p className="text-[10px] text-neutral-500 pt-1">
-                  Perubahan langsung diterapkan pada seluruh jendela dan
-                  disimpan ke memori disk lokal.
+                  Changes are instantly applied across all windows and saved to local storage.
                 </p>
               </div>
             </div>
           </Panel>
           <section className="space-y-2">
             <div className="flex justify-between items-center border-b border-[var(--os-border)] pb-1">
-              <span className="font-bold">Tema Layar (Color Palette)</span>
+              <span className="font-bold">Screen Theme (Color Palette)</span>
               <span className="text-[10px] opacity-60">
-                Pilih palet tampilan CRT
+                Select CRT display palette
               </span>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -185,10 +184,10 @@ export default function PreferencesApp() {
           <section className="space-y-2">
             <div className="flex justify-between items-center border-b border-[var(--os-border)] pb-1">
               <span className="font-bold">
-                Pola Latar Desktop (Background Pattern)
+                Desktop Background Pattern
               </span>
               <span className="text-[10px] opacity-60">
-                Tekstur 1-bit khas Payaman OS
+                Payaman OS 1-bit monochrome textures
               </span>
             </div>
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
@@ -223,9 +222,9 @@ export default function PreferencesApp() {
         <div className="flex-1 overflow-auto space-y-4 pr-1">
           <section className="space-y-2">
             <div className="flex justify-between items-center border-b border-[var(--os-border)] pb-1">
-              <span className="font-bold">Ukuran Ikon Dock (Size)</span>
+              <span className="font-bold">Dock Icon Size</span>
               <span className="text-[10px] opacity-60">
-                Pilih skala ukuran ikon pada dock
+                Select icon scale for dock
               </span>
             </div>
             <div className="grid grid-cols-3 gap-2">
@@ -252,9 +251,9 @@ export default function PreferencesApp() {
 
           <section className="space-y-2">
             <div className="flex justify-between items-center border-b border-[var(--os-border)] pb-1">
-              <span className="font-bold">Posisi di Layar (Position)</span>
+              <span className="font-bold">Screen Position</span>
               <span className="text-[10px] opacity-60">
-                Penempatan dock pada desktop
+                Dock placement on desktop
               </span>
             </div>
             <div className="grid grid-cols-3 gap-2">
@@ -282,33 +281,33 @@ export default function PreferencesApp() {
             </div>
           </section>
 
-          <Panel title="Perilaku & Efek Dock">
+          <Panel title="Dock Behavior & Effects">
             <div className="space-y-3">
               <Checkbox
                 checked={Boolean(dockSettings?.autoHide)}
                 onChange={(checked) =>
                   updateDockSettings({ autoHide: checked })
                 }
-                label="Sembunyikan Dock Secara Otomatis (Auto-hide)"
+                label="Auto-hide Dock"
               />
               <Checkbox
                 checked={Boolean(dockSettings?.magnification)}
                 onChange={(checked) =>
                   updateDockSettings({ magnification: checked })
                 }
-                label="Efek Pembesaran saat Diarahkan (Magnification / Zoom)"
+                label="Magnification Effect on Hover"
               />
               <Checkbox
                 checked={Boolean(dockSettings?.showIndicators ?? true)}
                 onChange={(checked) =>
                   updateDockSettings({ showIndicators: checked })
                 }
-                label="Tampilkan Titik Indikator Aplikasi Berjalan (Running Dots)"
+                label="Show Running Application Indicators (Dots)"
               />
             </div>
           </Panel>
 
-          <Panel title="Pratinjau Dock (Dock Preview)">
+          <Panel title="Dock Preview">
             <div className="flex flex-col sm:flex-row gap-3 items-center">
               <div className="w-56 h-36 border-2 border-[var(--os-border)] bg-[var(--os-desktop-bg)] relative flex items-center justify-center overflow-hidden">
                 <div
@@ -337,7 +336,7 @@ export default function PreferencesApp() {
               </div>
               <div className="flex-1 text-[11px] space-y-1 opacity-80">
                 <p>
-                  <strong>Ukuran:</strong>{" "}
+                  <strong>Size:</strong>{" "}
                   {
                     DOCK_SIZES.find(
                       (s) => s.id === (dockSettings?.size || "medium"),
@@ -352,7 +351,7 @@ export default function PreferencesApp() {
                   )
                 </p>
                 <p>
-                  <strong>Posisi:</strong>{" "}
+                  <strong>Position:</strong>{" "}
                   {
                     DOCK_POSITIONS.find(
                       (p) => p.id === (dockSettings?.position || "bottom"),
@@ -361,11 +360,11 @@ export default function PreferencesApp() {
                 </p>
                 <p>
                   <strong>Auto-hide:</strong>{" "}
-                  {dockSettings?.autoHide ? "Aktif" : "Tidak Aktif"}
+                  {dockSettings?.autoHide ? "Active" : "Disabled"}
                 </p>
                 <p>
                   <strong>Magnification:</strong>{" "}
-                  {dockSettings?.magnification ? "Aktif" : "Tidak Aktif"}
+                  {dockSettings?.magnification ? "Active" : "Disabled"}
                 </p>
               </div>
             </div>
@@ -375,16 +374,16 @@ export default function PreferencesApp() {
 
       {activeTab === "sound" && (
         <div className="flex-1 overflow-auto space-y-4">
-          <Panel title="Pengaturan Suara Sistem">
+          <Panel title="System Sound Settings">
             <div className="space-y-3">
               <Checkbox
                 checked={soundEnabled}
                 onChange={handleToggleSound}
-                label="Aktifkan Bunyi Beep Sistem (Bell)"
+                label="Enable System Beep Sound (Bell)"
               />
               <div>
                 <Button onClick={handleTestBeep} disabled={!soundEnabled}>
-                  Uji Suara Beep
+                  Test Beep Sound
                 </Button>
               </div>
             </div>
@@ -394,21 +393,21 @@ export default function PreferencesApp() {
 
       {activeTab === "system" && (
         <div className="flex-1 overflow-auto space-y-4">
-          <Panel title="Informasi Lingkungan Payaman OS">
+          <Panel title="Payaman OS Environment Info">
             <div className="space-y-2 text-[11px]">
               <div className="flex justify-between border-b border-[var(--os-border)] pb-1">
-                <span>Versi OS:</span>
+                <span>OS Version:</span>
                 <span className="font-bold">Payaman OS 1.0 (Web Edition)</span>
               </div>
               <div className="flex justify-between border-b border-[var(--os-border)] pb-1">
-                <span>Lingkungan:</span>
+                <span>Environment:</span>
                 <span className="font-bold">
                   Modern Web Desktop Environment
                 </span>
               </div>
               <div className="flex justify-between border-b border-[var(--os-border)] pb-1">
-                <span>Penyimpanan Lokal:</span>
-                <span className="font-bold">Browser LocalStorage (Aktif)</span>
+                <span>Local Storage:</span>
+                <span className="font-bold">Browser LocalStorage (Active)</span>
               </div>
             </div>
           </Panel>
@@ -416,7 +415,7 @@ export default function PreferencesApp() {
       )}
 
       <footer className="border-t border-[var(--os-border)] pt-2 flex justify-between items-center text-[10px] opacity-60">
-        <span>Preferensi disimpan otomatis</span>
+        <span>Preferences saved automatically</span>
         <span>Payaman OS Control Panel</span>
       </footer>
     </div>

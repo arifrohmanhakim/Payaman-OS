@@ -14,7 +14,7 @@ export function usePhotobot() {
     hasMediaDevices ? 'idle' : 'error'
   )
   const [errorMessage, setErrorMessage] = useState(() =>
-    hasMediaDevices ? '' : 'Browser ini tidak mendukung akses kamera WebRTC.'
+    hasMediaDevices ? '' : 'This browser does not support WebRTC camera access.'
   )
   const [currentFilter, setCurrentFilter] = useState('normal')
   const [countdown, setCountdown] = useState(null)
@@ -62,13 +62,13 @@ export function usePhotobot() {
         if (isCancelled) return
         if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
           setCameraState('denied')
-          setErrorMessage('Izin kamera ditolak oleh pengguna atau browser.')
+          setErrorMessage('Camera permission was denied by user or browser.')
         } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
           setCameraState('not_found')
-          setErrorMessage('Perangkat kamera (webcam) tidak ditemukan.')
+          setErrorMessage('Camera device (webcam) not found.')
         } else {
           setCameraState('error')
-          setErrorMessage(err.message || 'Gagal memulai stream kamera.')
+          setErrorMessage(err.message || 'Failed to start camera stream.')
         }
       })
 
@@ -126,7 +126,7 @@ export function usePhotobot() {
 
     setCaptures((prev) => [newCapture, ...prev])
     setSelectedCapture(newCapture)
-    setStatusMessage('Foto berhasil diambil!')
+    setStatusMessage('Photo captured successfully!')
 
     // Efek flash putih & suara shutter
     setIsFlashing(true)
@@ -173,7 +173,7 @@ export function usePhotobot() {
 
     const res = fileSystemService.writeFile(`/home/arif/${fileName}`, fileContent, false)
     if (res.success) {
-      setStatusMessage(`Tersimpan di VFS: /home/arif/${fileName}`)
+      setStatusMessage(`Saved to VFS: /home/arif/${fileName}`)
     } else {
       setStatusMessage(res.error)
       soundService.playErrorAlert()

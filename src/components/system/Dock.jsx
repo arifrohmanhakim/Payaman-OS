@@ -209,7 +209,7 @@ export default function Dock() {
 
         <button
           type="button"
-          aria-label="Buka Launchpad"
+          aria-label="Open Launchpad"
           onClick={toggleLaunchpad}
           className={`${sizeClasses.button} flex items-center justify-center border border-transparent hover:border-[var(--os-border)] hover:bg-[var(--os-fg)]/10 active:scale-95 transition-all duration-150 ease-out transform ${posClasses.hoverMove} rounded-lg cursor-default focus:outline-none ${
             isLaunchpadOpen ? 'bg-[var(--os-fg)]/15 border-[var(--os-border)]' : ''

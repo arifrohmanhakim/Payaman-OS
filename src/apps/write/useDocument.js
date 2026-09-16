@@ -3,7 +3,7 @@ import { storageService } from '../../services/storageService.js'
 
 const STORAGE_KEY = 'payaman_notes_document'
 const DEFAULT_CONTENT =
-  'Selamat datang di Payaman OS.\n\nSistem operasi antarmuka desktop monokrom modern berbasis web.\n\nSilakan tulis catatan atau dokumen Anda di sini.'
+  'Welcome to Payaman OS.\n\nA modern monochrome web desktop operating system.\n\nFeel free to write your notes or documents here.'
 
 export function useDocument() {
   const [content, setContent] = useState(() => {
@@ -17,7 +17,7 @@ export function useDocument() {
 
   const saveDocument = useCallback(() => {
     storageService.setItem(STORAGE_KEY, content)
-    setStatusMessage('Tersimpan di disk')
+    setStatusMessage('Saved to disk')
     const timer = setTimeout(() => setStatusMessage(''), 2000)
     return () => clearTimeout(timer)
   }, [content])
@@ -25,7 +25,7 @@ export function useDocument() {
   const clearDocument = useCallback(() => {
     setContent('')
     storageService.removeItem(STORAGE_KEY)
-    setStatusMessage('Dokumen dikosongkan')
+    setStatusMessage('Document cleared')
     const timer = setTimeout(() => setStatusMessage(''), 2000)
     return () => clearTimeout(timer)
   }, [])

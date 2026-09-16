@@ -26,12 +26,12 @@ export const galleryService = {
 
       if (!response.ok) {
         if (response.status === 403) {
-          throw new Error('Batas permintaan Unsplash API (Rate limit) telah tercapai.')
+          throw new Error('Unsplash API rate limit reached.')
         }
         if (response.status === 401) {
-          throw new Error('Kredensial Unsplash API tidak valid.')
+          throw new Error('Invalid Unsplash API credentials.')
         }
-        throw new Error(`Gagal memuat foto (Kode status: ${response.status})`)
+        throw new Error(`Failed to load photos (Status code: ${response.status})`)
       }
 
       const data = await response.json()
@@ -39,7 +39,7 @@ export const galleryService = {
 
       const sanitizedPhotos = rawPhotos.map((item) => ({
         id: item.id,
-        title: item.alt_description || item.description || 'Foto Unsplash',
+        title: item.alt_description || item.description || 'Unsplash Photo',
         description: item.description || item.alt_description || '',
         urls: {
           thumb: item.urls?.thumb || item.urls?.small,
@@ -49,7 +49,7 @@ export const galleryService = {
         },
         likes: item.likes || 0,
         user: {
-          name: item.user?.name || 'Anonim',
+          name: item.user?.name || 'Anonymous',
           username: item.user?.username || '',
           profileUrl: item.user?.links?.html || 'https://unsplash.com',
           avatar: item.user?.profile_image?.small,

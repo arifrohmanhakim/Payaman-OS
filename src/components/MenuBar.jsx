@@ -43,48 +43,48 @@ export default function MenuBar({ onSelectMenuAction }) {
     {
       label: "Payaman",
       items: [
-        { label: "Launchpad (Aplikasi)", action: "launchpad" },
-        { label: "Tentang Payaman OS", action: "about" },
-        { label: "Preferensi Sistem", action: "preferences" },
+        { label: "Launchpad (Apps)", action: "launchpad" },
+        { label: "About Payaman OS", action: "about" },
+        { label: "System Preferences", action: "preferences" },
       ],
     },
     {
       label: "File",
       items: [
-        { label: "Buka Launchpad", action: "launchpad" },
-        { label: "Buka Manajer Berkas", action: "files" },
-        { label: "Buka Galeri Foto", action: "gallery" },
-        { label: "Buka Photobot", action: "photobot" },
-        { label: "Buka MacPaint", action: "paint" },
-        { label: "Buka Dokumen Baru", action: "new_note" },
-        { label: "Buka Kalender", action: "calendar" },
-        { label: "Buka Kalkulator", action: "calculator" },
-        { label: "Buka Terminal", action: "terminal" },
-        { label: "Tutup Jendela", action: "close_active" },
+        { label: "Open Launchpad", action: "launchpad" },
+        { label: "Open File Manager", action: "files" },
+        { label: "Open Photo Gallery", action: "gallery" },
+        { label: "Open Photobot", action: "photobot" },
+        { label: "Open MacPaint", action: "paint" },
+        { label: "New Document", action: "new_note" },
+        { label: "Open Calendar", action: "calendar" },
+        { label: "Open Calculator", action: "calculator" },
+        { label: "Open Terminal", action: "terminal" },
+        { label: "Close Window", action: "close_active" },
       ],
     },
     {
       label: "Edit",
       items: [
-        { label: "Potong (Cut)", action: "cut", disabled: true },
-        { label: "Salin (Copy)", action: "copy", disabled: true },
-        { label: "Tempel (Paste)", action: "paste", disabled: true },
+        { label: "Cut", action: "cut", disabled: true },
+        { label: "Copy", action: "copy", disabled: true },
+        { label: "Paste", action: "paste", disabled: true },
       ],
     },
     {
       label: "View",
       items: [
-        { label: "Tampilan Ikon", action: "view_icon" },
-        { label: "Tampilan Daftar", action: "view_list" },
+        { label: "Icon View", action: "view_icon" },
+        { label: "List View", action: "view_list" },
       ],
     },
     {
       label: "Special",
       items: [
-        { label: "Bersihkan Desktop", action: "clean_desktop" },
-        { label: "Atur Ulang Sesi Jendela", action: "reset_session" },
-        { label: "Kosongkan Tong Sampah", action: "empty_trash" },
-        { label: "Mulai Ulang (Restart)", action: "restart" },
+        { label: "Clean Desktop", action: "clean_desktop" },
+        { label: "Reset Window Session", action: "reset_session" },
+        { label: "Empty Trash", action: "empty_trash" },
+        { label: "Restart", action: "restart" },
       ],
     },
   ];
@@ -155,7 +155,7 @@ export default function MenuBar({ onSelectMenuAction }) {
       <button
         type="button"
         onClick={() => onSelectMenuAction?.('calendar')}
-        title="Buka Kalender"
+        title="Open Calendar"
         className="flex items-center gap-1.5 font-mono font-bold text-[var(--os-fg)] px-1.5 py-0.5 hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] text-xs"
       >
         <span>📅</span>
