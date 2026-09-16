@@ -94,6 +94,47 @@ export function useWindowManager(initialWindows = []) {
     )
   }, [])
 
+  const toggleMaximizeWindow = useCallback((windowId) => {
+    setWindows((prevWindows) =>
+      prevWindows.map((w) => {
+        if (w.id !== windowId) return w
+
+        if (w.isMaximized) {
+          const prev = w.prevBounds || {
+            x: 60,
+            y: 60,
+            width: 440,
+            height: 320,
+          }
+          return {
+            ...w,
+            x: prev.x,
+            y: prev.y,
+            width: prev.width,
+            height: prev.height,
+            isMaximized: false,
+            prevBounds: null,
+          }
+        }
+
+        return {
+          ...w,
+          prevBounds: {
+            x: w.x,
+            y: w.y,
+            width: w.width,
+            height: w.height,
+          },
+          x: 0,
+          y: 24,
+          width: window.innerWidth,
+          height: window.innerHeight - 24,
+          isMaximized: true,
+        }
+      })
+    )
+  }, [])
+
   return {
     windows,
     activeWindowId,
@@ -101,6 +142,7 @@ export function useWindowManager(initialWindows = []) {
     closeWindow,
     focusWindow,
     minimizeWindow,
+    toggleMaximizeWindow,
     updateWindowPosition,
     updateWindowSize,
   }

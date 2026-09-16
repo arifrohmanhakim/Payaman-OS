@@ -20,6 +20,8 @@ export default function Desktop() {
     openApp,
     closeWindow,
     focusWindow,
+    minimizeWindow,
+    toggleMaximizeWindow,
     updateWindowPosition,
     updateWindowSize,
     showModal,
@@ -127,6 +129,8 @@ export default function Desktop() {
           isActive={activeWindowId === win.id}
           onFocus={focusWindow}
           onClose={closeWindow}
+          onMinimize={minimizeWindow}
+          onMaximize={toggleMaximizeWindow}
           onPositionChange={updateWindowPosition}
           onSizeChange={updateWindowSize}
         >

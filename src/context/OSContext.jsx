@@ -51,6 +51,7 @@ export function OSProvider({ children }) {
     closeWindow,
     focusWindow,
     minimizeWindow,
+    toggleMaximizeWindow,
     updateWindowPosition,
     updateWindowSize,
   } = useWindowManager(INITIAL_WINDOWS)
@@ -96,6 +97,22 @@ export function OSProvider({ children }) {
     [closeWindow]
   )
 
+  const handleMinimizeWindow = useCallback(
+    (windowId) => {
+      soundService.playClick()
+      minimizeWindow(windowId)
+    },
+    [minimizeWindow]
+  )
+
+  const handleToggleMaximizeWindow = useCallback(
+    (windowId) => {
+      soundService.playClick()
+      toggleMaximizeWindow(windowId)
+    },
+    [toggleMaximizeWindow]
+  )
+
   const showModal = useCallback((modalConfig) => {
     soundService.playErrorAlert()
     setActiveModal(modalConfig)
@@ -119,7 +136,8 @@ export function OSProvider({ children }) {
       openApp,
       closeWindow: handleCloseWindow,
       focusWindow,
-      minimizeWindow,
+      minimizeWindow: handleMinimizeWindow,
+      toggleMaximizeWindow: handleToggleMaximizeWindow,
       updateWindowPosition,
       updateWindowSize,
       showModal,
@@ -138,7 +156,8 @@ export function OSProvider({ children }) {
       openApp,
       handleCloseWindow,
       focusWindow,
-      minimizeWindow,
+      handleMinimizeWindow,
+      handleToggleMaximizeWindow,
       updateWindowPosition,
       updateWindowSize,
       showModal,
