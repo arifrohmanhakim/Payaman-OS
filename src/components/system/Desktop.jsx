@@ -29,6 +29,7 @@ export default function Desktop() {
     closeModal,
     toggleLaunchpad,
     resetSession,
+    reboot,
   } = useOS()
 
   const desktopApps = getDesktopApps()
@@ -80,6 +81,9 @@ export default function Desktop() {
         break
       case 'weather':
         openApp('weather')
+        break
+      case 'maps':
+        openApp('maps')
         break
       case 'files':
       case 'open_files':
@@ -157,9 +161,10 @@ export default function Desktop() {
         showModal({
           type: 'restart',
           title: 'Restart System',
-          message: 'Payaman OS will reload your desktop session.',
+          message: 'Payaman OS will reboot the session.',
           onConfirm: () => {
-            window.location.reload()
+            reboot()
+            closeModal()
           },
         })
         break

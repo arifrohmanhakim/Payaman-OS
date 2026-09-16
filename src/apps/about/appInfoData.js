@@ -87,6 +87,28 @@ export const APPS_INFO = {
       { key: '⌘W', desc: 'Close Window' },
     ],
   },
+  maps: {
+    id: 'maps',
+    title: 'Maps',
+    version: '1.0',
+    iconType: 'map',
+    category: 'Navigation & Geography',
+    tagline: 'Interactive Global Cartography & Geocoding',
+    description:
+      'Explore world maps, pinpoint locations, search global addresses, and navigate with OpenStreetMap open data and retro monochrome filters.',
+    specs: [
+      { label: 'Map Provider', value: 'OpenStreetMap (OSM) / Nominatim' },
+      { label: 'Coverage', value: 'Worldwide Street & Topography' },
+      { label: 'Style Engine', value: '1-Bit Retro & Standard OSM' },
+    ],
+    shortcuts: [
+      { key: '⌘F', desc: 'Search Location' },
+      { key: '⌘+', desc: 'Zoom In' },
+      { key: '⌘-', desc: 'Zoom Out' },
+      { key: '⌘L', desc: 'Locate My Position' },
+      { key: '⌘W', desc: 'Close Window' },
+    ],
+  },
   files: {
     id: 'files',
     title: 'File Manager',

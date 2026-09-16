@@ -37,6 +37,9 @@ import { browserAppConfig } from './browser/config.js'
 import WeatherApp from './weather/index.jsx'
 import { weatherAppConfig } from './weather/config.js'
 
+import MapsApp from './maps/index.jsx'
+import { mapsAppConfig } from './maps/config.js'
+
 export const appRegistry = [
   {
     ...browserAppConfig,
@@ -45,6 +48,10 @@ export const appRegistry = [
   {
     ...weatherAppConfig,
     component: WeatherApp,
+  },
+  {
+    ...mapsAppConfig,
+    component: MapsApp,
   },
   {
     ...fileManagerAppConfig,

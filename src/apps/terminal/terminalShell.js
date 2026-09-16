@@ -436,7 +436,13 @@ export async function executeShellCommand(commandLine, { osContext, onClose }) {
     case 'reboot':
     case 'restart':
       outputLines.push('Restarting Payaman OS session...')
-      setTimeout(() => window.location.reload(), 600)
+      setTimeout(() => {
+        if (osContext?.reboot) {
+          osContext.reboot()
+        } else {
+          window.location.reload()
+        }
+      }, 400)
       break
 
     case 'exit':

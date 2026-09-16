@@ -365,6 +365,22 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
           <polygon points="13,11 22,16 13,21" fill="currentColor" />
         </svg>
       )
+    case 'map':
+    case 'maps':
+    case 'location':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <path d="M3 7 L10 4 L22 8 L29 5 V25 L22 28 L10 24 L3 27 Z" />
+          <line x1="10" y1="4" x2="10" y2="24" />
+          <line x1="22" y1="8" x2="22" y2="28" />
+          <circle cx="16" cy="14" r="2" fill="currentColor" />
+          <path d="M16 16 L16 19" />
+        </svg>
+      )
     default:
       return (
         <svg

@@ -136,6 +136,42 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
       ]
       break
 
+    case 'maps':
+      dynamicMenus = [
+        {
+          label: 'File',
+          items: [
+            { label: 'Search Location...', action: 'maps:search', shortcut: '⌘F' },
+            { label: 'Locate My Position', action: 'maps:my_location', shortcut: '⌘L' },
+            { divider: true },
+            { label: 'Close Window', action: 'close_active', shortcut: '⌘W' },
+          ],
+        },
+        {
+          label: 'View',
+          items: [
+            { label: 'Zoom In', action: 'maps:zoom_in', shortcut: '⌘+' },
+            { label: 'Zoom Out', action: 'maps:zoom_out', shortcut: '⌘-' },
+            { divider: true },
+            { label: 'Toggle 1-Bit / Color Map', action: 'maps:toggle_filter' },
+          ],
+        },
+        {
+          label: 'Window',
+          items: [
+            { label: 'Minimize', action: 'minimize_active', shortcut: '⌘M' },
+            { label: 'Zoom', action: 'zoom_active' },
+            { divider: true },
+            { label: 'Close Window', action: 'close_active', shortcut: '⌘W' },
+          ],
+        },
+        {
+          label: 'Help',
+          items: [{ label: 'Maps Help', action: 'help_app' }],
+        },
+      ]
+      break
+
     case 'files':
       dynamicMenus = [
         {
@@ -490,6 +526,7 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
           items: [
             { label: 'Open File Manager', action: 'files', shortcut: '⌘O' },
             { label: 'Open Browser', action: 'browser', shortcut: '⌘B' },
+            { label: 'Open Maps', action: 'maps' },
             { label: 'Open Weather', action: 'weather', shortcut: '⌘W' },
             { label: 'Open Notes', action: 'new_note', shortcut: '⌘N' },
             { label: 'Open Terminal', action: 'terminal' },

@@ -61,6 +61,41 @@ class SoundService {
   playClick() {
     this.playBeep(1200, 0.02)
   }
+
+  playStartupChime() {
+    if (!this.soundEnabled) return
+
+    try {
+      this.initAudioContext()
+      if (!this.audioContext) return
+
+      if (this.audioContext.state === 'suspended') {
+        this.audioContext.resume()
+      }
+
+      const now = this.audioContext.currentTime
+      const chordFrequencies = [261.63, 329.63, 392.0, 523.25] // C4, E4, G4, C5 chord
+
+      chordFrequencies.forEach((freq) => {
+        const osc = this.audioContext.createOscillator()
+        const gain = this.audioContext.createGain()
+
+        osc.type = 'triangle'
+        osc.frequency.setValueAtTime(freq, now)
+
+        gain.gain.setValueAtTime(0.08, now)
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.8)
+
+        osc.connect(gain)
+        gain.connect(this.audioContext.destination)
+
+        osc.start(now)
+        osc.stop(now + 1.8)
+      })
+    } catch {
+      // Audio fallback
+    }
+  }
 }
 
 export const soundService = new SoundService()

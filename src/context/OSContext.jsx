@@ -42,6 +42,7 @@ const getInitialWindows = () => {
 }
 
 export function OSProvider({ children }) {
+  const [systemPhase, setSystemPhase] = useState('booting') // 'booting' | 'welcome' | 'desktop'
   const [activeModal, setActiveModal] = useState(null)
   const [theme, setThemeState] = useState(() => {
     return storageService.getItem('os_theme', 'classic')
@@ -149,8 +150,24 @@ export function OSProvider({ children }) {
     setIsLaunchpadOpen((prev) => !prev)
   }, [])
 
+  const reboot = useCallback(() => {
+    setSystemPhase('booting')
+  }, [])
+
+  const enterWelcome = useCallback(() => {
+    setSystemPhase('welcome')
+  }, [])
+
+  const enterDesktop = useCallback(() => {
+    setSystemPhase('desktop')
+  }, [])
+
   const contextValue = useMemo(
     () => ({
+      systemPhase,
+      reboot,
+      enterWelcome,
+      enterDesktop,
       windows,
       activeWindowId,
       activeModal,
@@ -176,6 +193,10 @@ export function OSProvider({ children }) {
       resetSession,
     }),
     [
+      systemPhase,
+      reboot,
+      enterWelcome,
+      enterDesktop,
       windows,
       activeWindowId,
       activeModal,

@@ -22,7 +22,7 @@ export default function Dock() {
     autoHide: false,
     magnification: true,
     showIndicators: true,
-    pinnedApps: ["files", "terminal", "browser"],
+    pinnedApps: ["files", "terminal", "browser", "map"],
   };
 
   const {
