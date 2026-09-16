@@ -1,11 +1,42 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
+import { storageService } from '../services/storageService.js'
+
+const STORAGE_KEY_WINDOWS = 'os_session_windows'
+const STORAGE_KEY_ACTIVE_WINDOW = 'os_session_active_window'
 
 export function useWindowManager(initialWindows = []) {
-  const [windows, setWindows] = useState(initialWindows)
-  const [activeWindowId, setActiveWindowId] = useState(
-    initialWindows.length > 0 ? initialWindows[0].id : null
-  )
-  const [nextZIndex, setNextZIndex] = useState(20)
+  const [windows, setWindows] = useState(() => {
+    const saved = storageService.getItem(STORAGE_KEY_WINDOWS, null)
+    if (Array.isArray(saved)) {
+      return saved
+    }
+    return initialWindows
+  })
+
+  const [activeWindowId, setActiveWindowId] = useState(() => {
+    const savedActive = storageService.getItem(STORAGE_KEY_ACTIVE_WINDOW, null)
+    if (savedActive) {
+      return savedActive
+    }
+    const savedWindows = storageService.getItem(STORAGE_KEY_WINDOWS, null)
+    if (Array.isArray(savedWindows) && savedWindows.length > 0) {
+      return savedWindows[savedWindows.length - 1].id
+    }
+    return initialWindows.length > 0 ? initialWindows[0].id : null
+  })
+
+  const [nextZIndex, setNextZIndex] = useState(() => {
+    const maxZ = windows.reduce((max, w) => Math.max(max, w.zIndex || 10), 20)
+    return maxZ + 1
+  })
+
+  useEffect(() => {
+    storageService.setItem(STORAGE_KEY_WINDOWS, windows)
+  }, [windows])
+
+  useEffect(() => {
+    storageService.setItem(STORAGE_KEY_ACTIVE_WINDOW, activeWindowId)
+  }, [activeWindowId])
 
   const focusWindow = useCallback((windowId) => {
     setActiveWindowId(windowId)
@@ -144,6 +175,13 @@ export function useWindowManager(initialWindows = []) {
     )
   }, [])
 
+  const resetSession = useCallback(() => {
+    storageService.removeItem(STORAGE_KEY_WINDOWS)
+    storageService.removeItem(STORAGE_KEY_ACTIVE_WINDOW)
+    setWindows(initialWindows)
+    setActiveWindowId(initialWindows.length > 0 ? initialWindows[0].id : null)
+  }, [initialWindows])
+
   return {
     windows,
     activeWindowId,
@@ -154,5 +192,6 @@ export function useWindowManager(initialWindows = []) {
     toggleMaximizeWindow,
     updateWindowPosition,
     updateWindowSize,
+    resetSession,
   }
 }

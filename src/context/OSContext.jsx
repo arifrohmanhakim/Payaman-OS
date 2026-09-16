@@ -65,6 +65,7 @@ export function OSProvider({ children }) {
     toggleMaximizeWindow,
     updateWindowPosition,
     updateWindowSize,
+    resetSession,
   } = useWindowManager(getInitialWindows())
 
   const setTheme = useCallback((newTheme) => {
@@ -172,6 +173,7 @@ export function OSProvider({ children }) {
       openLaunchpad,
       closeLaunchpad,
       toggleLaunchpad,
+      resetSession,
     }),
     [
       windows,
@@ -196,6 +198,7 @@ export function OSProvider({ children }) {
       openLaunchpad,
       closeLaunchpad,
       toggleLaunchpad,
+      resetSession,
     ]
   )
 

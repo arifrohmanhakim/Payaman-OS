@@ -28,6 +28,7 @@ export default function Desktop() {
     showModal,
     closeModal,
     toggleLaunchpad,
+    resetSession,
   } = useOS()
 
   const desktopApps = getDesktopApps()
@@ -72,6 +73,17 @@ export default function Desktop() {
         break
       case 'clean_desktop':
         setSelectedIconId(null)
+        break
+      case 'reset_session':
+        showModal({
+          type: 'reset_session',
+          title: 'Atur Ulang Sesi Jendela',
+          message: 'Apakah Anda ingin mengembalikan susunan jendela desktop ke kondisi awal?',
+          onConfirm: () => {
+            resetSession()
+            closeModal()
+          },
+        })
         break
       case 'empty_trash':
         showModal({

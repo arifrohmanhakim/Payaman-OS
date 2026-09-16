@@ -74,6 +74,7 @@ export default function MenuBar({ onSelectMenuAction }) {
       label: "Special",
       items: [
         { label: "Bersihkan Desktop", action: "clean_desktop" },
+        { label: "Atur Ulang Sesi Jendela", action: "reset_session" },
         { label: "Kosongkan Tong Sampah", action: "empty_trash" },
         { label: "Mulai Ulang (Restart)", action: "restart" },
       ],
