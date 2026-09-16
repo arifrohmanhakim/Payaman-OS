@@ -109,6 +109,27 @@ export const APPS_INFO = {
       { key: '⌘W', desc: 'Close Window' },
     ],
   },
+  chat: {
+    id: 'chat',
+    title: 'Payaman Chat',
+    version: '1.0',
+    iconType: 'chat',
+    category: 'Artificial Intelligence & Chat',
+    tagline: 'AI Companion powered by Google Gemini',
+    description:
+      'Have casual conversations, discuss creative ideas, ask questions, and chat with Payaman AI running on Google Gemini 2.5 Flash.',
+    specs: [
+      { label: 'AI Engine', value: 'Google Gemini 2.5 Flash' },
+      { label: 'Context', value: 'Multi-turn Stateful Memory' },
+      { label: 'Latency', value: 'Ultra-low REST API' },
+    ],
+    shortcuts: [
+      { key: 'Enter', desc: 'Send Message' },
+      { key: 'Shift+Enter', desc: 'New Line' },
+      { key: '⌘K', desc: 'Clear / New Chat' },
+      { key: '⌘W', desc: 'Close Window' },
+    ],
+  },
   files: {
     id: 'files',
     title: 'File Manager',
