@@ -44,6 +44,28 @@ export const APPS_INFO = {
       { key: '⌘W', desc: 'Close Window' },
     ],
   },
+  browser: {
+    id: 'browser',
+    title: 'Browser',
+    version: '1.0',
+    iconType: 'browser',
+    category: 'Internet & Web',
+    tagline: 'Retro-modern Web Explorer and Search Portal',
+    description:
+      'Explore the World Wide Web, search with DuckDuckGo, bookmark favorite sites, and view web pages inside a classic monochrome desktop window.',
+    specs: [
+      { label: 'Rendering Mode', value: 'Multi-Tab Sandboxed Iframe' },
+      { label: 'Search Engine', value: 'DuckDuckGo / Global Web' },
+      { label: 'Security', value: 'W3C Origin Isolation' },
+    ],
+    shortcuts: [
+      { key: '⌘T', desc: 'New Tab' },
+      { key: '⌘W', desc: 'Close Current Tab' },
+      { key: '⌘R', desc: 'Reload Webpage' },
+      { key: '⌘L', desc: 'Focus Address Bar' },
+      { key: '⌘D', desc: 'Toggle Bookmark' },
+    ],
+  },
   files: {
     id: 'files',
     title: 'File Manager',

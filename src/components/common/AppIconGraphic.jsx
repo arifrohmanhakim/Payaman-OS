@@ -214,5 +214,22 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
           <polygon points="13,11 22,16 13,21" fill="currentColor" />
         </svg>
       )
+    case 'browser':
+    case 'globe':
+    case 'web':
+    case 'internet':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <circle cx="16" cy="16" r="12" />
+          <line x1="4" y1="16" x2="28" y2="16" />
+          <ellipse cx="16" cy="16" rx="6" ry="12" />
+          <path d="M7 10 C10 12, 22 12, 25 10" />
+          <path d="M7 22 C10 20, 22 20, 25 22" />
+        </svg>
+      )
   }
 }

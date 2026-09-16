@@ -75,6 +75,9 @@ export default function Desktop() {
       case 'preferences':
         openApp('preferences')
         break
+      case 'browser':
+        openApp('browser')
+        break
       case 'files':
       case 'open_files':
         openApp('files')

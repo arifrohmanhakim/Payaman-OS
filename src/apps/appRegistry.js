@@ -31,7 +31,14 @@ import { paintAppConfig } from './paint/config.js'
 import CalendarApp from './calendar/index.jsx'
 import { calendarAppConfig } from './calendar/config.js'
 
+import BrowserApp from './browser/index.jsx'
+import { browserAppConfig } from './browser/config.js'
+
 export const appRegistry = [
+  {
+    ...browserAppConfig,
+    component: BrowserApp,
+  },
   {
     ...fileManagerAppConfig,
     component: FileManagerApp,

@@ -41,6 +41,67 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
   let dynamicMenus = []
 
   switch (activeAppId) {
+    case 'browser':
+      dynamicMenus = [
+        {
+          label: 'File',
+          items: [
+            { label: 'New Tab', action: 'browser:new_tab', shortcut: '⌘T' },
+            { label: 'Close Tab', action: 'browser:close_tab', shortcut: '⌘W' },
+            { divider: true },
+            { label: 'Open in External Browser', action: 'browser:open_external', shortcut: '⌘O' },
+            { divider: true },
+            { label: 'Close Window', action: 'close_active', shortcut: '⇧⌘W' },
+          ],
+        },
+        {
+          label: 'Edit',
+          items: [
+            { label: 'Cut', disabled: true, shortcut: '⌘X' },
+            { label: 'Copy', disabled: true, shortcut: '⌘C' },
+            { label: 'Paste', disabled: true, shortcut: '⌘V' },
+            { divider: true },
+            { label: 'Select Address Bar', action: 'browser:focus_address', shortcut: '⌘L' },
+          ],
+        },
+        {
+          label: 'View',
+          items: [
+            { label: 'Reload Page', action: 'browser:reload', shortcut: '⌘R' },
+            { label: 'Go to Home Portal', action: 'browser:home', shortcut: '⇧⌘H' },
+          ],
+        },
+        {
+          label: 'History',
+          items: [
+            { label: 'Back', action: 'browser:back', shortcut: '⌘[' },
+            { label: 'Forward', action: 'browser:forward', shortcut: '⌘]' },
+            { divider: true },
+            { label: 'Home Page', action: 'browser:home' },
+          ],
+        },
+        {
+          label: 'Bookmarks',
+          items: [
+            { label: 'Bookmark Current Page', action: 'browser:bookmark', shortcut: '⌘D' },
+          ],
+        },
+        {
+          label: 'Window',
+          items: [
+            { label: 'Minimize', action: 'minimize_active', shortcut: '⌘M' },
+            { label: 'Zoom', action: 'zoom_active' },
+            { divider: true },
+            { label: 'Close Window', action: 'close_active', shortcut: '⌘W' },
+          ],
+        },
+        {
+          label: 'Help',
+          items: [{ label: 'Browser Help', action: 'help_app' }],
+        },
+      ]
+      break
+
     case 'files':
       dynamicMenus = [
         {
@@ -384,6 +445,7 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
           label: 'File',
           items: [
             { label: 'Open File Manager', action: 'files', shortcut: '⌘O' },
+            { label: 'Open Browser', action: 'browser', shortcut: '⌘B' },
             { label: 'Open Notes', action: 'new_note', shortcut: '⌘N' },
             { label: 'Open Terminal', action: 'terminal' },
             { label: 'Open Calendar', action: 'calendar' },
