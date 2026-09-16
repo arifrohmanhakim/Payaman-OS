@@ -2,18 +2,25 @@ import { useState, useEffect, useRef } from "react";
 
 export default function MenuBar({ onSelectMenuAction }) {
   const [activeMenuIndex, setActiveMenuIndex] = useState(null);
+  const [currentDate, setCurrentDate] = useState("");
   const [currentTime, setCurrentTime] = useState("");
   const menuBarRef = useRef(null);
 
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      const formatted = now.toLocaleTimeString("id-ID", {
+      const formattedDate = now.toLocaleDateString("id-ID", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+      });
+      const formattedTime = now.toLocaleTimeString("id-ID", {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
       });
-      setCurrentTime(formatted);
+      setCurrentDate(formattedDate);
+      setCurrentTime(formattedTime);
     };
 
     updateTime();
@@ -50,6 +57,7 @@ export default function MenuBar({ onSelectMenuAction }) {
         { label: "Buka Photobot", action: "photobot" },
         { label: "Buka MacPaint", action: "paint" },
         { label: "Buka Dokumen Baru", action: "new_note" },
+        { label: "Buka Kalender", action: "calendar" },
         { label: "Buka Kalkulator", action: "calculator" },
         { label: "Buka Terminal", action: "terminal" },
         { label: "Tutup Jendela", action: "close_active" },
@@ -144,9 +152,16 @@ export default function MenuBar({ onSelectMenuAction }) {
         })}
       </div>
 
-      <div className="flex items-center gap-2 font-mono font-bold text-[var(--os-fg)]">
+      <button
+        type="button"
+        onClick={() => onSelectMenuAction?.('calendar')}
+        title="Buka Kalender"
+        className="flex items-center gap-1.5 font-mono font-bold text-[var(--os-fg)] px-1.5 py-0.5 hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] text-xs"
+      >
+        <span>📅</span>
+        <span>{currentDate}</span>
         <span>{currentTime}</span>
-      </div>
+      </button>
     </nav>
   );
 }

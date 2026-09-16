@@ -60,6 +60,9 @@ export default function Desktop() {
       case 'new_note':
         openApp('write')
         break
+      case 'calendar':
+        openApp('calendar')
+        break
       case 'calculator':
         openApp('calc')
         break

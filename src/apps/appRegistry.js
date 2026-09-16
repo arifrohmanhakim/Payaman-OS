@@ -28,6 +28,9 @@ import { photobotAppConfig } from './photobot/config.js'
 import PaintApp from './paint/index.jsx'
 import { paintAppConfig } from './paint/config.js'
 
+import CalendarApp from './calendar/index.jsx'
+import { calendarAppConfig } from './calendar/config.js'
+
 export const appRegistry = [
   {
     ...fileManagerAppConfig,
@@ -36,6 +39,10 @@ export const appRegistry = [
   {
     ...paintAppConfig,
     component: PaintApp,
+  },
+  {
+    ...calendarAppConfig,
+    component: CalendarApp,
   },
   {
     ...galleryAppConfig,

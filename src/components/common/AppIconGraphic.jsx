@@ -45,6 +45,25 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
           <circle cx="22" cy="25" r="1.5" />
         </svg>
       )
+    case 'calendar':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <rect x="4" y="5" width="24" height="23" rx="2" />
+          <line x1="4" y1="11" x2="28" y2="11" />
+          <line x1="9" y1="2" x2="9" y2="6" />
+          <line x1="23" y1="2" x2="23" y2="6" />
+          <circle cx="9" cy="16" r="1.2" fill="currentColor" />
+          <circle cx="16" cy="16" r="1.2" fill="currentColor" />
+          <circle cx="23" cy="16" r="1.2" fill="currentColor" />
+          <circle cx="9" cy="22" r="1.2" fill="currentColor" />
+          <circle cx="16" cy="22" r="1.2" fill="currentColor" />
+          <circle cx="23" cy="22" r="1.2" fill="currentColor" />
+        </svg>
+      )
     case 'trash':
       return (
         <svg
