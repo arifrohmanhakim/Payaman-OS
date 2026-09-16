@@ -16,7 +16,21 @@ import { wastebasketAppConfig } from './wastebasket/config.js'
 import TerminalApp from './terminal/index.jsx'
 import { terminalAppConfig } from './terminal/config.js'
 
+import FileManagerApp from './files/index.jsx'
+import { fileManagerAppConfig } from './files/config.js'
+
+import GalleryApp from './gallery/index.jsx'
+import { galleryAppConfig } from './gallery/config.js'
+
 export const appRegistry = [
+  {
+    ...fileManagerAppConfig,
+    component: FileManagerApp,
+  },
+  {
+    ...galleryAppConfig,
+    component: GalleryApp,
+  },
   {
     ...terminalAppConfig,
     component: TerminalApp,

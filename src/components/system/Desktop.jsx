@@ -39,6 +39,12 @@ export default function Desktop() {
       case 'preferences':
         openApp('preferences')
         break
+      case 'files':
+        openApp('files')
+        break
+      case 'gallery':
+        openApp('gallery')
+        break
       case 'new_note':
         openApp('write')
         break

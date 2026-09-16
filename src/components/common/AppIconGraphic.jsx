@@ -72,6 +72,20 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
           <line x1="14" y1="21" x2="22" y2="21" />
         </svg>
       )
+    case 'gallery':
+    case 'image':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <rect x="3" y="5" width="26" height="22" rx="2" />
+          <circle cx="10" cy="11" r="2" />
+          <path d="M4 22 L11 15 L19 23" />
+          <path d="M16 20 L21 15 L28 22" />
+        </svg>
+      )
     default:
       return (
         <div

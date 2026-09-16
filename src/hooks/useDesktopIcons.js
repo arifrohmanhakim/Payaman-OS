@@ -4,12 +4,14 @@ import { storageService } from '../services/storageService.js'
 const STORAGE_KEY_POSITIONS = 'desktop_icon_positions'
 
 const DEFAULT_ICON_POSITIONS = {
-  write: { x: 24, y: 44 },
-  calc: { x: 24, y: 136 },
-  preferences: { x: 24, y: 228 },
+  files: { x: 24, y: 44 },
+  write: { x: 24, y: 136 },
+  calc: { x: 24, y: 228 },
   terminal: { x: 24, y: 320 },
-  about: { x: 24, y: 412 },
-  wastebasket: { x: 24, y: 504 },
+  gallery: { x: 24, y: 412 },
+  preferences: { x: 120, y: 44 },
+  about: { x: 120, y: 136 },
+  wastebasket: { x: 120, y: 228 },
 }
 
 export function useDesktopIcons() {

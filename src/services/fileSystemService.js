@@ -57,6 +57,22 @@ class FileSystemService {
   constructor() {
     this.currentPath = '/home/arif'
     this.fs = this.loadFs()
+    this.listeners = new Set()
+  }
+
+  subscribe(listener) {
+    this.listeners.add(listener)
+    return () => this.listeners.delete(listener)
+  }
+
+  notify() {
+    this.listeners.forEach((callback) => {
+      try {
+        callback()
+      } catch {
+        // Abaikan error callback
+      }
+    })
   }
 
   loadFs() {
@@ -70,6 +86,37 @@ class FileSystemService {
 
   saveFs() {
     storageService.setItem(VFS_STORAGE_KEY, this.fs)
+    this.notify()
+  }
+
+  rename(targetPath, newName) {
+    const trimmed = (newName || '').trim()
+    if (!trimmed || trimmed.includes('/')) {
+      return { success: false, error: 'Nama berkas atau folder baru tidak valid.' }
+    }
+
+    const resolved = this.resolvePath(targetPath)
+    if (resolved === '/' || resolved === '/home' || resolved === '/home/arif') {
+      return { success: false, error: 'Tidak dapat mengubah nama direktori inti.' }
+    }
+
+    const lastSlash = resolved.lastIndexOf('/')
+    const parentPath = resolved.slice(0, lastSlash) || '/'
+    const oldName = resolved.slice(lastSlash + 1)
+
+    const parentNode = this.getNode(parentPath)
+    if (!parentNode || !parentNode.children[oldName]) {
+      return { success: false, error: `'${oldName}' tidak ditemukan.` }
+    }
+
+    if (parentNode.children[trimmed]) {
+      return { success: false, error: `'${trimmed}' sudah ada di lokasi ini.` }
+    }
+
+    parentNode.children[trimmed] = parentNode.children[oldName]
+    delete parentNode.children[oldName]
+    this.saveFs()
+    return { success: true }
   }
 
   getCurrentPath() {

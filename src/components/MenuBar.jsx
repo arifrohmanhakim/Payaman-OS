@@ -43,6 +43,8 @@ export default function MenuBar({ onSelectMenuAction }) {
     {
       label: "File",
       items: [
+        { label: "Buka Manajer Berkas", action: "files" },
+        { label: "Buka Galeri Foto", action: "gallery" },
         { label: "Buka Dokumen Baru", action: "new_note" },
         { label: "Buka Kalkulator", action: "calculator" },
         { label: "Buka Terminal", action: "terminal" },
