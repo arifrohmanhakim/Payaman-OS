@@ -133,13 +133,67 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
           <circle cx="24.5" cy="15.5" r="1.5" fill="currentColor" />
         </svg>
       )
-    default:
+    case 'cloud':
+    case 'gdrive':
       return (
-        <div
-          className={`${className} border-2 border-current flex items-center justify-center font-mono font-bold text-xs`}
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
         >
-          OS
-        </div>
+          <path d="M9 22 C6 22 4 19.5 4 17 C4 14.5 6 12.5 8.5 12.5 C9 10 11.5 8 14.5 8 C18 8 20.5 10.5 21 13.5 C23 13.5 25 15 25 17.5 C25 20 23 22 20.5 22 Z" />
+          <path d="M12 18 L16 14 L20 18" />
+          <line x1="16" y1="14" x2="16" y2="24" />
+        </svg>
+      )
+    case 'pdf':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <path d="M7 3 H21 L27 9 V29 H7 Z" />
+          <path d="M21 3 V9 H27" />
+          <text
+            x="10"
+            y="21"
+            fontSize="7"
+            fontFamily="monospace"
+            fontWeight="bold"
+            fill="currentColor"
+            stroke="none"
+          >
+            PDF
+          </text>
+        </svg>
+      )
+    case 'code':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <path d="M6 3 H20 L26 9 V29 H6 Z" />
+          <path d="M20 3 V9 H26" />
+          <path d="M12 16 L9 19 L12 22" />
+          <path d="M20 16 L23 19 L20 22" />
+          <line x1="17" y1="15" x2="15" y2="23" />
+        </svg>
+      )
+    case 'media':
+    case 'audio':
+    case 'video':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <circle cx="16" cy="16" r="12" />
+          <polygon points="13,11 22,16 13,21" fill="currentColor" />
+        </svg>
       )
   }
 }

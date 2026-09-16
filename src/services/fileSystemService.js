@@ -22,6 +22,16 @@ const INITIAL_VFS = {
                 content: '1. Desain antarmuka monokrom\n2. Optimasi kinerja\n3. Uji coba terminal',
                 createdAt: new Date().toISOString(),
               },
+              'panduan.md': {
+                type: 'file',
+                content: '# Panduan Pengguna Payaman OS\n\nSelamat datang di sistem operasi desktop berbasis web monokrom.\n\n## Fitur Utama\n- **Penampil Berkas Serbaguna**: Mendukung gambar (PNG, JPG, SVG), dokumen PDF, teks, dan berkas Office.\n- **Integrasi Google Drive**: Akses dan buka berkas Google Drive langsung dari sistem.\n- **MacPaint**: Aplikasi gambar retro klasik dengan aneka kuas dan pola.\n- **Terminal CLI**: Bekerja dengan terminal UNIX virtual.\n\n## Tips Pintasan\n- Klik dua kali berkas apa saja untuk membuka pratinjau langsung.\n- Tekan `Esc` untuk menutup jendela pratinjau.',
+                createdAt: new Date().toISOString(),
+              },
+              'logo.svg': {
+                type: 'file',
+                content: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%"><rect width="200" height="200" fill="#fff" stroke="#111" stroke-width="6"/><rect x="25" y="25" width="150" height="150" fill="#fff" stroke="#111" stroke-width="4"/><circle cx="100" cy="85" r="35" fill="none" stroke="#111" stroke-width="6"/><path d="M70 145 C70 120 130 120 130 145 Z" fill="#111"/><text x="100" y="168" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle" fill="#111">PAYAMAN OS</text></svg>',
+                createdAt: new Date().toISOString(),
+              },
               dokumen: {
                 type: 'dir',
                 children: {},
@@ -81,6 +91,22 @@ class FileSystemService {
       storageService.setItem(VFS_STORAGE_KEY, INITIAL_VFS)
       return JSON.parse(JSON.stringify(INITIAL_VFS))
     }
+
+    const arifDir = saved?.['/']?.children?.home?.children?.arif?.children
+    if (arifDir) {
+      const initialArif = INITIAL_VFS['/'].children.home.children.arif.children
+      let updated = false
+      for (const [key, val] of Object.entries(initialArif)) {
+        if (!arifDir[key]) {
+          arifDir[key] = val
+          updated = true
+        }
+      }
+      if (updated) {
+        storageService.setItem(VFS_STORAGE_KEY, saved)
+      }
+    }
+
     return saved
   }
 

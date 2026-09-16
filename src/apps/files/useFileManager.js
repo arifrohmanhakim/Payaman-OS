@@ -155,6 +155,49 @@ export function useFileManager(initialPath = '/home/arif') {
     [currentPath]
   )
 
+  const uploadLocalFiles = useCallback(
+    async (fileList) => {
+      if (!fileList || fileList.length === 0) return
+      let count = 0
+      for (const f of fileList) {
+        try {
+          let content = ''
+          const ext = f.name.split('.').pop().toLowerCase()
+          const isText =
+            ['txt', 'md', 'json', 'js', 'jsx', 'ts', 'tsx', 'html', 'css', 'csv', 'log', 'sh', 'xml', 'svg'].includes(
+              ext
+            ) || f.type.startsWith('text/')
+
+          if (isText) {
+            content = await f.text()
+          } else {
+            content = await new Promise((resolve, reject) => {
+              const reader = new FileReader()
+              reader.onload = () => resolve(reader.result)
+              reader.onerror = reject
+              reader.readAsDataURL(f)
+            })
+          }
+
+          const targetPath = `${currentPath}/${f.name}`
+          const res = fileSystemService.writeFile(targetPath, content, false)
+          if (res.success) count++
+        } catch {
+          // Abaikan kesalahan pembacaan individual
+        }
+      }
+
+      if (count > 0) {
+        soundService.playClick()
+        setStatusMessage(`${count} berkas berhasil diunggah ke '${currentPath}'.`)
+      } else {
+        soundService.playErrorAlert()
+        setStatusMessage('Gagal mengunggah berkas.')
+      }
+    },
+    [currentPath]
+  )
+
   const storageStats = fileSystemService.getStorageStats()
 
   return {
@@ -178,5 +221,6 @@ export function useFileManager(initialPath = '/home/arif') {
     deleteItem,
     renameItem,
     readFileContent,
+    uploadLocalFiles,
   }
 }
