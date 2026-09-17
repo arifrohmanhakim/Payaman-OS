@@ -42,19 +42,23 @@ export default function Window({
       const clientY = event.clientY / uiScale;
 
       if (isDragging && !isMaximized) {
-        const nextX = Math.max(0, clientX - dragOffsetRef.current.x);
-        const nextY = Math.max(24, clientY - dragOffsetRef.current.y);
+        const screenW = window.innerWidth / uiScale;
+        const screenH = window.innerHeight / uiScale;
+        const rawNextX = clientX - dragOffsetRef.current.x;
+        const rawNextY = clientY - dragOffsetRef.current.y;
+
+        const nextX = Math.max(-width + 80, Math.min(screenW - 80, rawNextX));
+        const nextY = Math.max(24, Math.min(screenH - 32, rawNextY));
         onPositionChange(id, nextX, nextY);
 
         // Detect screen edges for snapping
-        const screenW = window.innerWidth / uiScale;
-        if (clientX <= 24) {
+        if (clientX <= 20) {
           snapCandidateRef.current = "left";
           setSnapPreview("left");
-        } else if (clientX >= screenW - 24) {
+        } else if (clientX >= screenW - 20) {
           snapCandidateRef.current = "right";
           setSnapPreview("right");
-        } else if (clientY <= 30) {
+        } else if (clientY <= 28) {
           snapCandidateRef.current = "top";
           setSnapPreview("top");
         } else {

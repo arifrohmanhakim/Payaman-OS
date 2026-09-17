@@ -67,14 +67,20 @@ export async function executeShellCommand(commandLine, { osContext, onClose }) {
           ls: 'ls [path] [-l] : List files and directories.',
           cd: 'cd <path> : Change working directory (e.g. cd .., cd ~, cd /system).',
           cat: 'cat <file> : Display text file content.',
+          grep: 'grep [-i] <pattern> <file> : Search for text inside a file.',
+          find: 'find [path] [-name <pattern>] : Search files and directories recursively.',
           touch: 'touch <file> : Create a new empty file.',
           mkdir: 'mkdir <dir> : Create a new folder.',
           rm: 'rm [-r|-rf] <path> : Remove file or directory.',
           echo: 'echo [text] [>|>> file] : Print text or append/write to file.',
+          df: 'df : Display virtual filesystem storage usage.',
           curl: 'curl <url> : Send HTTP request and display response.',
           calc: 'calc <expression> : Calculate math expression (e.g. calc (12 + 8) * 5).',
+          top: 'top : Display running process and system resource summary.',
           ps: 'ps : List running application process windows.',
           kill: 'kill <id|pid> : Terminate process or close window.',
+          spaces: 'spaces [1-4] : Switch or view active virtual desktop space.',
+          scanlines: 'scanlines [on|off|toggle] : Toggle retro CRT scanlines display effect.',
           theme: 'theme [name] : Set OS theme palette (classic, dark, amber, green, paper).',
           pattern: 'pattern [name] : Set desktop wallpaper pattern (halftone, checkerboard, etc).',
           dock: 'dock [size|pos|autohide] [val] : Configure dock settings via shell.',
@@ -84,13 +90,13 @@ export async function executeShellCommand(commandLine, { osContext, onClose }) {
       } else {
         outputLines.push(
           'File & Directory Commands:',
-          '  pwd, cd, ls, cat, touch, mkdir, rm, echo, df',
+          '  pwd, cd, ls, cat, grep, find, touch, mkdir, rm, echo, df',
           '',
           'Process & Window Commands:',
-          '  ps, kill, open',
+          '  top, ps, kill, open',
           '',
-          'System & Settings Commands:',
-          '  theme, pattern, dock, uname, whoami, uptime, date, reboot',
+          'System & Workspace Commands:',
+          '  spaces, scanlines, theme, pattern, dock, uname, whoami, uptime, date, reboot',
           '',
           'Terminal Commands:',
           '  profile - Change terminal color profile (basic, pro, grass, homebrew, ocean)',
@@ -157,6 +163,74 @@ export async function executeShellCommand(commandLine, { osContext, onClose }) {
       }
       break
 
+    case 'grep': {
+      const isCaseInsensitive = args.includes('-i')
+      const cleanArgs = args.filter((a) => a !== '-i')
+      const pattern = cleanArgs[0]
+      const targetFile = cleanArgs[1]
+
+      if (!pattern || !targetFile) {
+        outputLines.push('Usage: grep [-i] <pattern> <filename>')
+      } else {
+        const readRes = fileSystemService.readFile(targetFile)
+        if (!readRes.success) {
+          outputLines.push(readRes.error)
+        } else {
+          const lines = (readRes.content || '').split('\n')
+          const matches = lines.filter((line) =>
+            isCaseInsensitive
+              ? line.toLowerCase().includes(pattern.toLowerCase())
+              : line.includes(pattern)
+          )
+          if (matches.length === 0) {
+            outputLines.push(`(No lines matching '${pattern}' found in ${targetFile})`)
+          } else {
+            matches.forEach((m) => outputLines.push(m))
+          }
+        }
+      }
+      break
+    }
+
+    case 'find': {
+      let searchPath = '.'
+      let nameFilter = null
+
+      for (let i = 0; i < args.length; i++) {
+        if (args[i] === '-name' && args[i + 1]) {
+          nameFilter = args[i + 1].replace(/^['"]|['"]$/g, '')
+          i++
+        } else if (!args[i].startsWith('-') && !nameFilter) {
+          searchPath = args[i]
+        }
+      }
+
+      const results = []
+      const traverse = (dirPath) => {
+        const res = fileSystemService.listDirectory(dirPath)
+        if (!res.success) return
+        for (const item of res.items) {
+          const fullPath = dirPath === '/' ? `/${item.name}` : `${dirPath}/${item.name}`
+          if (!nameFilter || item.name.toLowerCase().includes(nameFilter.toLowerCase())) {
+            results.push(`${fullPath}${item.type === 'dir' ? '/' : ''}`)
+          }
+          if (item.type === 'dir') {
+            traverse(fullPath)
+          }
+        }
+      }
+
+      const resolved = fileSystemService.resolvePath(searchPath)
+      traverse(resolved)
+
+      if (results.length === 0) {
+        outputLines.push(`(No files or directories matching in '${searchPath}')`)
+      } else {
+        results.forEach((r) => outputLines.push(r))
+      }
+      break
+    }
+
     case 'touch':
       if (!args[0]) {
         outputLines.push('Usage: touch <filename>')
@@ -205,6 +279,40 @@ export async function executeShellCommand(commandLine, { osContext, onClose }) {
           parseFloat(stats.totalKb) - parseFloat(stats.usedKb)
         ).toFixed(2)} KB   ${stats.usedPercent}%`
       )
+      break
+    }
+
+    case 'top':
+    case 'htop': {
+      const running = osContext.windows || []
+      const stats = fileSystemService.getStorageStats()
+      const sec = Math.floor((Date.now() - SESSION_START_TIME) / 1000)
+      const mins = Math.floor(sec / 60)
+      const hours = Math.floor(mins / 60)
+      const uptimeStr = `${hours}h ${mins % 60}m ${sec % 60}s`
+      const memUsed = (running.length * 4.2 + 18.5).toFixed(1)
+
+      outputLines.push(
+        `PayamanOS Task Manager - Uptime: ${uptimeStr} | Tasks: ${running.length} total, ${running.filter(w => !w.isMinimized).length} active`,
+        `CPU: [||||||||..............] 24.8%  | Mem: ${memUsed}MB / 128MB  | VFS: ${stats.usedKb}KB / ${stats.totalKb}KB`,
+        '----------------------------------------------------------------------',
+        'PID   USER     PR  NI  VIRT   RES    S  %CPU  %MEM  TIME+   COMMAND'
+      )
+
+      if (running.length === 0) {
+        outputLines.push('1000  arif     20   0  18.5M  6.2M   S   0.5   4.8  0:01.20 terminal')
+      } else {
+        running.forEach((win, index) => {
+          const pid = 1000 + index
+          const status = win.isMinimized ? 'S' : 'R'
+          const cpu = (index === 0 ? '1.2' : '0.4').padStart(4, ' ')
+          const mem = '5.6'.padStart(4, ' ')
+          const appName = win.appId
+          outputLines.push(
+            `${pid}  arif     20   0  24.0M  8.1M   ${status}   ${cpu}  ${mem}  0:00.85 ${appName}`
+          )
+        })
+      }
       break
     }
 
@@ -386,6 +494,44 @@ export async function executeShellCommand(commandLine, { osContext, onClose }) {
             osContext.dockSettings?.position || 'bottom'
           }, Auto-hide: ${osContext.dockSettings?.autoHide ? 'Enabled' : 'Disabled'}`,
           "Usage: 'dock size <small|medium|large>', 'dock pos <bottom|left|right>', 'dock autohide <on|off>'"
+        )
+      }
+      break
+    }
+
+    case 'spaces':
+    case 'space': {
+      const targetSpace = parseInt(args[0], 10)
+      if (targetSpace >= 1 && targetSpace <= 4) {
+        if (osContext?.setActiveSpace) {
+          osContext.setActiveSpace(targetSpace)
+          outputLines.push(`Switched to Virtual Desktop Space ${targetSpace}`)
+        }
+      } else {
+        outputLines.push(
+          `Active Virtual Desktop: Space ${osContext.activeSpace || 1} (Available: 1, 2, 3, 4)`,
+          "Usage: 'spaces <1|2|3|4>' or press ⌥1, ⌥2, ⌥3, ⌥4"
+        )
+      }
+      break
+    }
+
+    case 'scanlines':
+    case 'crt': {
+      const mode = args[0]?.toLowerCase()
+      if (mode === 'on' || mode === 'enable') {
+        osContext?.setCrtScanlines?.(true)
+        outputLines.push('CRT Scanlines effect enabled.')
+      } else if (mode === 'off' || mode === 'disable') {
+        osContext?.setCrtScanlines?.(false)
+        outputLines.push('CRT Scanlines effect disabled.')
+      } else if (mode === 'toggle') {
+        osContext?.toggleCrtScanlines?.()
+        outputLines.push('Toggled CRT Scanlines effect.')
+      } else {
+        outputLines.push(
+          `CRT Scanlines status: ${osContext.crtScanlines ? 'Enabled' : 'Disabled'}`,
+          "Usage: 'scanlines on', 'scanlines off', or 'scanlines toggle'"
         )
       }
       break
