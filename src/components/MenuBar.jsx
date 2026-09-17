@@ -6,6 +6,8 @@ import { useWeather } from "../apps/weather/useWeather.js";
 import { soundService } from "../services/soundService.js";
 import AppIconGraphic from "./common/AppIconGraphic.jsx";
 import CaveLogo from "./common/CaveLogo.jsx";
+import { useDesktopPet } from "../apps/pet/useDesktopPet.js";
+import { PET_SPECIES } from "../apps/pet/petData.js";
 
 export default function MenuBar({ onSelectMenuAction }) {
   const { windows, activeWindowId } = useOS();
@@ -21,6 +23,17 @@ export default function MenuBar({ onSelectMenuAction }) {
   const [isBluetoothOn, setIsBluetoothOn] = useState(true);
   const [isMuted, setIsMuted] = useState(!soundService.getSoundEnabled());
   const [volume, setVolume] = useState(80);
+
+  const {
+    petState,
+    currentSpecies,
+    setPetId,
+    toggleVisibility,
+    feedPet,
+    playWithPet,
+    toggleSleep,
+    patPet,
+  } = useDesktopPet();
 
   const menuBarRef = useRef(null);
 
@@ -426,6 +439,167 @@ export default function MenuBar({ onSelectMenuAction }) {
                   className="underline hover:opacity-100"
                 >
                   Test Click
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Desktop Pet Control */}
+        <div className="relative h-full flex items-center">
+          <button
+            type="button"
+            onClick={() => toggleStatusPopup("pet")}
+            title={`Desktop Pet: ${currentSpecies.name} (${petState.actionState.toUpperCase()})`}
+            className={`flex items-center justify-center p-1 font-mono text-xs cursor-default ${
+              activeStatusPopup === "pet"
+                ? "bg-[var(--os-fg)] text-[var(--os-bg)]"
+                : `text-[var(--os-fg)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] ${
+                    !petState.isVisible ? "opacity-50" : ""
+                  }`
+            }`}
+          >
+            <AppIconGraphic iconType="pet" className="w-3.5 h-3.5" />
+          </button>
+
+          {activeStatusPopup === "pet" && (
+            <div className="absolute top-full right-0 mt-0.5 bg-[var(--os-bg)] text-[var(--os-fg)] border-2 border-[var(--os-border)] os-window-shadow min-w-64 p-2.5 z-50 space-y-2.5">
+              {/* Pet Info Header */}
+              <div className="flex items-center justify-between border-b border-[var(--os-border)]/40 pb-1.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-base">{currentSpecies.icon}</span>
+                  <div>
+                    <div className="font-black text-xs">{currentSpecies.name}</div>
+                    <div className="text-[9px] opacity-65">
+                      Status: {petState.actionState.toUpperCase()}
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    toggleVisibility();
+                  }}
+                  className={`px-2 py-0.5 text-[10px] font-bold border border-[var(--os-border)] cursor-pointer ${
+                    petState.isVisible
+                      ? "bg-[var(--os-fg)] text-[var(--os-bg)]"
+                      : "bg-[var(--os-bg)] text-[var(--os-fg)] opacity-60"
+                  }`}
+                >
+                  {petState.isVisible ? "ON DESKTOP" : "HIDDEN"}
+                </button>
+              </div>
+
+              {/* Happiness & Hunger Bar */}
+              <div className="space-y-1.5 text-[10px]">
+                <div className="space-y-0.5">
+                  <div className="flex justify-between opacity-80 font-bold">
+                    <span>Happiness</span>
+                    <span>{petState.happiness}%</span>
+                  </div>
+                  <div className="h-1.5 w-full border border-[var(--os-border)] bg-[var(--os-bg)]">
+                    <div
+                      className="h-full bg-[var(--os-fg)]"
+                      style={{ width: `${petState.happiness}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-0.5">
+                  <div className="flex justify-between opacity-80 font-bold">
+                    <span>Fullness</span>
+                    <span>{petState.hunger}%</span>
+                  </div>
+                  <div className="h-1.5 w-full border border-[var(--os-border)] bg-[var(--os-bg)]">
+                    <div
+                      className="h-full bg-[var(--os-fg)]"
+                      style={{ width: `${petState.hunger}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Switch Pet Selector */}
+              <div className="space-y-1">
+                <div className="text-[9px] uppercase font-bold tracking-wider opacity-60">
+                  Switch Companion
+                </div>
+                <div className="grid grid-cols-5 gap-1">
+                  {PET_SPECIES.map((spec) => (
+                    <button
+                      key={spec.id}
+                      type="button"
+                      onClick={() => setPetId(spec.id)}
+                      title={`${spec.name} - ${spec.subtitle}`}
+                      className={`p-1 border text-center font-bold text-xs cursor-pointer transition-colors ${
+                        petState.petId === spec.id
+                          ? "bg-[var(--os-fg)] text-[var(--os-bg)] border-[var(--os-border)]"
+                          : "border-[var(--os-border)]/50 hover:bg-[var(--os-fg)]/10"
+                      }`}
+                    >
+                      <div>{spec.icon}</div>
+                      <div className="text-[8px] truncate mt-0.5">
+                        {spec.name.split(" ")[0]}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="grid grid-cols-4 gap-1 pt-1 border-t border-[var(--os-border)]/40">
+                <button
+                  type="button"
+                  onClick={() => feedPet()}
+                  className="py-1 px-1 border border-[var(--os-border)] text-center text-[10px] font-bold hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] cursor-pointer"
+                >
+                  🍖 Feed
+                </button>
+                <button
+                  type="button"
+                  onClick={() => playWithPet()}
+                  className="py-1 px-1 border border-[var(--os-border)] text-center text-[10px] font-bold hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] cursor-pointer"
+                >
+                  🎾 Play
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleSleep}
+                  className="py-1 px-1 border border-[var(--os-border)] text-center text-[10px] font-bold hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] cursor-pointer"
+                >
+                  💤 {petState.actionState === "sleeping" ? "Wake" : "Sleep"}
+                </button>
+                <button
+                  type="button"
+                  onClick={patPet}
+                  className="py-1 px-1 border border-[var(--os-border)] text-center text-[10px] font-bold hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] cursor-pointer"
+                >
+                  ❤️ Pet
+                </button>
+              </div>
+
+              {/* Open Pet App Link */}
+              <div className="border-t border-[var(--os-border)]/40 pt-1.5 flex justify-between items-center text-[10px]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveStatusPopup(null);
+                    onSelectMenuAction?.("pet");
+                  }}
+                  className="font-bold underline hover:opacity-100 cursor-pointer"
+                >
+                  Open Pet Companion App ↗
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    toggleVisibility(false);
+                    setActiveStatusPopup(null);
+                  }}
+                  className="text-[9px] opacity-60 hover:opacity-100 cursor-pointer"
+                >
+                  Dismiss Pet
                 </button>
               </div>
             </div>

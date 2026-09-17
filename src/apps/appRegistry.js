@@ -49,10 +49,17 @@ import { itunesAppConfig } from './itunes/config.js'
 import PortfolioApp from './portfolio/index.jsx'
 import { portfolioAppConfig } from './portfolio/config.js'
 
+import DesktopPetApp from './pet/index.jsx'
+import { desktopPetConfig } from './pet/config.js'
+
 export const appRegistry = [
   {
     ...portfolioAppConfig,
     component: PortfolioApp,
+  },
+  {
+    ...desktopPetConfig,
+    component: DesktopPetApp,
   },
   {
     ...browserAppConfig,

@@ -7,6 +7,7 @@ import Dock from './Dock.jsx'
 import Launchpad from './Launchpad.jsx'
 import ErrorBoundary from '../common/ErrorBoundary.jsx'
 import ContextMenu from '../common/ContextMenu.jsx'
+import DesktopPetSprite from '../../apps/pet/DesktopPetSprite.jsx'
 import { soundService } from '../../services/soundService.js'
 import { useOS } from '../../hooks/useOS.js'
 import { useDesktopIcons } from '../../hooks/useDesktopIcons.js'
@@ -94,6 +95,10 @@ export default function Desktop() {
       case 'itunes':
       case 'music':
         openApp('itunes')
+        break
+      case 'pet':
+      case 'desktoppet':
+        openApp('pet')
         break
       case 'browser':
         openApp('browser')
@@ -455,6 +460,9 @@ export default function Desktop() {
           {renderWindowContent(win.appId, win.id, win)}
         </Window>
       ))}
+
+      {/* Floating Desktop Pet */}
+      <DesktopPetSprite />
 
       <Dock />
 

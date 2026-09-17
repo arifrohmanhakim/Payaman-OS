@@ -61,6 +61,23 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
           <line x1="16" y1="9" x2="22" y2="15" strokeLinecap="round" />
         </svg>
       )
+    case 'pet':
+    case 'paw':
+    case 'cat':
+    case 'dog':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <ellipse cx="12" cy="15" rx="4.5" ry="3.5" fill="currentColor" />
+          <ellipse cx="6.5" cy="9.5" rx="1.8" ry="2.5" fill="currentColor" transform="rotate(-15 6.5 9.5)" />
+          <ellipse cx="10.2" cy="7" rx="1.8" ry="2.5" fill="currentColor" transform="rotate(-5 10.2 7)" />
+          <ellipse cx="13.8" cy="7" rx="1.8" ry="2.5" fill="currentColor" transform="rotate(5 13.8 7)" />
+          <ellipse cx="17.5" cy="9.5" rx="1.8" ry="2.5" fill="currentColor" transform="rotate(15 17.5 9.5)" />
+        </svg>
+      )
     case 'portfolio':
     case 'profile':
     case 'developer':

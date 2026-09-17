@@ -55,6 +55,26 @@ export const APPS_INFO = {
       { key: '⌘G', desc: 'Open GitHub Profile' },
     ],
   },
+  pet: {
+    id: 'pet',
+    title: 'Desktop Pet',
+    version: '1.0',
+    iconType: 'pet',
+    category: 'Entertainment',
+    tagline: 'Interactive animated desktop virtual companion',
+    description:
+      'Animated desktop companion featuring multiple species (Cat, Dog, Duck, Frog, Hamster), treats, interactive petting, sound effects, and menu bar tray controls.',
+    specs: [
+      { label: 'Species', value: 'Cat, Dog, Duck, Frog, Hamster' },
+      { label: 'Animation', value: 'SVG Vector & Keyframe Sprites' },
+      { label: 'Audio Engine', value: 'Chiptune Synthesizer' },
+      { label: 'Tray Integration', value: 'Menu Bar Status Popover' },
+    ],
+    shortcuts: [
+      { key: 'Click Pet', desc: 'Pet / Cuddle Companion' },
+      { key: 'Drag Pet', desc: 'Reposition on Desktop' },
+    ],
+  },
   finder: {
     id: 'finder',
     title: 'Finder',
