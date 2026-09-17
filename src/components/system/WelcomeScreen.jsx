@@ -162,6 +162,7 @@ export default function WelcomeScreen({ onEnterDesktop, onReboot }) {
 
         {/* Content Body */}
         <div className="p-5 md:p-6 flex flex-col items-center text-center">
+          {/* Retro Computer Graphic Icon */}
           <div className="w-20 h-20 border-2 border-[var(--os-border)] rounded-xl flex items-center justify-center mb-2.5 bg-[var(--os-bg)] p-2 shadow-[2px_2px_0px_var(--os-shadow)]">
             <RetroComputerGraphic className="w-16 h-16" />
           </div>

@@ -593,6 +593,7 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
         {
           label: 'File',
           items: [
+            { label: 'Developer Portfolio', action: 'portfolio', shortcut: '⌘P' },
             { label: 'Open File Manager', action: 'files', shortcut: '⌘O' },
             { label: 'Open iTunes', action: 'itunes' },
             { label: 'Open Browser', action: 'browser', shortcut: '⌘B' },

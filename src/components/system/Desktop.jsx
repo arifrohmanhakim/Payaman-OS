@@ -83,6 +83,11 @@ export default function Desktop() {
         })
         break
       }
+      case 'portfolio':
+      case 'profile':
+      case 'developer':
+        openApp('portfolio')
+        break
       case 'preferences':
         openApp('preferences')
         break
@@ -219,6 +224,12 @@ export default function Desktop() {
         x: e.clientX,
         y: e.clientY,
         items: [
+          {
+            label: 'Developer Portfolio',
+            icon: '👤',
+            shortcut: '⌘P',
+            onSelect: () => openApp('portfolio'),
+          },
           {
             label: 'New Folder',
             icon: '📁',

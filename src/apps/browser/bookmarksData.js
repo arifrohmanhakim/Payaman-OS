@@ -1,5 +1,29 @@
 export const DEFAULT_BOOKMARKS = [
   {
+    id: 'arif-portfolio',
+    title: 'Arif Rohman Hakim (Website)',
+    url: 'https://arifrohmanhakim.com',
+    icon: '🌐',
+    category: 'Portfolio',
+    description: 'Personal portfolio and developer site',
+  },
+  {
+    id: 'arif-linkedin',
+    title: 'Arif LinkedIn Profile',
+    url: 'https://www.linkedin.com/in/arif-rohman-hakim/',
+    icon: '💼',
+    category: 'Portfolio',
+    description: 'Professional experience and network',
+  },
+  {
+    id: 'arif-github',
+    title: 'Arif GitHub (@arifrohmanhakim)',
+    url: 'https://github.com/arifrohmanhakim',
+    icon: '🐙',
+    category: 'Portfolio',
+    description: 'Open source repositories and contributions',
+  },
+  {
     id: 'ddg-lite',
     title: 'DuckDuckGo Lite',
     url: 'https://lite.duckduckgo.com/lite/',

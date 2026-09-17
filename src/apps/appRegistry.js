@@ -46,7 +46,14 @@ import { payamanChatConfig } from './chat/config.js'
 import ITunesApp from './itunes/index.jsx'
 import { itunesAppConfig } from './itunes/config.js'
 
+import PortfolioApp from './portfolio/index.jsx'
+import { portfolioAppConfig } from './portfolio/config.js'
+
 export const appRegistry = [
+  {
+    ...portfolioAppConfig,
+    component: PortfolioApp,
+  },
   {
     ...browserAppConfig,
     component: BrowserApp,

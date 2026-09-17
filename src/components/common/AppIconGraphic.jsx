@@ -61,6 +61,22 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
           <line x1="16" y1="9" x2="22" y2="15" strokeLinecap="round" />
         </svg>
       )
+    case 'portfolio':
+    case 'profile':
+    case 'developer':
+    case 'user':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <rect x="4" y="4" width="24" height="24" rx="2" />
+          <circle cx="16" cy="12" r="4" />
+          <path d="M8 24 C8 19 12 18 16 18 C20 18 24 19 24 24" />
+          <line x1="8" y1="8" x2="11" y2="8" strokeWidth="2" />
+        </svg>
+      )
     case 'itunes':
     case 'music':
     case 'song':

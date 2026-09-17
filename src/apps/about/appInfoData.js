@@ -4,7 +4,18 @@ export const SYSTEM_INFO = {
   build: '2026.09',
   architecture: 'Client-side Modular Web OS',
   tagline: 'Retro Monochrome Desktop Environment',
+  developer: {
+    name: 'Arif Rohman Hakim',
+    location: 'Yogyakarta, Indonesia',
+    github: 'https://github.com/arifrohmanhakim',
+    linkedin: 'https://www.linkedin.com/in/arif-rohman-hakim/',
+    website: 'https://arifrohmanhakim.com',
+  },
   specs: [
+    { label: 'Developer', value: 'Arif Rohman Hakim (Yogyakarta, ID)' },
+    { label: 'LinkedIn', value: 'linkedin.com/in/arif-rohman-hakim' },
+    { label: 'GitHub Profile', value: 'github.com/arifrohmanhakim' },
+    { label: 'Personal Web', value: 'arifrohmanhakim.com' },
     { label: 'Processor', value: 'JavaScript V8 / Web Runtime' },
     { label: 'UI Framework', value: 'React 19 + Vite' },
     { label: 'Styling Engine', value: 'Tailwind CSS v4 (Monochrome)' },
@@ -14,7 +25,7 @@ export const SYSTEM_INFO = {
     { label: 'Display', value: 'Monochrome Retina (1-bit / Halftone)' },
   ],
   credits: [
-    { role: 'Core Architect', name: 'Arif & Payaman Lab' },
+    { role: 'Author & System Architect', name: 'Arif Rohman Hakim' },
     { role: 'Component Engine', name: 'React 19' },
     { role: 'Terminal Shell', name: 'xterm.js' },
     { role: 'Audio Synthesizer', name: 'Web Audio API' },
@@ -23,6 +34,27 @@ export const SYSTEM_INFO = {
 }
 
 export const APPS_INFO = {
+  portfolio: {
+    id: 'portfolio',
+    title: 'Portfolio',
+    version: '1.0',
+    iconType: 'portfolio',
+    category: 'Developer Profile',
+    tagline: 'Arif Rohman Hakim Portfolio & Project Showcase',
+    description:
+      'Explore projects, engineering competencies, and technical profiles of Arif Rohman Hakim (Fullstack Software Engineer & System Architect).',
+    specs: [
+      { label: 'Developer', value: 'Arif Rohman Hakim' },
+      { label: 'Location', value: 'Yogyakarta, Indonesia' },
+      { label: 'LinkedIn', value: 'linkedin.com/in/arif-rohman-hakim' },
+      { label: 'GitHub', value: 'github.com/arifrohmanhakim' },
+      { label: 'Website', value: 'arifrohmanhakim.com' },
+    ],
+    shortcuts: [
+      { key: '⌘P', desc: 'Open Developer Portfolio' },
+      { key: '⌘G', desc: 'Open GitHub Profile' },
+    ],
+  },
   finder: {
     id: 'finder',
     title: 'Finder',
