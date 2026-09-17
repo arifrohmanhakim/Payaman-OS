@@ -164,6 +164,11 @@ export default function Desktop() {
       case 'calculator':
         openApp('calc')
         break
+      case 'sheets':
+      case 'payamancalc':
+      case 'spreadsheet':
+        openApp('sheets')
+        break
       case 'minesweeper':
         openApp('minesweeper')
         break
@@ -282,6 +287,11 @@ export default function Desktop() {
             label: 'New Sticky Note',
             shortcut: '⌥⌘N',
             onSelect: () => openApp('stickynotes'),
+          },
+          {
+            label: 'New Spreadsheet (Calc)',
+            shortcut: '⌥⌘S',
+            onSelect: () => openApp('sheets'),
           },
           {
             label: 'New Note (Write)',

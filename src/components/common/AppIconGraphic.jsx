@@ -570,6 +570,31 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
           <circle cx="22" cy="14.5" r="1.2" fill="currentColor" />
         </svg>
       )
+    case 'sheets':
+    case 'sheet':
+    case 'spreadsheet':
+    case 'excel':
+    case 'calc-sheet':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          {/* Main Grid Frame */}
+          <rect x="4" y="4" width="24" height="24" rx="2" strokeWidth="1.75" />
+          {/* Header row */}
+          <line x1="4" y1="12" x2="28" y2="12" strokeWidth="1.5" />
+          {/* Row dividers */}
+          <line x1="4" y1="18" x2="28" y2="18" />
+          <line x1="4" y1="23" x2="28" y2="23" />
+          {/* Column dividers */}
+          <line x1="12" y1="4" x2="12" y2="28" strokeWidth="1.5" />
+          <line x1="20" y1="4" x2="20" y2="28" />
+          {/* Formula symbol on top-left header */}
+          <path d="M6 7 H10 L7.5 9 L10 11 H6" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )
     default:
       return (
         <svg

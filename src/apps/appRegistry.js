@@ -61,7 +61,14 @@ import { snakeAppConfig } from './snake/config.js'
 import StickyNotesApp from './stickynotes/index.jsx'
 import { stickyNotesAppConfig } from './stickynotes/config.js'
 
+import PayamanCalcApp from './sheets/index.jsx'
+import { sheetsAppConfig } from './sheets/config.js'
+
 export const appRegistry = [
+  {
+    ...sheetsAppConfig,
+    component: PayamanCalcApp,
+  },
   {
     ...portfolioAppConfig,
     component: PortfolioApp,
