@@ -12,6 +12,7 @@ export default function Window({
   onSnap,
   onPositionChange,
   onSizeChange,
+  onContextMenu,
   children,
 }) {
   const { id, title, x, y, width, height, zIndex, isMinimized, isMaximized } =
@@ -213,6 +214,10 @@ export default function Window({
           zIndex,
           opacity: isMinimizingAnim ? 0 : 1,
         }}
+        onContextMenu={(e) => {
+          // Jangan biarkan klik kanan di dalam window memicu desktop context menu
+          e.stopPropagation();
+        }}
         className={`absolute top-0 left-0 bg-[var(--os-bg)] border-2 border-[var(--os-border)] ${
           isMaximized ? "os-window-shadow border-t-0" : "os-window-shadow"
         } flex flex-col select-none text-[var(--os-fg)] font-mono text-xs origin-bottom ${
@@ -224,6 +229,11 @@ export default function Window({
         <header
           onMouseDown={handleTitleBarMouseDown}
           onDoubleClick={handleToggleMaximize}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onContextMenu?.(e, windowData);
+          }}
           className={`h-6 border-b-2 border-[var(--os-border)] relative flex items-center justify-between px-2 ${
             isMaximized ? "cursor-default" : "cursor-move"
           } ${isActive ? "os-titlebar-stripes" : "bg-[var(--os-bg)]"}`}

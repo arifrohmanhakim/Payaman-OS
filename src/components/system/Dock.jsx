@@ -3,7 +3,7 @@ import { getAppById } from "../../apps/appRegistry.js";
 import { useOS } from "../../hooks/useOS.js";
 import AppIconGraphic from "../common/AppIconGraphic.jsx";
 
-export default function Dock() {
+export default function Dock({ onItemContextMenu, onCanvasContextMenu }) {
   const {
     windows,
     activeWindowId,
@@ -170,6 +170,11 @@ export default function Dock() {
           type="button"
           aria-label={app.title}
           onClick={() => handleItemClick(app.id)}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onItemContextMenu?.(e, app.id);
+          }}
           className={`${sizeClasses.button} flex items-center justify-center border-2 transition-none cursor-pointer focus:outline-none ${
             isFront
               ? "bg-[var(--os-fg)]/20 border-[var(--os-border)] shadow-[inset_1px_1px_0px_var(--os-border)]"
@@ -257,6 +262,13 @@ export default function Dock() {
       aria-label="Application Dock"
       onMouseEnter={() => setIsHoveringDock(true)}
       onMouseLeave={() => setIsHoveringDock(false)}
+      onContextMenu={(e) => {
+        if (e.target === e.currentTarget || e.target.closest('nav') === e.currentTarget) {
+          e.preventDefault();
+          e.stopPropagation();
+          onCanvasContextMenu?.(e);
+        }
+      }}
       className={`${posClasses.container} z-40 bg-[var(--os-bg)] border-2 border-[var(--os-border)] os-window-shadow rounded-none ${sizeClasses.containerPadding} flex gap-1 select-none`}
     >
       <div className={`flex gap-1 ${posClasses.content}`}>

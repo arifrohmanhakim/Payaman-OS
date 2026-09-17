@@ -492,6 +492,142 @@ export default function Desktop() {
     [openApp, cleanUpIcons, uiScale]
   )
 
+  const handleWindowContextMenu = useCallback(
+    (e, windowData) => {
+      soundService.playClick()
+      focusWindow(windowData.id)
+
+      setContextMenu({
+        isOpen: true,
+        x: Math.round(e.clientX / uiScale),
+        y: Math.round(e.clientY / uiScale),
+        items: [
+          {
+            header: windowData.title,
+          },
+          {
+            label: 'Minimize',
+            shortcut: '⌘M',
+            onSelect: () => minimizeWindow(windowData.id),
+          },
+          {
+            label: windowData.isMaximized ? 'Restore Window' : 'Maximize',
+            shortcut: '⌘+',
+            onSelect: () => toggleMaximizeWindow(windowData.id),
+          },
+          { divider: true },
+          {
+            label: 'Tile Left (Split Screen)',
+            shortcut: '⌥←',
+            onSelect: () => snapWindow(windowData.id, 'left'),
+          },
+          {
+            label: 'Tile Right (Split Screen)',
+            shortcut: '⌥→',
+            onSelect: () => snapWindow(windowData.id, 'right'),
+          },
+          { divider: true },
+          {
+            label: 'Close Window',
+            shortcut: '⌘W',
+            onSelect: () => closeWindow(windowData.id),
+          },
+        ],
+      })
+    },
+    [focusWindow, minimizeWindow, toggleMaximizeWindow, snapWindow, closeWindow, uiScale]
+  )
+
+  const handleDockItemContextMenu = useCallback(
+    (e, appId) => {
+      soundService.playClick()
+      const appDef = getAppById(appId)
+      const appTitle = appDef?.title || appId
+      const existingWindow = windows.find((w) => w.appId === appId)
+      const isOpen = Boolean(existingWindow)
+      const isMinimized = existingWindow?.isMinimized
+
+      setContextMenu({
+        isOpen: true,
+        x: Math.round(e.clientX / uiScale),
+        y: Math.round(e.clientY / uiScale),
+        items: [
+          {
+            header: appTitle,
+          },
+          {
+            label: isOpen
+              ? isMinimized
+                ? 'Restore Window'
+                : 'Bring to Front'
+              : `Open ${appTitle}`,
+            shortcut: '↵',
+            onSelect: () => {
+              openApp(appId)
+            },
+          },
+          ...(isOpen
+            ? [
+                {
+                  label: 'Close Window',
+                  shortcut: '⌘W',
+                  onSelect: () => {
+                    if (existingWindow) closeWindow(existingWindow.id)
+                  },
+                },
+              ]
+            : []),
+          { divider: true },
+          {
+            label: 'Get Info...',
+            shortcut: '⌘I',
+            onSelect: () =>
+              openApp('about', {
+                targetAppId: appId,
+                title: `About ${appTitle}`,
+              }),
+          },
+          {
+            label: 'Dock Preferences...',
+            shortcut: '⌘,',
+            onSelect: () => openApp('preferences', { initialTab: 'dock' }),
+          },
+        ],
+      })
+    },
+    [windows, openApp, closeWindow, uiScale]
+  )
+
+  const handleDockCanvasContextMenu = useCallback(
+    (e) => {
+      soundService.playClick()
+      setContextMenu({
+        isOpen: true,
+        x: Math.round(e.clientX / uiScale),
+        y: Math.round(e.clientY / uiScale),
+        items: [
+          {
+            header: 'Dock Options',
+          },
+          {
+            label: 'Dock Preferences...',
+            shortcut: '⌘,',
+            onSelect: () => openApp('preferences', { initialTab: 'dock' }),
+          },
+          { divider: true },
+          {
+            label: 'Clean Up Icons',
+            onSelect: () => {
+              cleanUpIcons()
+              soundService.playClick()
+            },
+          },
+        ],
+      })
+    },
+    [openApp, cleanUpIcons, uiScale]
+  )
+
   const renderWindowContent = (appId, windowId, windowData) => {
     const appDef = getAppById(appId)
     if (!appDef || !appDef.component) {
@@ -520,7 +656,6 @@ export default function Desktop() {
           closeContextMenu()
         }
       }}
-      onContextMenu={handleDesktopContextMenu}
       style={{
         zoom: uiScale !== 1.0 ? uiScale : undefined,
         width: uiScale !== 1.0 ? `calc(100vw / ${uiScale})` : '100vw',
@@ -598,6 +733,7 @@ export default function Desktop() {
           onSnap={snapWindow}
           onPositionChange={updateWindowPosition}
           onSizeChange={updateWindowSize}
+          onContextMenu={handleWindowContextMenu}
         >
           {renderWindowContent(win.appId, win.id, win)}
         </Window>
@@ -609,7 +745,10 @@ export default function Desktop() {
       {/* Floating Desktop Sticky Notes */}
       <DesktopStickyNotes />
 
-      <Dock />
+      <Dock
+        onItemContextMenu={handleDockItemContextMenu}
+        onCanvasContextMenu={handleDockCanvasContextMenu}
+      />
 
       <Launchpad />
 
