@@ -207,10 +207,10 @@ export default function TerminalApp({ onClose }) {
     const term = new Terminal({
       cursorBlink: true,
       cursorStyle: "block",
-      fontSize: 12,
-      lineHeight: 1.2,
+      fontSize: 13,
+      lineHeight: 1.25,
       fontFamily:
-        "Sysfont, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+        "'Menlo', 'Monaco', 'Cascadia Code', 'SF Mono', 'Consolas', 'DejaVu Sans Mono', 'Courier New', monospace",
       theme: buildXtermTheme(profile),
       convertEol: true,
       allowTransparency: false,
@@ -388,6 +388,8 @@ export default function TerminalApp({ onClose }) {
       style={{
         backgroundColor: currentProfile.background,
         padding: "8px",
+        fontFamily:
+          "'Menlo', 'Monaco', 'Cascadia Code', 'SF Mono', 'Consolas', 'DejaVu Sans Mono', 'Courier New', monospace",
       }}
     >
       <div ref={containerRef} className="w-full h-full" />

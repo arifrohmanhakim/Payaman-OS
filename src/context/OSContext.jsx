@@ -6,6 +6,7 @@ import { useWindowManager } from '../hooks/useWindowManager.js'
 import { useScreenSaver } from '../hooks/useScreenSaver.js'
 import { DEFAULT_DOCK_SETTINGS } from '../constants/dock.js'
 import { DEFAULT_DISPLAY_SETTINGS } from '../constants/display.js'
+import { DEFAULT_CUSTOM_THEME } from '../constants/theme.js'
 import { OSContext } from './OSContextInstance.js'
 
 const getInitialWindows = (uiScale = 1.0) => {
@@ -35,6 +36,9 @@ export function OSProvider({ children }) {
   const [activeModal, setActiveModal] = useState(null)
   const [theme, setThemeState] = useState(() => {
     return storageService.getItem('os_theme', 'classic')
+  })
+  const [customThemeColors, setCustomThemeColorsState] = useState(() => {
+    return storageService.getItem('os_custom_theme', DEFAULT_CUSTOM_THEME)
   })
   const [pattern, setPatternState] = useState(() => {
     return storageService.getItem('os_pattern', 'halftone')
@@ -83,6 +87,14 @@ export function OSProvider({ children }) {
     setThemeState(newTheme)
     storageService.setItem('os_theme', newTheme)
     soundService.playClick()
+  }, [])
+
+  const setCustomThemeColors = useCallback((colors) => {
+    setCustomThemeColorsState((prev) => {
+      const updated = typeof colors === 'function' ? colors(prev) : { ...prev, ...colors }
+      storageService.setItem('os_custom_theme', updated)
+      return updated
+    })
   }, [])
 
   const setPattern = useCallback((newPattern) => {
@@ -238,6 +250,7 @@ export function OSProvider({ children }) {
       activeWindowId,
       activeModal,
       theme,
+      customThemeColors,
       pattern,
       customWallpaper,
       dockSettings,
@@ -245,6 +258,7 @@ export function OSProvider({ children }) {
       isLaunchpadOpen,
       isSpotlightOpen,
       setTheme,
+      setCustomThemeColors,
       setPattern,
       setCustomWallpaper,
       clearCustomWallpaper,
@@ -284,6 +298,7 @@ export function OSProvider({ children }) {
       activeWindowId,
       activeModal,
       theme,
+      customThemeColors,
       pattern,
       customWallpaper,
       dockSettings,
@@ -291,6 +306,7 @@ export function OSProvider({ children }) {
       isLaunchpadOpen,
       isSpotlightOpen,
       setTheme,
+      setCustomThemeColors,
       setPattern,
       setCustomWallpaper,
       clearCustomWallpaper,

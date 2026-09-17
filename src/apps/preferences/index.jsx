@@ -1,25 +1,149 @@
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Panel from "../../components/ui/Panel.jsx";
 import Button from "../../components/ui/Button.jsx";
 import Checkbox from "../../components/ui/Checkbox.jsx";
 import { useOS } from "../../hooks/useOS.js";
 import { soundService } from "../../services/soundService.js";
 import { storageService } from "../../services/storageService.js";
-import { THEMES, PATTERNS } from "../../constants/theme.js";
+import { THEMES, PATTERNS, THEME_PRESETS } from "../../constants/theme.js";
 import { DOCK_SIZES, DOCK_POSITIONS } from "../../constants/dock.js";
 import { DISPLAY_SCALES } from "../../constants/display.js";
 
+function TabIcon({ type, className = "w-3.5 h-3.5" }) {
+  switch (type) {
+    case "appearance":
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 16 16"
+        >
+          <rect x="2" y="2" width="12" height="12" />
+          <line x1="2" y1="6" x2="14" y2="6" strokeDasharray="1 1" />
+          <rect x="4" y="8" width="3" height="4" fill="currentColor" />
+          <rect x="9" y="8" width="3" height="4" />
+        </svg>
+      );
+    case "dock":
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 16 16"
+        >
+          <rect x="2" y="10" width="12" height="4" />
+          <circle cx="5" cy="12" r="0.75" fill="currentColor" />
+          <circle cx="8" cy="12" r="0.75" fill="currentColor" />
+          <circle cx="11" cy="12" r="0.75" fill="currentColor" />
+        </svg>
+      );
+    case "display":
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 16 16"
+        >
+          <rect x="2" y="2" width="12" height="9" />
+          <line x1="8" y1="11" x2="8" y2="14" />
+          <line x1="5" y1="14" x2="11" y2="14" />
+        </svg>
+      );
+    case "screensaver":
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 16 16"
+        >
+          <polygon points="8,1 10,6 15,6 11,9.5 12.5,14.5 8,11.5 3.5,14.5 5,9.5 1,6 6,6" />
+        </svg>
+      );
+    case "sound":
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 16 16"
+        >
+          <polygon
+            points="6 4 3 6 1 6 1 10 3 10 6 12 6 4"
+            fill="currentColor"
+            stroke="none"
+          />
+          <path d="M9 5.5 a 3 3 0 0 1 0 5" strokeLinecap="round" />
+          <path d="M12 3.5 a 6 6 0 0 1 0 9" strokeLinecap="round" />
+        </svg>
+      );
+    case "system":
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 16 16"
+        >
+          <rect x="4" y="4" width="8" height="8" />
+          <line x1="2" y1="6" x2="4" y2="6" />
+          <line x1="2" y1="10" x2="4" y2="10" />
+          <line x1="12" y1="6" x2="14" y2="6" />
+          <line x1="12" y1="10" x2="14" y2="10" />
+          <line x1="6" y1="2" x2="6" y2="4" />
+          <line x1="10" y1="2" x2="10" y2="4" />
+          <line x1="6" y1="12" x2="6" y2="14" />
+          <line x1="10" y1="12" x2="10" y2="14" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
+
 const PREF_KEY_SOUND = "sound_enabled";
 
+const PREFERENCE_TABS = [
+  { id: "appearance", label: "Appearance" },
+  { id: "dock", label: "Dock" },
+  { id: "display", label: "Display" },
+  { id: "screensaver", label: "Screen Saver" },
+  { id: "sound", label: "Sound" },
+  { id: "system", label: "System" },
+];
+
 export default function PreferencesApp({ windowData }) {
-  const [activeTab, setActiveTab] = useState(windowData?.initialTab || "appearance");
+  const [activeTab, setActiveTab] = useState(
+    windowData?.initialTab || "appearance",
+  );
+  const scrollContainerRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkScroll = useCallback(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  }, []);
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener("resize", checkScroll);
+    return () => window.removeEventListener("resize", checkScroll);
+  }, [checkScroll]);
+
+  const handleScroll = (direction) => {
+    soundService.playClick();
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    const scrollAmount = 120;
+    el.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
+    });
+  };
+
   const {
     theme,
+    customThemeColors,
     pattern,
     customWallpaper,
     dockSettings,
     displaySettings,
     setTheme,
+    setCustomThemeColors,
     setPattern,
     clearCustomWallpaper,
     updateDockSettings,
@@ -50,194 +174,262 @@ export default function PreferencesApp({ windowData }) {
 
   return (
     <div className="flex flex-col h-full space-y-3 font-mono text-xs text-[var(--os-fg)]">
-      <nav className="flex border-b-2 border-[var(--os-border)] -mx-3 -mt-3 px-3 pt-1 bg-[var(--os-bg)] gap-1 overflow-x-auto">
-        <button
-          type="button"
-          onClick={() => {
-            soundService.playClick();
-            setActiveTab("appearance");
-          }}
-          className={`px-3 py-1.5 font-bold border-t-2 border-x-2 border-[var(--os-border)] transition-none ${
-            activeTab === "appearance"
-              ? "bg-[var(--os-bg)] text-[var(--os-fg)] -mb-[2px] border-b-2 border-b-[var(--os-bg)]"
-              : "bg-[var(--os-bg)]/40 text-[var(--os-fg)]/70 hover:text-[var(--os-fg)]"
-          }`}
+      <nav className="flex items-end border-b-2 border-[var(--os-border)] -mx-3 -mt-3 px-3 bg-[var(--os-bg)] relative z-10">
+        <div
+          ref={scrollContainerRef}
+          onScroll={checkScroll}
+          className="flex gap-1 overflow-x-hidden select-none flex-1 items-end [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          Appearance
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            soundService.playClick();
-            setActiveTab("dock");
-          }}
-          className={`px-3 py-1.5 font-bold border-t-2 border-x-2 border-[var(--os-border)] transition-none ${
-            activeTab === "dock"
-              ? "bg-[var(--os-bg)] text-[var(--os-fg)] -mb-[2px] border-b-2 border-b-[var(--os-bg)]"
-              : "bg-[var(--os-bg)]/40 text-[var(--os-fg)]/70 hover:text-[var(--os-fg)]"
-          }`}
-        >
-          Dock
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            soundService.playClick();
-            setActiveTab("display");
-          }}
-          className={`px-3 py-1.5 font-bold border-t-2 border-x-2 border-[var(--os-border)] transition-none ${
-            activeTab === "display"
-              ? "bg-[var(--os-bg)] text-[var(--os-fg)] -mb-[2px] border-b-2 border-b-[var(--os-bg)]"
-              : "bg-[var(--os-bg)]/40 text-[var(--os-fg)]/70 hover:text-[var(--os-fg)]"
-          }`}
-        >
-          Display
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            soundService.playClick();
-            setActiveTab("screensaver");
-          }}
-          className={`px-3 py-1.5 font-bold border-t-2 border-x-2 border-[var(--os-border)] transition-none ${
-            activeTab === "screensaver"
-              ? "bg-[var(--os-bg)] text-[var(--os-fg)] -mb-[2px] border-b-2 border-b-[var(--os-bg)]"
-              : "bg-[var(--os-bg)]/40 text-[var(--os-fg)]/70 hover:text-[var(--os-fg)]"
-          }`}
-        >
-          Screen Saver
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            soundService.playClick();
-            setActiveTab("sound");
-          }}
-          className={`px-3 py-1.5 font-bold border-t-2 border-x-2 border-[var(--os-border)] transition-none ${
-            activeTab === "sound"
-              ? "bg-[var(--os-bg)] text-[var(--os-fg)] -mb-[2px] border-b-2 border-b-[var(--os-bg)]"
-              : "bg-[var(--os-bg)]/40 text-[var(--os-fg)]/70 hover:text-[var(--os-fg)]"
-          }`}
-        >
-          Sound
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            soundService.playClick();
-            setActiveTab("system");
-          }}
-          className={`px-3 py-1.5 font-bold border-t-2 border-x-2 border-[var(--os-border)] transition-none ${
-            activeTab === "system"
-              ? "bg-[var(--os-bg)] text-[var(--os-fg)] -mb-[2px] border-b-2 border-b-[var(--os-bg)]"
-              : "bg-[var(--os-bg)]/40 text-[var(--os-fg)]/70 hover:text-[var(--os-fg)]"
-          }`}
-        >
-          System
-        </button>
+          {PREFERENCE_TABS.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => {
+                  soundService.playClick();
+                  setActiveTab(tab.id);
+                }}
+                className={`px-3 py-1.5 text-xs flex items-center gap-1.5 transition-none cursor-pointer whitespace-nowrap relative shrink-0 ${
+                  isActive
+                    ? "bg-[var(--os-bg)] text-[var(--os-fg)] border-t-2 border-x-2 border-[var(--os-border)] font-bold -mb-[2px] z-20"
+                    : "bg-transparent text-[var(--os-fg)]/60 hover:text-[var(--os-fg)] border-t-2 border-x-2 border-transparent z-0"
+                }`}
+              >
+                <TabIcon type={tab.id} />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="flex items-center gap-1 ml-2 pb-1 shrink-0">
+          <button
+            type="button"
+            disabled={!canScrollLeft}
+            onClick={() => handleScroll("left")}
+            className="w-5 h-5 flex items-center justify-center border-2 border-[var(--os-border)] bg-[var(--os-bg)] text-[var(--os-fg)] text-[10px] font-bold disabled:opacity-20 disabled:cursor-not-allowed hover:enabled:bg-[var(--os-fg)]/10 active:enabled:bg-[var(--os-fg)]/20 cursor-pointer"
+          >
+            ◀
+          </button>
+          <button
+            type="button"
+            disabled={!canScrollRight}
+            onClick={() => handleScroll("right")}
+            className="w-5 h-5 flex items-center justify-center border-2 border-[var(--os-border)] bg-[var(--os-bg)] text-[var(--os-fg)] text-[10px] font-bold disabled:opacity-20 disabled:cursor-not-allowed hover:enabled:bg-[var(--os-fg)]/10 active:enabled:bg-[var(--os-fg)]/20 cursor-pointer"
+          >
+            ▶
+          </button>
+        </div>
       </nav>
 
       {activeTab === "appearance" && (
         <div className="flex-1 overflow-auto space-y-4 pr-1">
-          <Panel title="Live Preview">
-            <div className="flex flex-col sm:flex-row gap-3 items-center">
-              <div
-                className={`w-48 h-32 border-2 border-[var(--os-border)] ${
-                  customWallpaper ? 'bg-cover bg-center' : `pattern-${pattern || 'halftone'}`
-                } p-2 flex items-center justify-center relative overflow-hidden`}
-                style={customWallpaper ? { backgroundImage: `url(${customWallpaper})` } : {}}
-              >
-                <div className="w-36 bg-[var(--os-bg)] border border-[var(--os-border)] os-window-shadow relative z-10">
-                  <div className="h-4 border-b border-[var(--os-border)] os-titlebar-stripes flex items-center justify-between px-1">
-                    <span className="w-2 h-2 border border-[var(--os-border)] bg-[var(--os-bg)]" />
-                    <span className="text-[9px] font-bold bg-[var(--os-bg)] px-1">
-                      Payaman
-                    </span>
-                    <span className="w-2" />
-                  </div>
-                  <div className="p-1.5 text-[9px] text-center space-y-1">
-                    <div>Payaman OS</div>
-                    <div className="px-1 py-0.5 border border-[var(--os-border)] inline-block text-[8px] font-bold">
-                      Button
+          <Panel title="Live Preview & Theme Palette">
+            <div className="flex flex-col sm:flex-row gap-4 items-start">
+              {/* Left Column: Mini Monitor Live Preview */}
+              <div className="w-full sm:w-48 shrink-0 flex flex-col items-center">
+                <div
+                  className={`w-full h-32 border-2 border-[var(--os-border)] ${
+                    customWallpaper
+                      ? "bg-cover bg-center"
+                      : `pattern-${pattern || "halftone"}`
+                  } p-2 flex items-center justify-center relative overflow-hidden`}
+                  style={{
+                    ...(customWallpaper ? { backgroundImage: `url(${customWallpaper})` } : {}),
+                    ...(theme === "custom" && customThemeColors
+                      ? {
+                          "--os-fg": customThemeColors.fg,
+                          "--os-bg": customThemeColors.bg,
+                          "--os-desktop-bg": customThemeColors.desktopBg,
+                          "--os-border": customThemeColors.fg,
+                          "--os-shadow": customThemeColors.fg,
+                        }
+                      : {}),
+                  }}
+                >
+                  <div className="w-36 bg-[var(--os-bg)] text-[var(--os-fg)] border border-[var(--os-border)] os-window-shadow relative z-10">
+                    <div className="h-4 border-b border-[var(--os-border)] os-titlebar-stripes flex items-center justify-between px-1">
+                      <span className="w-2 h-2 border border-[var(--os-border)] bg-[var(--os-bg)]" />
+                      <span className="text-[9px] font-bold bg-[var(--os-bg)] px-1 truncate">
+                        Payaman OS
+                      </span>
+                      <span className="w-2" />
+                    </div>
+                    <div className="p-1.5 text-[9px] text-center space-y-1">
+                      <div>CRT Display</div>
+                      <div className="px-1.5 py-0.5 border border-[var(--os-border)] inline-block text-[8px] font-bold">
+                        Button
+                      </div>
                     </div>
                   </div>
                 </div>
+
+                <span className="text-[10px] opacity-60 mt-1.5 text-center">
+                  Preview: {THEMES.find((t) => t.id === (theme || "classic"))?.name}
+                </span>
               </div>
-              <div className="flex-1 text-[11px] space-y-1.5 opacity-80">
-                <p>
-                  <strong>Active Theme:</strong>{' '}
-                  {THEMES.find((t) => t.id === (theme || 'classic'))?.name}
-                </p>
-                <p>
-                  <strong>Background Mode:</strong>{' '}
-                  {customWallpaper ? 'Custom Wallpaper (Photo)' : (
-                    PATTERNS.find((p) => p.id === (pattern || 'halftone'))?.name
-                  )}
-                </p>
-                {customWallpaper && (
-                  <div>
-                    <Button
-                      variant="default"
-                      onClick={clearCustomWallpaper}
-                      className="text-[10px] py-0.5 px-2"
-                    >
-                      Restore Default Pattern
-                    </Button>
+
+              {/* Right Column: Theme Dropdown & Custom Color Creator */}
+              <div className="flex-1 w-full space-y-3">
+                {/* Theme Selector Dropdown */}
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <label htmlFor="theme-select" className="font-bold text-xs">
+                      Screen Theme (Color Palette)
+                    </label>
+                    <span className="text-[10px] opacity-60">Pilih tema CRT</span>
+                  </div>
+
+                  <select
+                    id="theme-select"
+                    value={theme || "classic"}
+                    onChange={(e) => setTheme(e.target.value)}
+                    className="w-full px-2.5 py-1.5 bg-[var(--os-bg)] text-[var(--os-fg)] border-2 border-[var(--os-border)] font-bold text-xs focus:outline-none cursor-pointer shadow-[2px_2px_0px_var(--os-shadow)]"
+                  >
+                    {THEMES.map((item) => (
+                      <option
+                        key={item.id}
+                        value={item.id}
+                        className="bg-[var(--os-bg)] text-[var(--os-fg)] font-bold"
+                      >
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Custom Color Creator (Shown when theme === 'custom') */}
+                {theme === "custom" && (
+                  <div className="p-2.5 border-2 border-[var(--os-border)] bg-[var(--os-fg)]/5 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold">🎨 DIY Custom Palette Creator</span>
+                      <span className="text-[9px] opacity-70">Atur warna sesukamu</span>
+                    </div>
+
+                    {/* Color Inputs Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      {/* Foreground / Text */}
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold block opacity-80">
+                          Text &amp; Line (FG)
+                        </label>
+                        <div className="flex items-center gap-1.5 border border-[var(--os-border)] p-1 bg-[var(--os-bg)]">
+                          <input
+                            type="color"
+                            value={customThemeColors?.fg || "#00ffcc"}
+                            onChange={(e) => setCustomThemeColors({ fg: e.target.value })}
+                            className="w-5 h-5 border border-[var(--os-border)] cursor-pointer p-0 bg-transparent"
+                          />
+                          <input
+                            type="text"
+                            value={customThemeColors?.fg || "#00ffcc"}
+                            onChange={(e) => setCustomThemeColors({ fg: e.target.value })}
+                            className="w-full text-[10px] bg-transparent font-mono uppercase focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Window Background */}
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold block opacity-80">
+                          Window Surface (BG)
+                        </label>
+                        <div className="flex items-center gap-1.5 border border-[var(--os-border)] p-1 bg-[var(--os-bg)]">
+                          <input
+                            type="color"
+                            value={customThemeColors?.bg || "#0a1917"}
+                            onChange={(e) => setCustomThemeColors({ bg: e.target.value })}
+                            className="w-5 h-5 border border-[var(--os-border)] cursor-pointer p-0 bg-transparent"
+                          />
+                          <input
+                            type="text"
+                            value={customThemeColors?.bg || "#0a1917"}
+                            onChange={(e) => setCustomThemeColors({ bg: e.target.value })}
+                            className="w-full text-[10px] bg-transparent font-mono uppercase focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Desktop Background */}
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold block opacity-80">
+                          Desktop Canvas
+                        </label>
+                        <div className="flex items-center gap-1.5 border border-[var(--os-border)] p-1 bg-[var(--os-bg)]">
+                          <input
+                            type="color"
+                            value={customThemeColors?.desktopBg || "#050d0c"}
+                            onChange={(e) => setCustomThemeColors({ desktopBg: e.target.value })}
+                            className="w-5 h-5 border border-[var(--os-border)] cursor-pointer p-0 bg-transparent"
+                          />
+                          <input
+                            type="text"
+                            value={customThemeColors?.desktopBg || "#050d0c"}
+                            onChange={(e) => setCustomThemeColors({ desktopBg: e.target.value })}
+                            className="w-full text-[10px] bg-transparent font-mono uppercase focus:outline-none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quick Vintage Presets */}
+                    <div className="space-y-1 pt-1 border-t border-[var(--os-border)]/30">
+                      <span className="text-[9px] opacity-70 font-bold block">Quick Retro Color Presets:</span>
+                      <div className="flex flex-wrap gap-1">
+                        {THEME_PRESETS.map((preset) => (
+                          <button
+                            key={preset.name}
+                            type="button"
+                            onClick={() => {
+                              soundService.playClick();
+                              setCustomThemeColors({
+                                fg: preset.fg,
+                                bg: preset.bg,
+                                desktopBg: preset.desktopBg,
+                              });
+                            }}
+                            className="px-1.5 py-0.5 border border-[var(--os-border)] text-[9px] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] cursor-pointer flex items-center gap-1 bg-[var(--os-bg)]"
+                          >
+                            <span
+                              className="w-2 h-2 rounded-full border border-current shrink-0"
+                              style={{ backgroundColor: preset.fg }}
+                            />
+                            <span>{preset.name}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 )}
-                <p className="text-[10px] text-neutral-500 pt-1">
-                  Changes are instantly applied across desktop and saved to local storage.
-                </p>
+
+                {/* Background Mode & Wallpaper status */}
+                <div className="space-y-1 text-[11px] opacity-80 pt-1">
+                  <p>
+                    <strong>Background Texture:</strong>{" "}
+                    {customWallpaper
+                      ? "Custom Photo Wallpaper"
+                      : PATTERNS.find((p) => p.id === (pattern || "halftone"))?.name}
+                  </p>
+                  {customWallpaper && (
+                    <div className="pt-1">
+                      <Button
+                        variant="default"
+                        onClick={clearCustomWallpaper}
+                        className="text-[10px] py-0.5 px-2"
+                      >
+                        Restore Default Pattern
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </Panel>
-          <section className="space-y-2">
-            <div className="flex justify-between items-center border-b border-[var(--os-border)] pb-1">
-              <span className="font-bold">Screen Theme (Color Palette)</span>
-              <span className="text-[10px] opacity-60">
-                Select CRT display palette
-              </span>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {THEMES.map((item) => {
-                const isCurrentTheme = (theme || "classic") === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setTheme(item.id)}
-                    className={`p-2 border-2 border-[var(--os-border)] text-left flex flex-col justify-between h-20 transition-none ${
-                      isCurrentTheme
-                        ? "bg-[var(--os-fg)] text-[var(--os-bg)] ring-1 ring-[var(--os-fg)] ring-offset-1"
-                        : "bg-[var(--os-bg)] text-[var(--os-fg)] hover:bg-[var(--os-fg)]/10"
-                    }`}
-                  >
-                    <div className="flex justify-between items-start w-full">
-                      <span className="font-bold leading-tight">
-                        {item.name}
-                      </span>
-                      {isCurrentTheme && (
-                        <span className="text-[10px] font-bold">✓</span>
-                      )}
-                    </div>
-                    <span
-                      className={`text-[10px] line-clamp-2 ${
-                        isCurrentTheme ? "opacity-80" : "opacity-60"
-                      }`}
-                    >
-                      {item.description}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </section>
 
           <section className="space-y-2">
             <div className="flex justify-between items-center border-b border-[var(--os-border)] pb-1">
-              <span className="font-bold">
-                Desktop Background Pattern
-              </span>
+              <span className="font-bold">Desktop Background Pattern</span>
               <span className="text-[10px] opacity-60">
                 Payaman OS 1-bit monochrome textures
               </span>
@@ -253,9 +445,9 @@ export default function PreferencesApp({ windowData }) {
                       clearCustomWallpaper();
                       setPattern(p.id);
                     }}
-                    className={`border-2 border-[var(--os-border)] p-1 flex flex-col items-center gap-1.5 transition-none ${
+                    className={`border-2 border-[var(--os-border)] p-1 flex flex-col items-center gap-1.5 transition-none cursor-pointer ${
                       isCurrentPattern
-                        ? "ring-2 ring-[var(--os-fg)] ring-offset-1 bg-[var(--os-fg)] text-[var(--os-bg)]"
+                        ? "ring-2 ring-[var(--os-fg)] ring-offset-1 bg-[var(--os-fg)] text-[var(--os-bg)] font-bold"
                         : "bg-[var(--os-bg)] text-[var(--os-fg)] hover:bg-[var(--os-fg)]/10"
                     }`}
                   >
@@ -432,11 +624,13 @@ export default function PreferencesApp({ windowData }) {
           <Panel title="Ukuran Resolusi Tampilan (UI Scale)">
             <div className="space-y-3">
               <div className="text-[11px] opacity-75">
-                Pilih ukuran skala resolusi antarmuka untuk mengatur besar/kecil seluruh tampilan sistem:
+                Pilih ukuran skala resolusi antarmuka untuk mengatur besar/kecil
+                seluruh tampilan sistem:
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {DISPLAY_SCALES.map((item) => {
-                  const isCurrent = (displaySettings?.scale ?? 1.15) === item.scale;
+                  const isCurrent =
+                    (displaySettings?.scale ?? 1.15) === item.scale;
                   return (
                     <button
                       key={item.id}
@@ -455,7 +649,9 @@ export default function PreferencesApp({ windowData }) {
                         <span className="text-xs font-bold">{item.name}</span>
                         {isCurrent && <span className="text-xs">✓</span>}
                       </div>
-                      <div className="text-[9px] opacity-75 mt-0.5">{item.desc}</div>
+                      <div className="text-[9px] opacity-75 mt-0.5">
+                        {item.desc}
+                      </div>
                     </button>
                   );
                 })}
@@ -505,9 +701,21 @@ export default function PreferencesApp({ windowData }) {
           <Panel title="Screen Saver Style">
             <div className="grid grid-cols-3 gap-2">
               {[
-                { id: 'matrix', name: 'Matrix Rain', desc: 'Monochrome digital code rain' },
-                { id: 'starfield', name: 'Starfield', desc: '3D retro warp drive flight' },
-                { id: 'bounce', name: 'Payaman Bounce', desc: 'Bouncing retro logo animation' },
+                {
+                  id: "matrix",
+                  name: "Matrix Rain",
+                  desc: "Monochrome digital code rain",
+                },
+                {
+                  id: "starfield",
+                  name: "Starfield",
+                  desc: "3D retro warp drive flight",
+                },
+                {
+                  id: "bounce",
+                  name: "Payaman Bounce",
+                  desc: "Bouncing retro logo animation",
+                },
               ].map((style) => (
                 <button
                   key={style.id}
@@ -523,7 +731,9 @@ export default function PreferencesApp({ windowData }) {
                   }`}
                 >
                   <div className="text-xs">{style.name}</div>
-                  <div className="text-[9px] opacity-75 mt-0.5">{style.desc}</div>
+                  <div className="text-[9px] opacity-75 mt-0.5">
+                    {style.desc}
+                  </div>
                 </button>
               ))}
             </div>
@@ -535,10 +745,10 @@ export default function PreferencesApp({ windowData }) {
                 <span>Start Screen Saver after inactivity:</span>
                 <div className="flex items-center gap-1">
                   {[
-                    { mins: 1, label: '1 min' },
-                    { mins: 3, label: '3 min' },
-                    { mins: 5, label: '5 min' },
-                    { mins: 0, label: 'Never' },
+                    { mins: 1, label: "1 min" },
+                    { mins: 3, label: "3 min" },
+                    { mins: 5, label: "5 min" },
+                    { mins: 0, label: "Never" },
                   ].map((t) => (
                     <button
                       key={t.mins}

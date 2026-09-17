@@ -6,6 +6,6 @@ export const sheetsAppConfig = {
   defaultHeight: 520,
   minWidth: 480,
   minHeight: 380,
-  showOnDesktop: true,
+  showOnDesktop: false,
   showInDock: true,
 }

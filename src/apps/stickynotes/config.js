@@ -6,6 +6,6 @@ export const stickyNotesAppConfig = {
   defaultHeight: 480,
   minWidth: 360,
   minHeight: 380,
-  showOnDesktop: true,
+  showOnDesktop: false,
   showInDock: true,
 }

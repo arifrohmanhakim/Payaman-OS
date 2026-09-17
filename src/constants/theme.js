@@ -1,3 +1,42 @@
+export const DEFAULT_CUSTOM_THEME = {
+  fg: '#00ffcc',
+  bg: '#0a1917',
+  desktopBg: '#050d0c',
+}
+
+export const THEME_PRESETS = [
+  {
+    name: 'Cyberpunk Neon',
+    fg: '#00ffcc',
+    bg: '#0a1917',
+    desktopBg: '#050d0c',
+  },
+  {
+    name: 'Synthwave Pink',
+    fg: '#ff71ce',
+    bg: '#241734',
+    desktopBg: '#150921',
+  },
+  {
+    name: 'Game Boy 1989',
+    fg: '#0f380f',
+    bg: '#9bbc0f',
+    desktopBg: '#8bac0f',
+  },
+  {
+    name: 'Commodore 64',
+    fg: '#a8a8ff',
+    bg: '#3a3a9e',
+    desktopBg: '#222277',
+  },
+  {
+    name: 'Solarized Dark',
+    fg: '#93a1a1',
+    bg: '#002b36',
+    desktopBg: '#073642',
+  },
+]
+
 export const THEMES = [
   {
     id: 'classic',
@@ -23,6 +62,11 @@ export const THEMES = [
     id: 'paper',
     name: 'Paper Vintage',
     description: 'Latar krem dokumen dengan tinta hitam cetak',
+  },
+  {
+    id: 'custom',
+    name: 'Custom Palette (DIY)...',
+    description: 'Kombinasi warna buatan Anda sendiri',
   },
 ]
 
