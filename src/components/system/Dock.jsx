@@ -20,7 +20,7 @@ export default function Dock() {
     size: "medium",
     position: "bottom",
     autoHide: false,
-    magnification: true,
+    magnification: false,
     showIndicators: true,
     pinnedApps: ["files", "terminal", "browser", "map"],
   };
@@ -29,22 +29,15 @@ export default function Dock() {
     size = "medium",
     position = "bottom",
     autoHide = false,
-    magnification = true,
     showIndicators = true,
     pinnedApps: customPinnedApps,
   } = settings;
 
   const DEFAULT_PINNED = ["files", "browser", "chat", "maps", "terminal"];
   const basePinnedAppIds = customPinnedApps || DEFAULT_PINNED;
-  
-  // Pastikan app penting (browser, chat, maps) otomatis tersedia di Dock
+
   const pinnedAppIds = Array.from(
-    new Set([
-      ...basePinnedAppIds,
-      'browser',
-      'chat',
-      'maps',
-    ])
+    new Set([...basePinnedAppIds, "browser", "chat", "maps"]),
   );
 
   const pinnedApps = pinnedAppIds.map((id) => getAppById(id)).filter(Boolean);
@@ -82,30 +75,30 @@ export default function Dock() {
     switch (size) {
       case "small":
         return {
-          button: "w-8 h-8 p-1",
+          button: "w-8 h-8 p-0.5",
           icon: "w-5 h-5",
           dot: "w-1 h-1",
-          activeDot: "w-1.5 h-0.5",
+          activeDot: "w-2 h-1",
           containerPadding:
             position === "bottom" ? "px-1.5 py-1" : "px-1 py-1.5",
         };
       case "large":
         return {
-          button: "w-14 h-14 p-2",
+          button: "w-13 h-13 p-1.5",
           icon: "w-9 h-9",
           dot: "w-2 h-2",
-          activeDot: "w-2.5 h-1",
-          containerPadding: position === "bottom" ? "px-3 py-2" : "px-2 py-3",
+          activeDot: "w-3 h-1.5",
+          containerPadding: position === "bottom" ? "px-2 py-1.5" : "px-1.5 py-2",
         };
       case "medium":
       default:
         return {
-          button: "w-11 h-11 p-1.5",
+          button: "w-10 h-10 p-1",
           icon: "w-7 h-7",
           dot: "w-1.5 h-1.5",
-          activeDot: "w-2 h-1",
+          activeDot: "w-2.5 h-1",
           containerPadding:
-            position === "bottom" ? "px-2.5 py-1.5" : "px-1.5 py-2.5",
+            position === "bottom" ? "px-2 py-1" : "px-1 py-2",
         };
     }
   };
@@ -116,43 +109,33 @@ export default function Dock() {
     switch (position) {
       case "left":
         return {
-          container: `fixed left-2.5 top-1/2 -translate-y-1/2 flex-col items-center ${
-            autoHide && !isHoveringDock ? "-translate-x-[calc(100%-8px)]" : ""
+          container: `fixed left-2 top-1/2 -translate-y-1/2 flex-col items-center ${
+            autoHide && !isHoveringDock ? "-translate-x-[calc(100%-6px)]" : ""
           }`,
           content: "flex-col items-center",
-          divider: "h-[1.5px] w-6 bg-[var(--os-border)]/40 my-1 mx-auto",
+          divider: "h-[2px] w-6 bg-[var(--os-border)] my-1 mx-auto",
           tooltip: "left-full ml-2 top-1/2 -translate-y-1/2",
-          hoverMove: magnification
-            ? "hover:translate-x-1.5 hover:scale-110"
-            : "",
           indicatorContainer: "w-1.5 flex items-center justify-center ml-0.5",
         };
       case "right":
         return {
-          container: `fixed right-2.5 top-1/2 -translate-y-1/2 flex-col items-center ${
-            autoHide && !isHoveringDock ? "translate-x-[calc(100%-8px)]" : ""
+          container: `fixed right-2 top-1/2 -translate-y-1/2 flex-col items-center ${
+            autoHide && !isHoveringDock ? "translate-x-[calc(100%-6px)]" : ""
           }`,
           content: "flex-col items-center",
-          divider: "h-[1.5px] w-6 bg-[var(--os-border)]/40 my-1 mx-auto",
+          divider: "h-[2px] w-6 bg-[var(--os-border)] my-1 mx-auto",
           tooltip: "right-full mr-2 top-1/2 -translate-y-1/2",
-          hoverMove: magnification
-            ? "hover:-translate-x-1.5 hover:scale-110"
-            : "",
           indicatorContainer: "w-1.5 flex items-center justify-center mr-0.5",
         };
       case "bottom":
       default:
         return {
-          container: `fixed bottom-2.5 left-1/2 -translate-x-1/2 flex-row items-end ${
-            autoHide && !isHoveringDock ? "translate-y-[calc(100%-8px)]" : ""
+          container: `fixed bottom-2 left-1/2 -translate-x-1/2 flex-row items-end ${
+            autoHide && !isHoveringDock ? "translate-y-[calc(100%-6px)]" : ""
           }`,
           content: "flex-row items-end",
-          divider:
-            "w-[1.5px] h-6 bg-[var(--os-border)]/40 self-center mx-1 my-auto",
+          divider: "w-[2px] h-6 bg-[var(--os-border)] self-center mx-1 my-auto",
           tooltip: "bottom-full mb-2 left-1/2 -translate-x-1/2",
-          hoverMove: magnification
-            ? "hover:-translate-y-1.5 hover:scale-110"
-            : "",
           indicatorContainer: "h-1.5 flex items-center justify-center mt-0.5",
         };
     }
@@ -177,7 +160,7 @@ export default function Dock() {
       >
         {isHovered && (
           <div
-            className={`absolute ${posClasses.tooltip} bg-[var(--os-bg)] text-[var(--os-fg)] border border-[var(--os-border)] px-2 py-0.5 text-[10px] font-mono whitespace-nowrap shadow-[2px_2px_0px_var(--os-shadow)] pointer-events-none z-50`}
+            className={`absolute ${posClasses.tooltip} bg-[var(--os-bg)] text-[var(--os-fg)] border-2 border-[var(--os-border)] px-2 py-0.5 text-[10px] font-mono whitespace-nowrap shadow-[2px_2px_0px_var(--os-shadow)] pointer-events-none z-50`}
           >
             {app.title}
           </div>
@@ -187,8 +170,12 @@ export default function Dock() {
           type="button"
           aria-label={app.title}
           onClick={() => handleItemClick(app.id)}
-          className={`${sizeClasses.button} flex items-center justify-center border border-transparent hover:border-[var(--os-border)] hover:bg-[var(--os-fg)]/10 active:scale-95 transition-all duration-150 ease-out transform ${posClasses.hoverMove} rounded-lg cursor-default focus:outline-none ${
-            isFront ? "bg-[var(--os-fg)]/5 border-[var(--os-border)]/40" : ""
+          className={`${sizeClasses.button} flex items-center justify-center border-2 transition-none cursor-pointer focus:outline-none ${
+            isFront
+              ? "bg-[var(--os-fg)]/20 border-[var(--os-border)] shadow-[inset_1px_1px_0px_var(--os-border)]"
+              : isHovered
+                ? "bg-[var(--os-fg)]/10 border-[var(--os-border)]"
+                : "bg-transparent border-transparent"
           }`}
         >
           <AppIconGraphic
@@ -204,7 +191,7 @@ export default function Dock() {
                 className={`${
                   isFront
                     ? `${sizeClasses.activeDot} bg-[var(--os-fg)] border border-[var(--os-border)]`
-                    : `${sizeClasses.dot} bg-[var(--os-fg)]/80`
+                    : `${sizeClasses.dot} bg-[var(--os-fg)]`
                 } transition-none`}
               />
             ) : (
@@ -229,7 +216,7 @@ export default function Dock() {
       >
         {isHovered && (
           <div
-            className={`absolute ${posClasses.tooltip} bg-[var(--os-bg)] text-[var(--os-fg)] border border-[var(--os-border)] px-2 py-0.5 text-[10px] font-mono whitespace-nowrap shadow-[2px_2px_0px_var(--os-shadow)] pointer-events-none z-50`}
+            className={`absolute ${posClasses.tooltip} bg-[var(--os-bg)] text-[var(--os-fg)] border-2 border-[var(--os-border)] px-2 py-0.5 text-[10px] font-mono whitespace-nowrap shadow-[2px_2px_0px_var(--os-shadow)] pointer-events-none z-50`}
           >
             Launchpad
           </div>
@@ -239,10 +226,12 @@ export default function Dock() {
           type="button"
           aria-label="Open Launchpad"
           onClick={toggleLaunchpad}
-          className={`${sizeClasses.button} flex items-center justify-center border border-transparent hover:border-[var(--os-border)] hover:bg-[var(--os-fg)]/10 active:scale-95 transition-all duration-150 ease-out transform ${posClasses.hoverMove} rounded-lg cursor-default focus:outline-none ${
+          className={`${sizeClasses.button} flex items-center justify-center border-2 transition-none cursor-pointer focus:outline-none ${
             isLaunchpadOpen
-              ? "bg-[var(--os-fg)]/15 border-[var(--os-border)]"
-              : ""
+              ? "bg-[var(--os-fg)]/20 border-[var(--os-border)] shadow-[inset_1px_1px_0px_var(--os-border)]"
+              : isHovered
+                ? "bg-[var(--os-fg)]/10 border-[var(--os-border)]"
+                : "bg-transparent border-transparent"
           }`}
         >
           <AppIconGraphic iconType="launchpad" className={sizeClasses.icon} />
@@ -252,7 +241,7 @@ export default function Dock() {
           <div className={posClasses.indicatorContainer}>
             {isLaunchpadOpen ? (
               <span
-                className={`${sizeClasses.activeDot} bg-[var(--os-fg)] rounded-full transition-all`}
+                className={`${sizeClasses.activeDot} bg-[var(--os-fg)] border border-[var(--os-border)] transition-none`}
               />
             ) : (
               <span className={`${sizeClasses.dot} invisible`} />
@@ -268,7 +257,7 @@ export default function Dock() {
       aria-label="Application Dock"
       onMouseEnter={() => setIsHoveringDock(true)}
       onMouseLeave={() => setIsHoveringDock(false)}
-      className={`${posClasses.container} z-40 bg-[var(--os-bg)] border-2 border-[var(--os-border)] os-window-shadow rounded-xl ${sizeClasses.containerPadding} flex gap-1 select-none backdrop-blur-xs transition-transform duration-200 ease-in-out`}
+      className={`${posClasses.container} z-40 bg-[var(--os-bg)] border-2 border-[var(--os-border)] os-window-shadow rounded-none ${sizeClasses.containerPadding} flex gap-1 select-none`}
     >
       <div className={`flex gap-1 ${posClasses.content}`}>
         {renderLaunchpadItem()}
