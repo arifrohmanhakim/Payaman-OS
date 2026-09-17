@@ -7,20 +7,23 @@ import { soundService } from "../../services/soundService.js";
 import { storageService } from "../../services/storageService.js";
 import { THEMES, PATTERNS } from "../../constants/theme.js";
 import { DOCK_SIZES, DOCK_POSITIONS } from "../../constants/dock.js";
+import { DISPLAY_SCALES } from "../../constants/display.js";
 
 const PREF_KEY_SOUND = "sound_enabled";
 
-export default function PreferencesApp() {
-  const [activeTab, setActiveTab] = useState("appearance");
+export default function PreferencesApp({ windowData }) {
+  const [activeTab, setActiveTab] = useState(windowData?.initialTab || "appearance");
   const {
     theme,
     pattern,
     customWallpaper,
     dockSettings,
+    displaySettings,
     setTheme,
     setPattern,
     clearCustomWallpaper,
     updateDockSettings,
+    updateDisplaySettings,
     screenSaverMode,
     screenSaverTimeoutMinutes,
     setScreenSaverMode,
@@ -75,6 +78,20 @@ export default function PreferencesApp() {
           }`}
         >
           Dock
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            soundService.playClick();
+            setActiveTab("display");
+          }}
+          className={`px-3 py-1.5 font-bold border-t-2 border-x-2 border-[var(--os-border)] transition-none ${
+            activeTab === "display"
+              ? "bg-[var(--os-bg)] text-[var(--os-fg)] -mb-[2px] border-b-2 border-b-[var(--os-bg)]"
+              : "bg-[var(--os-bg)]/40 text-[var(--os-fg)]/70 hover:text-[var(--os-fg)]"
+          }`}
+        >
+          Display
         </button>
         <button
           type="button"
@@ -404,6 +421,79 @@ export default function PreferencesApp() {
                   <strong>Magnification:</strong>{" "}
                   {dockSettings?.magnification ? "Active" : "Disabled"}
                 </p>
+              </div>
+            </div>
+          </Panel>
+        </div>
+      )}
+
+      {activeTab === "display" && (
+        <div className="flex-1 overflow-auto space-y-4">
+          <Panel title="Ukuran Resolusi Tampilan (UI Scale)">
+            <div className="space-y-3">
+              <div className="text-[11px] opacity-75">
+                Pilih ukuran skala resolusi antarmuka untuk mengatur besar/kecil seluruh tampilan sistem:
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {DISPLAY_SCALES.map((item) => {
+                  const isCurrent = (displaySettings?.scale || 1.0) === item.scale;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        updateDisplaySettings({ scale: item.scale });
+                        soundService.playClick();
+                      }}
+                      className={`p-2.5 text-left border-2 cursor-pointer transition-all ${
+                        isCurrent
+                          ? "border-[var(--os-border)] bg-[var(--os-fg)] text-[var(--os-bg)] font-bold"
+                          : "border-[var(--os-border)]/50 bg-[var(--os-bg)] text-[var(--os-fg)] hover:bg-[var(--os-fg)]/10"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold">{item.name}</span>
+                        {isCurrent && <span className="text-xs">✓</span>}
+                      </div>
+                      <div className="text-[9px] opacity-75 mt-0.5">{item.desc}</div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </Panel>
+
+          <Panel title="Informasi Resolusi Monitor">
+            <div className="grid grid-cols-2 gap-2 text-[11px]">
+              <div>
+                <span className="opacity-60">Resolusi Layar Fisik:</span>{" "}
+                <strong>
+                  {typeof window !== "undefined"
+                    ? `${window.screen?.width || 0} × ${window.screen?.height || 0} px`
+                    : "Unknown"}
+                </strong>
+              </div>
+              <div>
+                <span className="opacity-60">Resolusi Viewport:</span>{" "}
+                <strong>
+                  {typeof window !== "undefined"
+                    ? `${window.innerWidth} × ${window.innerHeight} px`
+                    : "Unknown"}
+                </strong>
+              </div>
+              <div>
+                <span className="opacity-60">Device Pixel Ratio:</span>{" "}
+                <strong>
+                  {typeof window !== "undefined"
+                    ? `${window.devicePixelRatio || 1}x`
+                    : "1x"}
+                </strong>
+              </div>
+              <div>
+                <span className="opacity-60">Skala Aktif:</span>{" "}
+                <strong>
+                  {Math.round((displaySettings?.scale || 1.0) * 100)}%
+                </strong>
               </div>
             </div>
           </Panel>

@@ -31,6 +31,7 @@ export default function Desktop() {
     theme,
     pattern,
     customWallpaper,
+    displaySettings,
     openApp,
     closeWindow,
     focusWindow,
@@ -67,6 +68,9 @@ export default function Desktop() {
         } else if (document.exitFullscreen) {
           document.exitFullscreen().catch(() => {})
         }
+        break
+      case 'displays':
+        openApp('preferences', { initialTab: 'display' })
         break
       case 'spotlight':
         toggleSpotlight()
@@ -402,6 +406,7 @@ export default function Desktop() {
   }
 
   const patternClass = `pattern-${pattern || 'halftone'}`
+  const uiScale = displaySettings?.scale || 1.0
 
   return (
     <div
@@ -414,6 +419,9 @@ export default function Desktop() {
         }
       }}
       onContextMenu={handleDesktopContextMenu}
+      style={{
+        zoom: uiScale !== 1.0 ? uiScale : undefined,
+      }}
       className={`relative w-screen h-screen overflow-hidden font-mono text-[var(--os-fg)] select-none ${
         customWallpaper ? 'bg-neutral-900' : patternClass
       }`}

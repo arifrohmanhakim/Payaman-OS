@@ -5,6 +5,7 @@ import { storageService } from '../services/storageService.js'
 import { useWindowManager } from '../hooks/useWindowManager.js'
 import { useScreenSaver } from '../hooks/useScreenSaver.js'
 import { DEFAULT_DOCK_SETTINGS } from '../constants/dock.js'
+import { DEFAULT_DISPLAY_SETTINGS } from '../constants/display.js'
 import { OSContext } from './OSContextInstance.js'
 
 const getInitialWindows = () => {
@@ -41,6 +42,10 @@ export function OSProvider({ children }) {
   const [dockSettings, setDockSettingsState] = useState(() => {
     const saved = storageService.getItem('os_dock_settings', {})
     return { ...DEFAULT_DOCK_SETTINGS, ...saved }
+  })
+  const [displaySettings, setDisplaySettingsState] = useState(() => {
+    const saved = storageService.getItem('os_display_settings', {})
+    return { ...DEFAULT_DISPLAY_SETTINGS, ...saved }
   })
   const [customWallpaper, setCustomWallpaperState] = useState(() => {
     return storageService.getItem('os_custom_wallpaper', null)
@@ -89,6 +94,16 @@ export function OSProvider({ children }) {
       const updated =
         typeof newSettings === 'function' ? newSettings(prev) : { ...prev, ...newSettings }
       storageService.setItem('os_dock_settings', updated)
+      return updated
+    })
+    soundService.playClick()
+  }, [])
+
+  const updateDisplaySettings = useCallback((newSettings) => {
+    setDisplaySettingsState((prev) => {
+      const updated =
+        typeof newSettings === 'function' ? newSettings(prev) : { ...prev, ...newSettings }
+      storageService.setItem('os_display_settings', updated)
       return updated
     })
     soundService.playClick()
@@ -218,6 +233,7 @@ export function OSProvider({ children }) {
       pattern,
       customWallpaper,
       dockSettings,
+      displaySettings,
       isLaunchpadOpen,
       isSpotlightOpen,
       setTheme,
@@ -225,6 +241,7 @@ export function OSProvider({ children }) {
       setCustomWallpaper,
       clearCustomWallpaper,
       updateDockSettings,
+      updateDisplaySettings,
       openApp,
       closeWindow: handleCloseWindow,
       focusWindow,
@@ -262,6 +279,7 @@ export function OSProvider({ children }) {
       pattern,
       customWallpaper,
       dockSettings,
+      displaySettings,
       isLaunchpadOpen,
       isSpotlightOpen,
       setTheme,
@@ -269,6 +287,7 @@ export function OSProvider({ children }) {
       setCustomWallpaper,
       clearCustomWallpaper,
       updateDockSettings,
+      updateDisplaySettings,
       openApp,
       handleCloseWindow,
       focusWindow,

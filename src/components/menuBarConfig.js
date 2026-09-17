@@ -8,6 +8,7 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
     items: [
       { label: 'About Payaman OS', action: 'about_os' },
       { label: 'System Preferences...', action: 'preferences', shortcut: '⌘,' },
+      { label: 'Displays & Resolution...', action: 'displays' },
       { divider: true },
       { label: 'Spotlight Search...', action: 'spotlight', shortcut: '⌘Space' },
       { label: 'Launchpad', action: 'launchpad', shortcut: 'F4' },
