@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import MenuBar from '../MenuBar.jsx'
 import DesktopIcon from '../DesktopIcon.jsx'
 import Window from '../Window.jsx'
@@ -7,6 +7,7 @@ import Dock from './Dock.jsx'
 import Launchpad from './Launchpad.jsx'
 import SpotlightSearch from './SpotlightSearch.jsx'
 import ScreenSaver from './ScreenSaver.jsx'
+import AppSwitcher from './AppSwitcher.jsx'
 import ErrorBoundary from '../common/ErrorBoundary.jsx'
 import ContextMenu from '../common/ContextMenu.jsx'
 import DesktopPetSprite from '../../apps/pet/DesktopPetSprite.jsx'
@@ -23,6 +24,11 @@ export default function Desktop() {
     x: 0,
     y: 0,
     items: [],
+  })
+
+  const [switcher, setSwitcher] = useState({
+    isOpen: false,
+    selectedIndex: 0,
   })
 
   const {
@@ -63,6 +69,119 @@ export default function Desktop() {
     sortIconsByName,
     resetPositions,
   } = useDesktopIcons(uiScale)
+
+  const windowsRef = useRef(windows)
+  const switcherRef = useRef(switcher)
+  const activeWindowIdRef = useRef(activeWindowId)
+  const activeModalRef = useRef(activeModal)
+  const contextMenuRef = useRef(contextMenu)
+
+  useEffect(() => {
+    windowsRef.current = windows
+  }, [windows])
+
+  useEffect(() => {
+    switcherRef.current = switcher
+  }, [switcher])
+
+  useEffect(() => {
+    activeWindowIdRef.current = activeWindowId
+  }, [activeWindowId])
+
+  useEffect(() => {
+    activeModalRef.current = activeModal
+  }, [activeModal])
+
+  useEffect(() => {
+    contextMenuRef.current = contextMenu
+  }, [contextMenu])
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // 1. Esc Key (Close modal, context menu, switcher, etc.)
+      if (e.key === 'Escape') {
+        if (switcherRef.current.isOpen) {
+          setSwitcher({ isOpen: false, selectedIndex: 0 })
+          return
+        }
+        if (contextMenuRef.current.isOpen) {
+          setContextMenu((prev) => (prev.isOpen ? { ...prev, isOpen: false } : prev))
+          return
+        }
+        if (activeModalRef.current) {
+          closeModal()
+          return
+        }
+      }
+
+      // 2. Alt + Tab / Cmd + Tab (App Switcher)
+      if ((e.altKey || e.metaKey) && e.key === 'Tab') {
+        e.preventDefault()
+        const winList = windowsRef.current
+        if (winList.length === 0) return
+
+        soundService.playClick()
+        setSwitcher((prev) => {
+          if (!prev.isOpen) {
+            const currentIdx = winList.findIndex((w) => w.id === activeWindowIdRef.current)
+            const initialIdx = (currentIdx + (e.shiftKey ? -1 : 1) + winList.length) % winList.length
+            return {
+              isOpen: true,
+              selectedIndex: initialIdx,
+            }
+          }
+          const nextIdx = (prev.selectedIndex + (e.shiftKey ? -1 : 1) + winList.length) % winList.length
+          return {
+            ...prev,
+            selectedIndex: nextIdx,
+          }
+        })
+        return
+      }
+
+      // 3. Alt + Arrow Keys (Window Snapping / Tile)
+      if (e.altKey && activeWindowIdRef.current) {
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault()
+          soundService.playClick()
+          snapWindow(activeWindowIdRef.current, 'left')
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault()
+          soundService.playClick()
+          snapWindow(activeWindowIdRef.current, 'right')
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault()
+          soundService.playClick()
+          snapWindow(activeWindowIdRef.current, 'top')
+        }
+      }
+    }
+
+    const handleKeyUp = (e) => {
+      if ((e.key === 'Alt' || e.key === 'Meta') && switcherRef.current.isOpen) {
+        const winList = windowsRef.current
+        const targetIndex = switcherRef.current.selectedIndex
+        const targetWin = winList[targetIndex]
+        setSwitcher({ isOpen: false, selectedIndex: 0 })
+
+        if (targetWin) {
+          soundService.playClick()
+          if (targetWin.isMinimized) {
+            openApp(targetWin.appId)
+          }
+          focusWindow(targetWin.id)
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keyup', handleKeyUp)
+    }
+  }, [snapWindow, focusWindow, openApp, closeModal])
 
   const handleMenuAction = (action, activeAppId) => {
     switch (action) {
@@ -516,6 +635,12 @@ export default function Desktop() {
         isActive={isScreenSaverActive}
         onDismiss={dismissScreenSaver}
         mode={screenSaverMode}
+      />
+
+      <AppSwitcher
+        isOpen={switcher.isOpen}
+        windows={windows}
+        selectedIndex={switcher.selectedIndex}
       />
     </div>
   )

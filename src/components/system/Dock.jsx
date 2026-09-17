@@ -203,9 +203,9 @@ export default function Dock() {
               <span
                 className={`${
                   isFront
-                    ? `${sizeClasses.activeDot} bg-[var(--os-fg)]`
-                    : `${sizeClasses.dot} bg-[var(--os-fg)]/70`
-                } rounded-full transition-all`}
+                    ? `${sizeClasses.activeDot} bg-[var(--os-fg)] border border-[var(--os-border)]`
+                    : `${sizeClasses.dot} bg-[var(--os-fg)]/80`
+                } transition-none`}
               />
             ) : (
               <span className={`${sizeClasses.dot} invisible`} />
