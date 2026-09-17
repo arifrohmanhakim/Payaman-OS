@@ -114,25 +114,49 @@ export default function PreferencesApp({ windowData }) {
   const checkScroll = useCallback(() => {
     const el = scrollContainerRef.current;
     if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 0);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    setCanScrollLeft(el.scrollLeft > 1);
+    setCanScrollRight(maxScroll > 1 && el.scrollLeft < maxScroll - 1);
   }, []);
 
   useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+
     checkScroll();
+
+    const resizeObserver = new ResizeObserver(() => {
+      checkScroll();
+    });
+    resizeObserver.observe(el);
+
     window.addEventListener("resize", checkScroll);
-    return () => window.removeEventListener("resize", checkScroll);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", checkScroll);
+    };
   }, [checkScroll]);
+
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    const activeBtn = el.querySelector(`[data-tab-id="${activeTab}"]`);
+    if (activeBtn) {
+      activeBtn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+    }
+  }, [activeTab]);
 
   const handleScroll = (direction) => {
     soundService.playClick();
     const el = scrollContainerRef.current;
     if (!el) return;
-    const scrollAmount = 120;
+    const scrollAmount = 140;
     el.scrollBy({
       left: direction === "left" ? -scrollAmount : scrollAmount,
       behavior: "smooth",
     });
+    setTimeout(checkScroll, 150);
   };
 
   const {
@@ -178,13 +202,14 @@ export default function PreferencesApp({ windowData }) {
         <div
           ref={scrollContainerRef}
           onScroll={checkScroll}
-          className="flex gap-1 overflow-x-hidden select-none flex-1 items-end [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex gap-1 overflow-x-auto select-none flex-1 items-end [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-smooth"
         >
           {PREFERENCE_TABS.map((tab) => {
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
+                data-tab-id={tab.id}
                 type="button"
                 onClick={() => {
                   soundService.playClick();
