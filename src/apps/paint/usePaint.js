@@ -52,7 +52,6 @@ export function usePaint() {
     setCanRedo(historyIndexRef.current < historyRef.current.length - 1)
   }, [getCanvasContext])
 
-  // Inisialisasi kanvas pertama kali
   useEffect(() => {
     const ctx = getCanvasContext()
     if (!ctx) return

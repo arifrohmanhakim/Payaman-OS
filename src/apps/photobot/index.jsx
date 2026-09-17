@@ -1,5 +1,6 @@
 import { usePhotobot } from './usePhotobot.js'
 import Button from '../../components/ui/Button.jsx'
+import AppIconGraphic from '../../components/common/AppIconGraphic.jsx'
 
 export default function PhotobotApp() {
   const {
@@ -79,7 +80,7 @@ export default function PhotobotApp() {
           </>
         ) : (
           <div className="p-6 text-center text-white space-y-3 max-w-sm z-10">
-            <div className="text-3xl">📷</div>
+            <AppIconGraphic iconType="photobot" className="w-12 h-12 mx-auto" />
             <div className="font-bold text-sm">
               {cameraState === 'idle'
                 ? 'Connecting to Webcam...'
@@ -122,7 +123,7 @@ export default function PhotobotApp() {
             onClick={triggerCountdownAndSnap}
             className="w-full sm:w-80 py-2 border-2 border-[var(--os-border)] bg-[var(--os-bg)] text-[var(--os-fg)] font-bold text-sm flex items-center justify-center gap-2 hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] active:scale-98 disabled:opacity-40 disabled:cursor-not-allowed os-window-shadow transition-none"
           >
-            <span>📸</span>
+            <AppIconGraphic iconType="photobot" className="w-4 h-4 shrink-0" />
             <span>{countdown !== null ? `CAPTURING PHOTO (${countdown})...` : 'TAKE PHOTO (3S TIMER)'}</span>
           </button>
         </div>

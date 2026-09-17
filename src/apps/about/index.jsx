@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import Button from '../../components/ui/Button.jsx'
 import AppIconGraphic from '../../components/common/AppIconGraphic.jsx'
+import CaveLogo from '../../components/common/CaveLogo.jsx'
 import { getAboutInfo, SYSTEM_INFO } from './appInfoData.js'
 
 export default function AboutApp({ onClose, windowData }) {
@@ -23,7 +24,7 @@ export default function AboutApp({ onClose, windowData }) {
       <div className="flex items-center gap-3 p-3 border-b-2 border-[var(--os-border)] bg-[var(--os-bg)]">
         <div className="w-14 h-14 border-2 border-[var(--os-border)] flex items-center justify-center shrink-0 bg-[var(--os-bg)]">
           {isSystem ? (
-            <span className="text-3xl font-bold tracking-tighter"></span>
+            <CaveLogo className="w-8 h-8" title="Payaman OS" />
           ) : (
             <AppIconGraphic iconType={currentInfo.iconType} className="w-9 h-9" />
           )}
@@ -196,10 +197,11 @@ export default function AboutApp({ onClose, windowData }) {
         {!isSystem ? (
           <Button
             variant="secondary"
-            className="text-xs py-1 px-2.5"
+            className="text-xs py-1 px-2.5 flex items-center gap-1.5"
             onClick={() => setSelectedAppId('system')}
           >
-             Payaman OS Info
+            <CaveLogo className="w-3 h-3" title="Payaman OS" />
+            <span>Payaman OS Info</span>
           </Button>
         ) : (
           <div className="text-[10px] opacity-60">

@@ -1,5 +1,116 @@
+import CaveLogo from './CaveLogo.jsx'
+
 export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
   switch (iconType) {
+    case 'cave':
+    case 'system':
+    case 'payaman':
+    case 'apple':
+      return <CaveLogo className={className} />
+    case 'wifi':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.75]`}
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path d="M5 12.55a11 11 0 0 1 14.08 0" strokeLinecap="round" />
+          <path d="M1.42 9a16 16 0 0 1 21.16 0" strokeLinecap="round" />
+          <path d="M8.53 16.11a6 6 0 0 1 6.95 0" strokeLinecap="round" />
+          <circle cx="12" cy="19.5" r="1.25" fill="currentColor" />
+        </svg>
+      )
+    case 'bluetooth':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.75]`}
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <polyline
+            points="6.5 6.5 17.5 17.5 12 23 12 1 17.5 6.5 6.5 17.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      )
+    case 'sound':
+    case 'volume':
+    case 'speaker':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.75]`}
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none" />
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07" strokeLinecap="round" />
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14" strokeLinecap="round" />
+        </svg>
+      )
+    case 'sound-mute':
+    case 'volume-mute':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.75]`}
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none" />
+          <line x1="22" y1="9" x2="16" y2="15" strokeLinecap="round" />
+          <line x1="16" y1="9" x2="22" y2="15" strokeLinecap="round" />
+        </svg>
+      )
+    case 'pet':
+    case 'paw':
+    case 'cat':
+    case 'dog':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <ellipse cx="12" cy="15" rx="4.5" ry="3.5" fill="currentColor" />
+          <ellipse cx="6.5" cy="9.5" rx="1.8" ry="2.5" fill="currentColor" transform="rotate(-15 6.5 9.5)" />
+          <ellipse cx="10.2" cy="7" rx="1.8" ry="2.5" fill="currentColor" transform="rotate(-5 10.2 7)" />
+          <ellipse cx="13.8" cy="7" rx="1.8" ry="2.5" fill="currentColor" transform="rotate(5 13.8 7)" />
+          <ellipse cx="17.5" cy="9.5" rx="1.8" ry="2.5" fill="currentColor" transform="rotate(15 17.5 9.5)" />
+        </svg>
+      )
+    case 'portfolio':
+    case 'profile':
+    case 'developer':
+    case 'user':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <rect x="4" y="4" width="24" height="24" rx="2" />
+          <circle cx="16" cy="12" r="4" />
+          <path d="M8 24 C8 19 12 18 16 18 C20 18 24 19 24 24" />
+          <line x1="8" y1="8" x2="11" y2="8" strokeWidth="2" />
+        </svg>
+      )
+    case 'itunes':
+    case 'music':
+    case 'song':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <circle cx="16" cy="16" r="13" strokeWidth="1.5" />
+          <circle cx="16" cy="16" r="4" strokeWidth="1.25" />
+          <path d="M12 21 V10 L22 7 V18" strokeWidth="1.5" />
+          <line x1="12" y1="13" x2="22" y2="10" strokeWidth="1.5" />
+          <circle cx="10" cy="21" r="2.5" fill="currentColor" />
+          <circle cx="20" cy="18" r="2.5" fill="currentColor" />
+        </svg>
+      )
     case 'folder':
       return (
         <svg

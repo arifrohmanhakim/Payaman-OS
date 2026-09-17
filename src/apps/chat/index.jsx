@@ -103,9 +103,9 @@ export default function PayamanChatApp() {
                     type="button"
                     onClick={() => copyMessage(msg.text)}
                     title="Copy response"
-                    className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 p-1 bg-[var(--os-bg)] text-[var(--os-fg)] border border-[var(--os-border)] rounded text-[10px] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] transition-opacity cursor-pointer"
+                    className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 px-1.5 py-0.5 bg-[var(--os-bg)] text-[var(--os-fg)] border border-[var(--os-border)] font-bold text-[9px] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] transition-opacity cursor-pointer"
                   >
-                    📋
+                    Copy
                   </button>
                 )}
               </div>
@@ -146,7 +146,7 @@ export default function PayamanChatApp() {
                   onClick={() => sendMessage(prompt)}
                   className="px-2.5 py-1 border border-[var(--os-border)]/50 hover:border-[var(--os-border)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] text-[11px] rounded transition-colors text-left cursor-pointer"
                 >
-                  💬 {prompt}
+                  › {prompt}
                 </button>
               ))}
             </div>

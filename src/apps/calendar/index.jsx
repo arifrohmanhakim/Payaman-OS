@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useCalendar } from './useCalendar.js'
 import Button from '../../components/ui/Button.jsx'
 import Input from '../../components/ui/Input.jsx'
+import AppIconGraphic from '../../components/common/AppIconGraphic.jsx'
 
 export default function CalendarApp() {
   const {
@@ -67,7 +68,10 @@ export default function CalendarApp() {
       {/* Realtime Clock & Date Header Bar */}
       <div className="flex items-center justify-between border-b-2 border-[var(--os-border)] pb-2 mb-2 shrink-0">
         <div className="flex items-center gap-2">
-          <span className="font-bold text-sm">📅 {monthLabel}</span>
+          <div className="flex items-center gap-1.5 font-bold text-sm">
+            <AppIconGraphic iconType="calendar" className="w-4 h-4" />
+            <span>{monthLabel}</span>
+          </div>
           <Button variant="default" className="py-0.5 px-2 text-[10px]" onClick={goToToday}>
             Today
           </Button>
@@ -186,7 +190,7 @@ export default function CalendarApp() {
                         {evt.title}
                       </div>
                       {evt.time && (
-                        <div className="text-[9px] opacity-60">🕒 {evt.time}</div>
+                        <div className="text-[9px] opacity-60">@ {evt.time}</div>
                       )}
                     </div>
                   </label>

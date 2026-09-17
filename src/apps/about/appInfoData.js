@@ -4,7 +4,18 @@ export const SYSTEM_INFO = {
   build: '2026.09',
   architecture: 'Client-side Modular Web OS',
   tagline: 'Retro Monochrome Desktop Environment',
+  developer: {
+    name: 'Arif Rohman Hakim',
+    location: 'Yogyakarta, Indonesia',
+    github: 'https://github.com/arifrohmanhakim',
+    linkedin: 'https://www.linkedin.com/in/arif-rohman-hakim/',
+    website: 'https://arifrohmanhakim.com',
+  },
   specs: [
+    { label: 'Developer', value: 'Arif Rohman Hakim (Yogyakarta, ID)' },
+    { label: 'LinkedIn', value: 'linkedin.com/in/arif-rohman-hakim' },
+    { label: 'GitHub Profile', value: 'github.com/arifrohmanhakim' },
+    { label: 'Personal Web', value: 'arifrohmanhakim.com' },
     { label: 'Processor', value: 'JavaScript V8 / Web Runtime' },
     { label: 'UI Framework', value: 'React 19 + Vite' },
     { label: 'Styling Engine', value: 'Tailwind CSS v4 (Monochrome)' },
@@ -14,7 +25,7 @@ export const SYSTEM_INFO = {
     { label: 'Display', value: 'Monochrome Retina (1-bit / Halftone)' },
   ],
   credits: [
-    { role: 'Core Architect', name: 'Arif & Payaman Lab' },
+    { role: 'Author & System Architect', name: 'Arif Rohman Hakim' },
     { role: 'Component Engine', name: 'React 19' },
     { role: 'Terminal Shell', name: 'xterm.js' },
     { role: 'Audio Synthesizer', name: 'Web Audio API' },
@@ -23,6 +34,47 @@ export const SYSTEM_INFO = {
 }
 
 export const APPS_INFO = {
+  portfolio: {
+    id: 'portfolio',
+    title: 'Portfolio',
+    version: '1.0',
+    iconType: 'portfolio',
+    category: 'Developer Profile',
+    tagline: 'Arif Rohman Hakim Portfolio & Project Showcase',
+    description:
+      'Explore projects, engineering competencies, and technical profiles of Arif Rohman Hakim (Fullstack Software Engineer & System Architect).',
+    specs: [
+      { label: 'Developer', value: 'Arif Rohman Hakim' },
+      { label: 'Location', value: 'Yogyakarta, Indonesia' },
+      { label: 'LinkedIn', value: 'linkedin.com/in/arif-rohman-hakim' },
+      { label: 'GitHub', value: 'github.com/arifrohmanhakim' },
+      { label: 'Website', value: 'arifrohmanhakim.com' },
+    ],
+    shortcuts: [
+      { key: '⌘P', desc: 'Open Developer Portfolio' },
+      { key: '⌘G', desc: 'Open GitHub Profile' },
+    ],
+  },
+  pet: {
+    id: 'pet',
+    title: 'Desktop Pet',
+    version: '1.0',
+    iconType: 'pet',
+    category: 'Entertainment',
+    tagline: 'Interactive animated desktop virtual companion',
+    description:
+      'Animated desktop companion featuring multiple species (Cat, Dog, Duck, Frog, Hamster), treats, interactive petting, sound effects, and menu bar tray controls.',
+    specs: [
+      { label: 'Species', value: 'Cat, Dog, Duck, Frog, Hamster' },
+      { label: 'Animation', value: 'SVG Vector & Keyframe Sprites' },
+      { label: 'Audio Engine', value: 'Chiptune Synthesizer' },
+      { label: 'Tray Integration', value: 'Menu Bar Status Popover' },
+    ],
+    shortcuts: [
+      { key: 'Click Pet', desc: 'Pet / Cuddle Companion' },
+      { key: 'Drag Pet', desc: 'Reposition on Desktop' },
+    ],
+  },
   finder: {
     id: 'finder',
     title: 'Finder',
@@ -42,6 +94,27 @@ export const APPS_INFO = {
       { key: '⌘N', desc: 'Create New Note' },
       { key: '⌘M', desc: 'Minimize Window' },
       { key: '⌘W', desc: 'Close Window' },
+    ],
+  },
+  itunes: {
+    id: 'itunes',
+    title: 'iTunes',
+    version: '1.0',
+    iconType: 'itunes',
+    category: 'Media & Audio',
+    tagline: 'Digital Music Jukebox & Free Stream Player',
+    description:
+      'Classic digital music player for streaming preview songs, exploring curated playlists, and searching global music tracks via the free iTunes API.',
+    specs: [
+      { label: 'Audio Engine', value: 'HTML5 Web Audio Stream' },
+      { label: 'Music Provider', value: 'Apple iTunes Search API' },
+      { label: 'Visualizer', value: '4-Band Graphic Equalizer' },
+    ],
+    shortcuts: [
+      { key: 'Space', desc: 'Play / Pause Track' },
+      { key: '⌘→', desc: 'Next Song' },
+      { key: '⌘←', desc: 'Previous Song' },
+      { key: '⌘F', desc: 'Focus Search' },
     ],
   },
   browser: {

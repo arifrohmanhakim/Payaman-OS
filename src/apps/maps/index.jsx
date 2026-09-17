@@ -123,7 +123,7 @@ export default function MapsApp() {
             title="Locate Current Position"
             className="px-2 py-1 border border-[var(--os-border)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] font-bold text-xs disabled:opacity-40"
           >
-            {isLocating ? 'Locating...' : '📍 My Loc'}
+            {isLocating ? 'Locating...' : '[•] My Location'}
           </button>
 
           <button

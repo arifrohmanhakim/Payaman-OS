@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { soundService } from '../../services/soundService.js'
 import { useOS } from '../../hooks/useOS.js'
+import CaveLogo from '../common/CaveLogo.jsx'
 
 const INSPIRATIONAL_QUOTES = [
   {
@@ -45,36 +46,26 @@ const INSPIRATIONAL_QUOTES = [
   },
 ]
 
-function MacLisaGraphic({ className = 'w-16 h-16' }) {
+function RetroComputerGraphic({ className = 'w-16 h-16' }) {
   return (
     <svg
       className={`${className} stroke-current fill-none stroke-[1.5]`}
       viewBox="0 0 48 48"
       aria-hidden="true"
     >
-      {/* Lisa Main Chassis */}
       <rect x="6" y="8" width="36" height="26" rx="2" strokeWidth="1.75" />
-      {/* Upper CRT Screen (Left side) */}
       <rect x="9" y="11" width="18" height="15" rx="1.5" strokeWidth="1.5" />
-      {/* Screen Inner Glass reflection */}
       <line x1="11" y1="13" x2="16" y2="13" strokeWidth="1" />
       <line x1="11" y1="15" x2="13" y2="15" strokeWidth="1" />
-      {/* Dual Twiggy / Floppy Drives (Right side) */}
       <rect x="29" y="11" width="11" height="6" rx="0.5" strokeWidth="1.25" />
       <line x1="31" y1="14" x2="37" y2="14" strokeWidth="1.5" />
       <circle cx="38.5" cy="14" r="0.5" fill="currentColor" />
-
       <rect x="29" y="19" width="11" height="6" rx="0.5" strokeWidth="1.25" />
       <line x1="31" y1="22" x2="37" y2="22" strokeWidth="1.5" />
       <circle cx="38.5" cy="22" r="0.5" fill="currentColor" />
-
-      {/* Lisa Logo Badge */}
       <rect x="9" y="28" width="4" height="3" rx="0.5" fill="currentColor" />
       <line x1="15" y1="29.5" x2="25" y2="29.5" strokeWidth="1" />
-
-      {/* Chassis Base / Keyboard bay */}
       <path d="M4 34 H44 L41 40 H7 Z" strokeWidth="1.75" />
-      {/* Keyboard surface detail */}
       <line x1="10" y1="37" x2="38" y2="37" strokeWidth="1.25" strokeDasharray="1.5 1.5" />
     </svg>
   )
@@ -162,15 +153,18 @@ export default function WelcomeScreen({ onEnterDesktop, onReboot }) {
       <div className="border-3 border-[var(--os-border)] bg-[var(--os-bg)] text-[var(--os-fg)] os-window-shadow max-w-md w-full overflow-hidden shadow-[4px_4px_0px_var(--os-shadow)]">
         {/* Window Title Bar */}
         <div className="h-7 bg-[var(--os-fg)] text-[var(--os-bg)] px-3 flex items-center justify-between font-bold text-xs border-b border-[var(--os-border)]">
-          <span> Payaman OS</span>
-          <span className="text-[10px] opacity-80">Lisa System 1.0</span>
+          <div className="flex items-center gap-1.5">
+            <CaveLogo className="w-3.5 h-3.5" title="Payaman OS" />
+            <span>Payaman OS</span>
+          </div>
+          <span className="text-[10px] opacity-80">System 1.0</span>
         </div>
 
         {/* Content Body */}
         <div className="p-5 md:p-6 flex flex-col items-center text-center">
-          {/* Mac Lisa Graphic Icon */}
+          {/* Retro Computer Graphic Icon */}
           <div className="w-20 h-20 border-2 border-[var(--os-border)] rounded-xl flex items-center justify-center mb-2.5 bg-[var(--os-bg)] p-2 shadow-[2px_2px_0px_var(--os-shadow)]">
-            <MacLisaGraphic className="w-16 h-16" />
+            <RetroComputerGraphic className="w-16 h-16" />
           </div>
 
           <h2 className="text-lg font-black tracking-tight">Arif</h2>
@@ -227,7 +221,7 @@ export default function WelcomeScreen({ onEnterDesktop, onReboot }) {
         {/* Bottom Status strip */}
         <div className="border-t border-[var(--os-border)]/30 px-3 py-1 text-[10px] opacity-60 flex justify-between items-center bg-[var(--os-fg)]/5">
           <span>Storage: Virtual VFS Ready</span>
-          <span>Apple Lisa Architecture</span>
+          <span>Payaman Architecture</span>
         </div>
       </div>
     </div>

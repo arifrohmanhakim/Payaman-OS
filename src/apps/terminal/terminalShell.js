@@ -410,7 +410,70 @@ export async function executeShellCommand(commandLine, { osContext, onClose }) {
     }
 
     case 'whoami':
-      outputLines.push('arif@payaman-os')
+    case 'author':
+    case 'dev':
+    case 'developer':
+      outputLines.push(
+        '┌────────────────────────────────────────────────────────┐',
+        '│ Arif Rohman Hakim                                      │',
+        '│ Fullstack Software Engineer & System Architect         │',
+        '├────────────────────────────────────────────────────────┤',
+        '│ Location : Yogyakarta, Indonesia                       │',
+        '│ Website  : https://arifrohmanhakim.com                 │',
+        '│ GitHub   : https://github.com/arifrohmanhakim          │',
+        '│ LinkedIn : https://www.linkedin.com/in/arif-rohman-hakim/ │',
+        '│ Focus    : Resilient Web, Mobile Apps & System Design  │',
+        '└────────────────────────────────────────────────────────┘',
+        "Type 'projects' to view repositories or 'skills' for tech stack."
+      )
+      break
+
+    case 'portfolio':
+      if (osContext?.openApp) {
+        osContext.openApp('portfolio')
+        outputLines.push('Opening Portfolio application window...')
+      } else {
+        outputLines.push('Visit: https://github.com/arifrohmanhakim')
+      }
+      break
+
+    case 'projects':
+    case 'repos':
+      outputLines.push(
+        '=== Featured Projects by Arif Rohman Hakim ===',
+        '• Payaman OS     - Retro Monochrome Web OS (React 19 + Tailwind)',
+        '• bebaslepas     - Financial Freedom Leveling Tracker',
+        '• doit           - Simple Digital Wallet App (TypeScript)',
+        '• komikku-api    - Manga & Comic Reader REST API (Node.js)',
+        '• payaman_db     - Terminal SQL IDE & Database Client',
+        '• rn-web-maps    - React Native Unified Web Maps',
+        '• system-design  - System Architecture & Engineering Patterns',
+        '',
+        'More at: https://github.com/arifrohmanhakim?tab=repositories'
+      )
+      break
+
+    case 'skills':
+    case 'tech':
+      outputLines.push(
+        '=== Technical Skills & Architecture ===',
+        '• Frontend: React 19, React Native, TypeScript, Tailwind CSS, Next.js',
+        '• Backend : Node.js, Express, PHP, Laravel, REST APIs, GraphQL',
+        '• Database: PostgreSQL, MySQL, SQLite, Redis, IndexedDB/VFS',
+        '• DevOps  : Docker, GitHub Actions, Linux/POSIX Shell, System Design'
+      )
+      break
+
+    case 'contact':
+    case 'github':
+    case 'linkedin':
+    case 'social':
+      outputLines.push(
+        'GitHub   : https://github.com/arifrohmanhakim',
+        'LinkedIn : https://www.linkedin.com/in/arif-rohman-hakim/',
+        'Website  : https://arifrohmanhakim.com',
+        'Location : Yogyakarta, Indonesia'
+      )
       break
 
     case 'hostname':
@@ -429,7 +492,7 @@ export async function executeShellCommand(commandLine, { osContext, onClose }) {
       const freq = parseFloat(args[0]) || 880
       const dur = parseFloat(args[1]) || 0.15
       soundService.playBeep(freq, dur)
-      outputLines.push(`🔔 Beep (${freq}Hz, ${dur}s)`)
+      outputLines.push(`[*] Beep (${freq}Hz, ${dur}s)`)
       break
     }
 

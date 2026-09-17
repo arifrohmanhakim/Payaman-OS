@@ -435,6 +435,8 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
         {
           label: 'File',
           items: [
+            { label: 'Set as Desktop Background', action: 'gallery:set_background', shortcut: '⌘B' },
+            { divider: true },
             { label: 'Reload Photos', action: 'gallery:reload', shortcut: '⌘R' },
             { divider: true },
             { label: 'Close Window', action: 'close_active', shortcut: '⌘W' },
@@ -551,13 +553,49 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
       ]
       break
 
+    case 'itunes':
+      dynamicMenus = [
+        {
+          label: 'File',
+          items: [
+            { label: 'Search Songs...', action: 'itunes:search', shortcut: '⌘F' },
+            { divider: true },
+            { label: 'Close Window', action: 'close_active', shortcut: '⌘W' },
+          ],
+        },
+        {
+          label: 'Controls',
+          items: [
+            { label: 'Play / Pause', action: 'itunes:play_pause', shortcut: 'Space' },
+            { label: 'Next Track', action: 'itunes:next', shortcut: '⌘→' },
+            { label: 'Previous Track', action: 'itunes:prev', shortcut: '⌘←' },
+          ],
+        },
+        {
+          label: 'Window',
+          items: [
+            { label: 'Minimize', action: 'minimize_active', shortcut: '⌘M' },
+            { label: 'Zoom', action: 'zoom_active' },
+            { divider: true },
+            { label: 'Close Window', action: 'close_active', shortcut: '⌘W' },
+          ],
+        },
+        {
+          label: 'Help',
+          items: [{ label: 'iTunes Help', action: 'help_app' }],
+        },
+      ]
+      break
+
     default:
       // Finder / Desktop default menu
       dynamicMenus = [
         {
           label: 'File',
           items: [
+            { label: 'Developer Portfolio', action: 'portfolio', shortcut: '⌘P' },
             { label: 'Open File Manager', action: 'files', shortcut: '⌘O' },
+            { label: 'Open iTunes', action: 'itunes' },
             { label: 'Open Browser', action: 'browser', shortcut: '⌘B' },
             { label: 'Open Payaman Chat', action: 'chat' },
             { label: 'Open Maps', action: 'maps' },

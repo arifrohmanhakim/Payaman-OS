@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useBrowser } from './useBrowser.js'
 import { HOME_PAGE_URL, isKnownFrameRestrictedDomain } from './bookmarksData.js'
+import AppIconGraphic from '../../components/common/AppIconGraphic.jsx'
 
 export default function BrowserApp() {
   const {
@@ -116,25 +117,25 @@ export default function BrowserApp() {
           <button
             type="button"
             onClick={reload}
-            className="w-6 h-6 border border-[var(--os-border)] flex items-center justify-center text-xs hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)]"
+            className="w-6 h-6 border border-[var(--os-border)] flex items-center justify-center text-xs hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] font-bold"
             title="Reload Page (⌘R)"
           >
-            🔄
+            ⟳
           </button>
           <button
             type="button"
             onClick={goHome}
-            className="w-6 h-6 border border-[var(--os-border)] flex items-center justify-center text-xs hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)]"
+            className="w-6 h-6 border border-[var(--os-border)] flex items-center justify-center text-xs hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] font-bold"
             title="Home Page"
           >
-            🏠
+            [H]
           </button>
         </div>
 
         {/* Omnibox Address Input */}
         <form onSubmit={handleSubmitUrl} className="flex-1 flex items-center relative">
-          <div className="absolute left-2 text-[11px] opacity-60 pointer-events-none">
-            {activeTab?.url.startsWith('https://') ? '🔒' : '🌐'}
+          <div className="absolute left-2 text-[10px] font-bold opacity-60 pointer-events-none">
+            {activeTab?.url.startsWith('https://') ? 'SEC' : 'WEB'}
           </div>
 
           <input
@@ -190,10 +191,10 @@ export default function BrowserApp() {
             key={bm.id}
             type="button"
             onClick={() => navigateTo(bm.url)}
-            className="px-1.5 py-0.5 border border-transparent hover:border-[var(--os-border)] hover:bg-[var(--os-fg)]/10 truncate shrink-0 max-w-36 flex items-center gap-1"
+            className="px-1.5 py-0.5 border border-transparent hover:border-[var(--os-border)] hover:bg-[var(--os-fg)]/10 truncate shrink-0 max-w-36 flex items-center gap-1.5"
             title={`${bm.title} (${bm.url})`}
           >
-            <span>{bm.icon || '🔖'}</span>
+            <AppIconGraphic iconType={bm.iconType || 'browser'} className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate">{bm.title}</span>
           </button>
         ))}
@@ -206,8 +207,8 @@ export default function BrowserApp() {
           <div className="h-full overflow-y-auto p-4 sm:p-6 flex flex-col items-center">
             <div className="w-full max-w-xl space-y-6 text-center">
               <div className="space-y-2 pt-2">
-                <div className="inline-block p-3 border-2 border-[var(--os-border)] text-3xl font-bold">
-                  🌐
+                <div className="inline-block p-3 border-2 border-[var(--os-border)]">
+                  <AppIconGraphic iconType="browser" className="w-10 h-10" />
                 </div>
                 <h1 className="text-lg font-bold tracking-tight">Payaman Web Explorer</h1>
                 <p className="text-xs opacity-75">
@@ -249,9 +250,12 @@ export default function BrowserApp() {
                     <div
                       key={site.id}
                       onClick={() => navigateTo(site.url)}
-                      className="p-2 border border-[var(--os-border)] hover:bg-[var(--os-fg)]/10 cursor-pointer flex items-start gap-2 group transition-none"
+                      className="p-2 border border-[var(--os-border)] hover:bg-[var(--os-fg)]/10 cursor-pointer flex items-start gap-2.5 group transition-none"
                     >
-                      <span className="text-base mt-0.5">{site.icon}</span>
+                      <AppIconGraphic
+                        iconType={site.iconType || 'browser'}
+                        className="w-4 h-4 shrink-0 mt-0.5"
+                      />
                       <div className="min-w-0 flex-1">
                         <div className="font-bold text-xs group-hover:underline truncate">
                           {site.title}
@@ -268,7 +272,7 @@ export default function BrowserApp() {
               {/* Frame Notice Alert */}
               <div className="p-3 border border-[var(--os-border)] bg-[var(--os-bg)] text-[11px] text-left space-y-1.5 opacity-90">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold">ℹ️ Note on Web Browsing</span>
+                  <span className="font-bold">Note on Web Browsing</span>
                   <button
                     type="button"
                     onClick={() => setShowPortalInfo((prev) => !prev)}
@@ -294,8 +298,8 @@ export default function BrowserApp() {
           /* Restricted Domain Notice (Google, YouTube, GitHub, etc.) */
           <div className="h-full overflow-y-auto p-6 flex flex-col items-center justify-center text-center">
             <div className="max-w-md w-full border-2 border-[var(--os-border)] p-5 space-y-4 bg-[var(--os-bg)] os-window-shadow">
-              <div className="inline-block p-2.5 border-2 border-[var(--os-border)] text-2xl font-bold">
-                🛡️
+              <div className="inline-block p-2 border-2 border-[var(--os-border)]">
+                <AppIconGraphic iconType="preferences" className="w-6 h-6" />
               </div>
 
               <div className="space-y-1">
@@ -331,7 +335,7 @@ export default function BrowserApp() {
                   }
                   className="w-full py-1.5 px-3 text-xs font-semibold border border-[var(--os-border)] hover:bg-[var(--os-fg)]/10 flex items-center justify-center gap-1.5"
                 >
-                  <span>🔍 Search via DuckDuckGo Lite (Embed-Friendly)</span>
+                  <span>Search via DuckDuckGo Lite (Embed-Friendly)</span>
                 </button>
 
                 <button
@@ -345,7 +349,7 @@ export default function BrowserApp() {
                   }
                   className="w-full py-1.5 px-3 text-xs font-semibold border border-[var(--os-border)] hover:bg-[var(--os-fg)]/10 flex items-center justify-center gap-1.5"
                 >
-                  <span>🐸 Search via FrogFind (Vintage Web)</span>
+                  <span>Search via FrogFind (Vintage Web)</span>
                 </button>
               </div>
 

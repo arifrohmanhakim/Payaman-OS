@@ -43,10 +43,31 @@ import { mapsAppConfig } from './maps/config.js'
 import PayamanChatApp from './chat/index.jsx'
 import { payamanChatConfig } from './chat/config.js'
 
+import ITunesApp from './itunes/index.jsx'
+import { itunesAppConfig } from './itunes/config.js'
+
+import PortfolioApp from './portfolio/index.jsx'
+import { portfolioAppConfig } from './portfolio/config.js'
+
+import DesktopPetApp from './pet/index.jsx'
+import { desktopPetConfig } from './pet/config.js'
+
 export const appRegistry = [
+  {
+    ...portfolioAppConfig,
+    component: PortfolioApp,
+  },
+  {
+    ...desktopPetConfig,
+    component: DesktopPetApp,
+  },
   {
     ...browserAppConfig,
     component: BrowserApp,
+  },
+  {
+    ...itunesAppConfig,
+    component: ITunesApp,
   },
   {
     ...payamanChatConfig,

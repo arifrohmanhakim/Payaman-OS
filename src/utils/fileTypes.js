@@ -66,24 +66,26 @@ export function getFileCategory(filename = '', mimeType = '') {
   return 'unknown'
 }
 
-export function getFileEmoji(filename = '', mimeType = '') {
+export function getFileIconType(filename = '', mimeType = '') {
   const category = getFileCategory(filename, mimeType)
   switch (category) {
     case 'image':
-      return '🖼️'
+      return 'gallery'
     case 'pdf':
-      return '📕'
     case 'doc':
-      return '📘'
-    case 'audio':
-      return '🎵'
-    case 'video':
-      return '🎬'
     case 'text':
-      return '📄'
+      return 'document'
+    case 'audio':
+      return 'itunes'
+    case 'video':
+      return 'photobot'
     default:
-      return '📦'
+      return 'document'
   }
+}
+
+export function getFileEmoji(filename = '', mimeType = '') {
+  return getFileIconType(filename, mimeType)
 }
 
 export function formatFileSize(bytes) {

@@ -10,6 +10,7 @@ export default function DesktopIcon({
   onSelect,
   onOpen,
   onPositionChange,
+  onContextMenu,
 }) {
   const [isDragging, setIsDragging] = useState(false)
   const dragRef = useRef({
@@ -71,9 +72,17 @@ export default function DesktopIcon({
     }
   }
 
+  const handleContextMenu = (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    onSelect?.(id)
+    onContextMenu?.(event, id)
+  }
+
   return (
     <div
       onMouseDown={handleMouseDown}
+      onContextMenu={handleContextMenu}
       onDoubleClick={(e) => {
         e.stopPropagation()
         onOpen(id)

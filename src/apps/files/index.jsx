@@ -336,8 +336,8 @@ export default function FileManagerApp() {
             </>
           ) : (
             <>
-              <span className="font-bold flex items-center gap-1">
-                <span>☁️</span>
+              <span className="font-bold flex items-center gap-1.5">
+                <AppIconGraphic iconType="cloud" className="w-4 h-4" />
                 <span>Google Drive</span>
               </span>
               {gdrive.folderHistory.map((f, idx) => {
@@ -457,7 +457,7 @@ export default function FileManagerApp() {
                     : 'hover:bg-[var(--os-fg)]/10 text-[var(--os-fg)]'
                 }`}
               >
-                <span>💾</span>
+                <AppIconGraphic iconType="preferences" className="w-3.5 h-3.5 shrink-0" />
                 <span className="truncate">Local (VFS)</span>
               </button>
 
@@ -474,7 +474,7 @@ export default function FileManagerApp() {
                 }`}
               >
                 <span className="flex items-center gap-1.5 truncate">
-                  <span>☁️</span>
+                  <AppIconGraphic iconType="cloud" className="w-3.5 h-3.5 shrink-0" />
                   <span className="truncate">Google Drive</span>
                 </span>
                 {gdrive.isConnected && (
@@ -504,7 +504,7 @@ export default function FileManagerApp() {
                             : 'hover:bg-[var(--os-fg)]/10 text-[var(--os-fg)]'
                         }`}
                       >
-                        <span>📁</span>
+                        <AppIconGraphic iconType="folder" className="w-3.5 h-3.5 shrink-0" />
                         <span className="truncate">{link.name}</span>
                       </button>
                     )
@@ -612,42 +612,44 @@ export default function FileManagerApp() {
                   </tr>
                 </thead>
                 <tbody>
-                  {items.map((item) => {
-                    const isSelected = selectedItem?.name === item.name
-                    const isDir = item.type === 'dir'
-                    const category = isDir ? 'folder' : getFileCategory(item.name)
-                    const ext = isDir ? '' : getFileExtension(item.name)
-                    return (
-                      <tr
-                        key={item.name}
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setSelectedItem(item)
-                        }}
-                        onDoubleClick={(e) => {
-                          e.stopPropagation()
-                          handleOpenLocalItem(item)
-                        }}
-                        className={`border-b border-[var(--os-border)]/30 cursor-default ${
-                          isSelected
-                            ? 'bg-[var(--os-fg)] text-[var(--os-bg)]'
-                            : 'hover:bg-[var(--os-fg)]/10'
-                        }`}
-                      >
-                        <td className="py-1 px-2 flex items-center gap-1.5">
-                          <span>
-                            {isDir
-                              ? '📁'
-                              : category === 'image'
-                                ? '🖼️'
-                                : category === 'pdf'
-                                  ? '📕'
-                                  : category === 'doc'
-                                    ? '📘'
-                                    : '📄'}
-                          </span>
-                          <span className="font-medium">{item.name}</span>
-                        </td>
+                    {items.map((item) => {
+                      const isSelected = selectedItem?.name === item.name
+                      const isDir = item.type === 'dir'
+                      const category = isDir ? 'folder' : getFileCategory(item.name)
+                      const ext = isDir ? '' : getFileExtension(item.name)
+                      let iconType = 'document'
+                      if (isDir) iconType = 'folder'
+                      else if (category === 'image') iconType = 'image'
+                      else if (category === 'pdf') iconType = 'pdf'
+                      else if (category === 'audio' || category === 'video') iconType = 'media'
+                      else if (
+                        category === 'text' &&
+                        ['js', 'jsx', 'ts', 'tsx', 'html', 'css', 'json', 'py', 'sh'].includes(ext)
+                      ) {
+                        iconType = 'code'
+                      }
+
+                      return (
+                        <tr
+                          key={item.name}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setSelectedItem(item)
+                          }}
+                          onDoubleClick={(e) => {
+                            e.stopPropagation()
+                            handleOpenLocalItem(item)
+                          }}
+                          className={`border-b border-[var(--os-border)]/30 cursor-default ${
+                            isSelected
+                              ? 'bg-[var(--os-fg)] text-[var(--os-bg)]'
+                              : 'hover:bg-[var(--os-fg)]/10'
+                          }`}
+                        >
+                          <td className="py-1 px-2 flex items-center gap-1.5">
+                            <AppIconGraphic iconType={iconType} className="w-4 h-4 shrink-0" />
+                            <span className="font-medium">{item.name}</span>
+                          </td>
                         <td className="py-1 px-2 uppercase text-[10px]">
                           {isDir ? 'Folder' : ext || category}
                         </td>
@@ -692,7 +694,7 @@ export default function FileManagerApp() {
                   onClick={gdrive.connect}
                   className="w-full py-2 flex items-center justify-center gap-2"
                 >
-                  <span>🔑</span>
+                  <AppIconGraphic iconType="preferences" className="w-3.5 h-3.5 shrink-0" />
                   <span>{gdrive.isLoading ? 'Connecting...' : 'Connect Google Drive'}</span>
                 </Button>
               </div>
@@ -770,6 +772,18 @@ export default function FileManagerApp() {
                     const isSelected = selectedItem?.id === file.id
                     const category = isFolder ? 'folder' : getFileCategory(file.name, file.mimeType)
                     const ext = isFolder ? '' : getFileExtension(file.name)
+                    let iconType = 'document'
+                    if (isFolder) iconType = 'folder'
+                    else if (category === 'image') iconType = 'image'
+                    else if (category === 'pdf') iconType = 'pdf'
+                    else if (category === 'audio' || category === 'video') iconType = 'media'
+                    else if (
+                      category === 'text' &&
+                      ['js', 'jsx', 'ts', 'tsx', 'html', 'css', 'json', 'py', 'sh'].includes(ext)
+                    ) {
+                      iconType = 'code'
+                    }
+
                     return (
                       <tr
                         key={file.id}
@@ -788,17 +802,7 @@ export default function FileManagerApp() {
                         }`}
                       >
                         <td className="py-1 px-2 flex items-center gap-1.5">
-                          <span>
-                            {isFolder
-                              ? '📁'
-                              : category === 'image'
-                                ? '🖼️'
-                                : category === 'pdf'
-                                  ? '📕'
-                                  : category === 'doc'
-                                    ? '📘'
-                                    : '📄'}
-                          </span>
+                          <AppIconGraphic iconType={iconType} className="w-4 h-4 shrink-0" />
                           <span className="font-medium truncate">{file.name}</span>
                         </td>
                         <td className="py-1 px-2 text-[10px] truncate max-w-[120px]">

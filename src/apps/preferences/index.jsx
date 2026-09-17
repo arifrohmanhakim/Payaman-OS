@@ -15,9 +15,11 @@ export default function PreferencesApp() {
   const {
     theme,
     pattern,
+    customWallpaper,
     dockSettings,
     setTheme,
     setPattern,
+    clearCustomWallpaper,
     updateDockSettings,
   } = useOS();
 
@@ -104,11 +106,12 @@ export default function PreferencesApp() {
           <Panel title="Live Preview">
             <div className="flex flex-col sm:flex-row gap-3 items-center">
               <div
-                className={`w-48 h-32 border-2 border-[var(--os-border)] pattern-${
-                  pattern || "halftone"
-                } p-2 flex items-center justify-center`}
+                className={`w-48 h-32 border-2 border-[var(--os-border)] ${
+                  customWallpaper ? 'bg-cover bg-center' : `pattern-${pattern || 'halftone'}`
+                } p-2 flex items-center justify-center relative overflow-hidden`}
+                style={customWallpaper ? { backgroundImage: `url(${customWallpaper})` } : {}}
               >
-                <div className="w-36 bg-[var(--os-bg)] border border-[var(--os-border)] os-window-shadow">
+                <div className="w-36 bg-[var(--os-bg)] border border-[var(--os-border)] os-window-shadow relative z-10">
                   <div className="h-4 border-b border-[var(--os-border)] os-titlebar-stripes flex items-center justify-between px-1">
                     <span className="w-2 h-2 border border-[var(--os-border)] bg-[var(--os-bg)]" />
                     <span className="text-[9px] font-bold bg-[var(--os-bg)] px-1">
@@ -124,17 +127,30 @@ export default function PreferencesApp() {
                   </div>
                 </div>
               </div>
-              <div className="flex-1 text-[11px] space-y-1 opacity-80">
+              <div className="flex-1 text-[11px] space-y-1.5 opacity-80">
                 <p>
-                  <strong>Active Theme:</strong>{" "}
-                  {THEMES.find((t) => t.id === (theme || "classic"))?.name}
+                  <strong>Active Theme:</strong>{' '}
+                  {THEMES.find((t) => t.id === (theme || 'classic'))?.name}
                 </p>
                 <p>
-                  <strong>Background Pattern:</strong>{" "}
-                  {PATTERNS.find((p) => p.id === (pattern || "halftone"))?.name}
+                  <strong>Background Mode:</strong>{' '}
+                  {customWallpaper ? 'Custom Wallpaper (Photo)' : (
+                    PATTERNS.find((p) => p.id === (pattern || 'halftone'))?.name
+                  )}
                 </p>
+                {customWallpaper && (
+                  <div>
+                    <Button
+                      variant="default"
+                      onClick={clearCustomWallpaper}
+                      className="text-[10px] py-0.5 px-2"
+                    >
+                      Restore Default Pattern
+                    </Button>
+                  </div>
+                )}
                 <p className="text-[10px] text-neutral-500 pt-1">
-                  Changes are instantly applied across all windows and saved to local storage.
+                  Changes are instantly applied across desktop and saved to local storage.
                 </p>
               </div>
             </div>
@@ -197,7 +213,10 @@ export default function PreferencesApp() {
                   <button
                     key={p.id}
                     type="button"
-                    onClick={() => setPattern(p.id)}
+                    onClick={() => {
+                      clearCustomWallpaper();
+                      setPattern(p.id);
+                    }}
                     className={`border-2 border-[var(--os-border)] p-1 flex flex-col items-center gap-1.5 transition-none ${
                       isCurrentPattern
                         ? "ring-2 ring-[var(--os-fg)] ring-offset-1 bg-[var(--os-fg)] text-[var(--os-bg)]"
@@ -329,8 +348,8 @@ export default function PreferencesApp() {
                     3
                   </div>
                   <div className="w-px bg-current opacity-30 mx-0.5" />
-                  <div className="w-3 h-3 border border-current flex items-center justify-center text-[6px]">
-                    🗑
+                  <div className="w-3 h-3 border border-current flex items-center justify-center text-[6px] font-bold">
+                    T
                   </div>
                 </div>
               </div>

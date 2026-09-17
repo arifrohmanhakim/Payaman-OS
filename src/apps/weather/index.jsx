@@ -322,7 +322,7 @@ export default function WeatherApp() {
             <div className="border border-[var(--os-border)] p-2">
               <div className="text-[10px] opacity-60 uppercase">Sunrise / Sunset</div>
               <div className="text-xs font-bold mt-1">
-                ☀️ {current?.sunrise || '--:--'} &nbsp; 🌙 {current?.sunset || '--:--'}
+                Rise: {current?.sunrise || '--:--'} &nbsp;|&nbsp; Set: {current?.sunset || '--:--'}
               </div>
               <div className="text-[9px] opacity-50 mt-0.5">Local daylight cycle</div>
             </div>
