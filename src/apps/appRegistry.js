@@ -52,10 +52,24 @@ import { portfolioAppConfig } from './portfolio/config.js'
 import DesktopPetApp from './pet/index.jsx'
 import { desktopPetConfig } from './pet/config.js'
 
+import MinesweeperApp from './minesweeper/index.jsx'
+import { minesweeperAppConfig } from './minesweeper/config.js'
+
+import SnakeApp from './snake/index.jsx'
+import { snakeAppConfig } from './snake/config.js'
+
 export const appRegistry = [
   {
     ...portfolioAppConfig,
     component: PortfolioApp,
+  },
+  {
+    ...minesweeperAppConfig,
+    component: MinesweeperApp,
+  },
+  {
+    ...snakeAppConfig,
+    component: SnakeApp,
   },
   {
     ...desktopPetConfig,

@@ -248,6 +248,50 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
           <rect x="22" y="22" width="5" height="5" rx="1" fill="currentColor" />
         </svg>
       )
+    case 'search':
+    case 'spotlight':
+    case 'find':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.75]`}
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <circle cx="10.5" cy="10.5" r="6.5" />
+          <line x1="15.5" y1="15.5" x2="20.5" y2="20.5" strokeLinecap="round" />
+        </svg>
+      )
+    case 'bomb':
+    case 'minesweeper':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <circle cx="14" cy="18" r="9" />
+          <path d="M20 12 L24 8" strokeWidth="2" strokeLinecap="round" />
+          <path d="M24 8 Q27 6 29 7" strokeWidth="1.5" strokeLinecap="round" />
+          <circle cx="29" cy="7" r="1" fill="currentColor" />
+          <circle cx="11" cy="15" r="1.5" fill="currentColor" />
+        </svg>
+      )
+    case 'game':
+    case 'snake':
+    case 'joystick':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <rect x="4" y="8" width="24" height="16" rx="4" />
+          <line x1="10" y1="13" x2="10" y2="19" strokeWidth="2" strokeLinecap="round" />
+          <line x1="7" y1="16" x2="13" y2="16" strokeWidth="2" strokeLinecap="round" />
+          <circle cx="21" cy="14" r="1.5" fill="currentColor" />
+          <circle cx="24" cy="18" r="1.5" fill="currentColor" />
+        </svg>
+      )
     case 'paint':
     case 'macpaint':
       return (

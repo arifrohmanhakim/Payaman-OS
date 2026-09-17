@@ -210,7 +210,7 @@ export default function TerminalApp({ onClose }) {
       fontSize: 12,
       lineHeight: 1.2,
       fontFamily:
-        "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+        "Sysfont, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
       theme: buildXtermTheme(profile),
       convertEol: true,
       allowTransparency: false,

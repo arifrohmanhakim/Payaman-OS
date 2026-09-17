@@ -1,5 +1,24 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Sysfont';
+  src: url('/fonts/sysfont.woff2') format('woff2'),
+       url('/fonts/sysfont.woff') format('woff'),
+       url('/fonts/sysfont.otf') format('opentype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-mono: 'Sysfont', monospace;
+  --font-sans: 'Sysfont', sans-serif;
+}
+
+body {
+  font-family: 'Sysfont', monospace, sans-serif;
+}
+
 :root {
   --os-fg: #000000;
   --os-bg: #ffffff;

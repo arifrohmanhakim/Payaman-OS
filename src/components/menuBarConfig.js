@@ -8,8 +8,12 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
     items: [
       { label: 'About Payaman OS', action: 'about_os' },
       { label: 'System Preferences...', action: 'preferences', shortcut: '⌘,' },
+      { label: 'Displays & Resolution...', action: 'displays' },
       { divider: true },
+      { label: 'Spotlight Search...', action: 'spotlight', shortcut: '⌘Space' },
       { label: 'Launchpad', action: 'launchpad', shortcut: 'F4' },
+      { label: 'Start Screen Saver', action: 'start_screensaver' },
+      { label: 'Toggle Fullscreen', action: 'toggle_fullscreen', shortcut: 'F11' },
       { divider: true },
       { label: 'Clean Desktop', action: 'clean_desktop' },
       { label: 'Reset Window Session', action: 'reset_session' },

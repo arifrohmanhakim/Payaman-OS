@@ -1,9 +1,11 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { getAppById } from '../apps/appRegistry.js'
 import { soundService } from '../services/soundService.js'
 import { storageService } from '../services/storageService.js'
 import { useWindowManager } from '../hooks/useWindowManager.js'
+import { useScreenSaver } from '../hooks/useScreenSaver.js'
 import { DEFAULT_DOCK_SETTINGS } from '../constants/dock.js'
+import { DEFAULT_DISPLAY_SETTINGS } from '../constants/display.js'
 import { OSContext } from './OSContextInstance.js'
 
 const getInitialWindows = () => {
@@ -41,10 +43,25 @@ export function OSProvider({ children }) {
     const saved = storageService.getItem('os_dock_settings', {})
     return { ...DEFAULT_DOCK_SETTINGS, ...saved }
   })
+  const [displaySettings, setDisplaySettingsState] = useState(() => {
+    const saved = storageService.getItem('os_display_settings', {})
+    return { ...DEFAULT_DISPLAY_SETTINGS, ...saved }
+  })
   const [customWallpaper, setCustomWallpaperState] = useState(() => {
     return storageService.getItem('os_custom_wallpaper', null)
   })
   const [isLaunchpadOpen, setIsLaunchpadOpen] = useState(false)
+  const [isSpotlightOpen, setIsSpotlightOpen] = useState(false)
+
+  const {
+    isScreenSaverActive,
+    screenSaverMode,
+    screenSaverTimeoutMinutes,
+    setScreenSaverMode,
+    setScreenSaverTimeoutMinutes,
+    startScreenSaver,
+    dismissScreenSaver,
+  } = useScreenSaver()
 
   const {
     windows,
@@ -54,6 +71,7 @@ export function OSProvider({ children }) {
     focusWindow,
     minimizeWindow,
     toggleMaximizeWindow,
+    snapWindow,
     updateWindowPosition,
     updateWindowSize,
     resetSession,
@@ -76,6 +94,16 @@ export function OSProvider({ children }) {
       const updated =
         typeof newSettings === 'function' ? newSettings(prev) : { ...prev, ...newSettings }
       storageService.setItem('os_dock_settings', updated)
+      return updated
+    })
+    soundService.playClick()
+  }, [])
+
+  const updateDisplaySettings = useCallback((newSettings) => {
+    setDisplaySettingsState((prev) => {
+      const updated =
+        typeof newSettings === 'function' ? newSettings(prev) : { ...prev, ...newSettings }
+      storageService.setItem('os_display_settings', updated)
       return updated
     })
     soundService.playClick()
@@ -140,6 +168,21 @@ export function OSProvider({ children }) {
     setIsLaunchpadOpen((prev) => !prev)
   }, [])
 
+  const openSpotlight = useCallback(() => {
+    soundService.playClick()
+    setIsSpotlightOpen(true)
+  }, [])
+
+  const closeSpotlight = useCallback(() => {
+    soundService.playClick()
+    setIsSpotlightOpen(false)
+  }, [])
+
+  const toggleSpotlight = useCallback(() => {
+    soundService.playClick()
+    setIsSpotlightOpen((prev) => !prev)
+  }, [])
+
   const setCustomWallpaper = useCallback((wallpaperUrl) => {
     setCustomWallpaperState(wallpaperUrl)
     storageService.setItem('os_custom_wallpaper', wallpaperUrl)
@@ -164,6 +207,19 @@ export function OSProvider({ children }) {
     setSystemPhase('desktop')
   }, [])
 
+  useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      // Cmd+Space, Ctrl+Space, Cmd+K, Ctrl+K
+      const isCmdOrCtrl = e.metaKey || e.ctrlKey
+      if (isCmdOrCtrl && (e.code === 'Space' || e.key.toLowerCase() === 'k')) {
+        e.preventDefault()
+        toggleSpotlight()
+      }
+    }
+    window.addEventListener('keydown', handleGlobalKeyDown)
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown)
+  }, [toggleSpotlight])
+
   const contextValue = useMemo(
     () => ({
       systemPhase,
@@ -177,17 +233,21 @@ export function OSProvider({ children }) {
       pattern,
       customWallpaper,
       dockSettings,
+      displaySettings,
       isLaunchpadOpen,
+      isSpotlightOpen,
       setTheme,
       setPattern,
       setCustomWallpaper,
       clearCustomWallpaper,
       updateDockSettings,
+      updateDisplaySettings,
       openApp,
       closeWindow: handleCloseWindow,
       focusWindow,
       minimizeWindow: handleMinimizeWindow,
       toggleMaximizeWindow: handleToggleMaximizeWindow,
+      snapWindow,
       updateWindowPosition,
       updateWindowSize,
       showModal,
@@ -195,6 +255,16 @@ export function OSProvider({ children }) {
       openLaunchpad,
       closeLaunchpad,
       toggleLaunchpad,
+      openSpotlight,
+      closeSpotlight,
+      toggleSpotlight,
+      isScreenSaverActive,
+      screenSaverMode,
+      screenSaverTimeoutMinutes,
+      setScreenSaverMode,
+      setScreenSaverTimeoutMinutes,
+      startScreenSaver,
+      dismissScreenSaver,
       resetSession,
     }),
     [
@@ -209,17 +279,21 @@ export function OSProvider({ children }) {
       pattern,
       customWallpaper,
       dockSettings,
+      displaySettings,
       isLaunchpadOpen,
+      isSpotlightOpen,
       setTheme,
       setPattern,
       setCustomWallpaper,
       clearCustomWallpaper,
       updateDockSettings,
+      updateDisplaySettings,
       openApp,
       handleCloseWindow,
       focusWindow,
       handleMinimizeWindow,
       handleToggleMaximizeWindow,
+      snapWindow,
       updateWindowPosition,
       updateWindowSize,
       showModal,
@@ -227,6 +301,16 @@ export function OSProvider({ children }) {
       openLaunchpad,
       closeLaunchpad,
       toggleLaunchpad,
+      openSpotlight,
+      closeSpotlight,
+      toggleSpotlight,
+      isScreenSaverActive,
+      screenSaverMode,
+      screenSaverTimeoutMinutes,
+      setScreenSaverMode,
+      setScreenSaverTimeoutMinutes,
+      startScreenSaver,
+      dismissScreenSaver,
       resetSession,
     ]
   )
