@@ -90,6 +90,7 @@ export function useWindowManager(initialWindows = [], uiScale = 1.0) {
           y,
           width,
           height,
+          space: appConfig.space || 1,
           isMinimized: false,
           isMaximized: false,
           zIndex: newZ,
@@ -245,6 +246,12 @@ export function useWindowManager(initialWindows = [], uiScale = 1.0) {
     )
   }, [uiScale])
 
+  const setWindowSpace = useCallback((windowId, space) => {
+    setWindows((prevWindows) =>
+      prevWindows.map((w) => (w.id === windowId ? { ...w, space } : w))
+    )
+  }, [])
+
   const resetSession = useCallback(() => {
     storageService.removeItem(STORAGE_KEY_WINDOWS)
     storageService.removeItem(STORAGE_KEY_ACTIVE_WINDOW)
@@ -263,6 +270,7 @@ export function useWindowManager(initialWindows = [], uiScale = 1.0) {
     snapWindow,
     updateWindowPosition,
     updateWindowSize,
+    setWindowSpace,
     resetSession,
   }
 }

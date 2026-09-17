@@ -13,12 +13,14 @@ import ContextMenu from '../common/ContextMenu.jsx'
 import DesktopPetSprite from '../../apps/pet/DesktopPetSprite.jsx'
 import DesktopStickyNotes from '../../apps/stickynotes/DesktopStickyNotes.jsx'
 import { soundService } from '../../services/soundService.js'
+import { fileSystemService } from '../../services/fileSystemService.js'
 import { useOS } from '../../hooks/useOS.js'
 import { useDesktopIcons } from '../../hooks/useDesktopIcons.js'
 import { getDesktopApps, getAppById } from '../../apps/appRegistry.js'
 
 export default function Desktop() {
   const [selectedIconId, setSelectedIconId] = useState(null)
+  const [isDragOverFile, setIsDragOverFile] = useState(false)
   const [contextMenu, setContextMenu] = useState({
     isOpen: false,
     x: 0,
@@ -40,6 +42,9 @@ export default function Desktop() {
     pattern,
     customWallpaper,
     displaySettings,
+    activeSpace,
+    setActiveSpace,
+    crtScanlines,
     openApp,
     closeWindow,
     focusWindow,
@@ -139,7 +144,14 @@ export default function Desktop() {
         return
       }
 
-      // 3. Alt + Arrow Keys (Window Snapping / Tile)
+      // 3. Ctrl + 1 / 2 / 3 (Switch Virtual Spaces)
+      if (e.ctrlKey && ['1', '2', '3'].includes(e.key)) {
+        e.preventDefault()
+        setActiveSpace(parseInt(e.key, 10))
+        return
+      }
+
+      // 4. Alt + Arrow Keys (Window Snapping / Tile)
       if (e.altKey && activeWindowIdRef.current) {
         if (e.key === 'ArrowLeft') {
           e.preventDefault()
@@ -628,6 +640,63 @@ export default function Desktop() {
     [openApp, cleanUpIcons, uiScale]
   )
 
+  const handleDropFiles = useCallback(
+    (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      setIsDragOverFile(false)
+
+      const files = Array.from(e.dataTransfer.files || [])
+      if (files.length === 0) return
+
+      soundService.playClick()
+
+      files.forEach((file) => {
+        const ext = file.name.split('.').pop()?.toLowerCase() || ''
+
+        // 1. Spreadsheet (.xlsx, .xls, .csv)
+        if (['xlsx', 'xls', 'csv'].includes(ext)) {
+          fileSystemService.writeFile(`/home/arif/dokumen/${file.name}`, `[Imported Spreadsheet: ${file.name}]`)
+          openApp('sheets', { importedFile: file, fileName: file.name })
+          return
+        }
+
+        // 2. Images (.png, .jpg, .jpeg, .gif, .svg, .webp)
+        if (['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp'].includes(ext)) {
+          const reader = new FileReader()
+          reader.onload = (loadEvt) => {
+            const dataUrl = loadEvt.target?.result
+            if (dataUrl) {
+              fileSystemService.writeFile(`/home/arif/dokumen/${file.name}`, dataUrl)
+              openApp('gallery', { previewUrl: dataUrl, title: file.name })
+            }
+          }
+          reader.readAsDataURL(file)
+          return
+        }
+
+        // 3. Text / Markdown / Code / Document files
+        const reader = new FileReader()
+        reader.onload = (loadEvt) => {
+          const text = loadEvt.target?.result
+          if (typeof text === 'string') {
+            fileSystemService.writeFile(`/home/arif/dokumen/${file.name}`, text)
+            openApp('write', { initialContent: text, fileName: file.name })
+          }
+        }
+        reader.readAsText(file)
+      })
+
+      showModal({
+        type: 'file_imported',
+        title: 'File Imported',
+        message: `Successfully imported ${files.length} file(s) into Payaman OS (/home/arif/dokumen/).`,
+        onConfirm: () => closeModal(),
+      })
+    },
+    [openApp, showModal, closeModal]
+  )
+
   const renderWindowContent = (appId, windowId, windowData) => {
     const appDef = getAppById(appId)
     if (!appDef || !appDef.component) {
@@ -645,10 +714,24 @@ export default function Desktop() {
   }
 
   const patternClass = `pattern-${pattern || 'halftone'}`
+  const filteredWindows = windows.filter(
+    (win) => (win.space || 1) === (activeSpace || 1)
+  )
 
   return (
     <div
       data-theme={theme || 'classic'}
+      onDragOver={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        setIsDragOverFile(true)
+      }}
+      onDragLeave={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+          setIsDragOverFile(false)
+        }
+      }}
+      onDrop={handleDropFiles}
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           setSelectedIconId(null)
@@ -673,8 +756,23 @@ export default function Desktop() {
       }}
       className={`fixed inset-0 overflow-hidden font-mono text-[var(--os-fg)] select-none ${
         customWallpaper ? 'bg-neutral-900' : patternClass
-      }`}
+      } ${crtScanlines ? 'crt-scanlines' : ''}`}
     >
+      {/* Real File Drag & Drop Overlay Zone */}
+      {isDragOverFile && (
+        <div className="fixed inset-0 z-[99999] bg-black/60 backdrop-blur-xs flex items-center justify-center pointer-events-none p-6">
+          <div className="border-4 border-dashed border-[var(--os-fg)] bg-[var(--os-bg)] text-[var(--os-fg)] p-8 text-center os-dialog-shadow space-y-2">
+            <div className="text-3xl font-bold">📥</div>
+            <div className="text-sm font-bold uppercase tracking-wider">
+              Drop Files to Payaman OS
+            </div>
+            <div className="text-xs opacity-75">
+              Supports Excel (.xlsx, .csv), Images (.png, .jpg), and Text (.txt, .md)
+            </div>
+          </div>
+        </div>
+      )}
+
       {customWallpaper && (
         <div
           className="absolute inset-0 bg-cover bg-center pointer-events-none transition-all duration-300"
@@ -718,7 +816,7 @@ export default function Desktop() {
         </div>
       </main>
 
-      {windows.map((win) => (
+      {filteredWindows.map((win) => (
         <Window
           key={win.id}
           windowData={win}
