@@ -13,6 +13,7 @@ export default function CaveLogo({ className = 'w-4 h-4', title = 'Payaman OS' }
         WebkitMaskRepeat: 'no-repeat',
         maskPosition: 'center',
         WebkitMaskPosition: 'center',
+        imageRendering: 'pixelated',
         transform: 'translateZ(0)',
       }}
     />
