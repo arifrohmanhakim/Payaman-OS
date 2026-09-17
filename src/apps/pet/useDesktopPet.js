@@ -14,7 +14,7 @@ let globalPetState = {
   happiness: 95,
   energy: 90,
   actionState: 'idle', // 'idle' | 'walking' | 'sleeping' | 'playing' | 'eating'
-  speechText: 'Hello from Payaman OS! ❤️',
+  speechText: 'Hello from Payaman OS!',
   speechTimestamp: Date.now(),
 }
 
@@ -118,7 +118,7 @@ export function useDesktopPet() {
       globalPetState.hunger = Math.min(100, globalPetState.hunger + (treat?.nutrition || 25))
       globalPetState.happiness = Math.min(100, globalPetState.happiness + (treat?.happiness || 15))
       globalPetState.actionState = 'eating'
-      showSpeech(`*Nom nom* Loved the ${treat?.name || 'treat'}! 😋`)
+      showSpeech(`*Nom nom* Loved the ${treat?.name || 'treat'}!`)
       notifyPetListeners()
       playPetSound()
 
@@ -133,13 +133,13 @@ export function useDesktopPet() {
   const playWithPet = useCallback(
     (toy) => {
       if (globalPetState.energy < 15) {
-        showSpeech("Too sleepy to play right now... 💤")
+        showSpeech("Too sleepy to play right now...")
         return
       }
       globalPetState.happiness = Math.min(100, globalPetState.happiness + (toy?.fun || 30))
       globalPetState.energy = Math.max(10, globalPetState.energy - (toy?.energyCost || 15))
       globalPetState.actionState = 'playing'
-      showSpeech(`Yay! Playing with ${toy?.name || 'a toy'}! ✨`)
+      showSpeech(`Yay! Playing with ${toy?.name || 'a toy'}!`)
       notifyPetListeners()
       playPetSound()
 
@@ -156,11 +156,11 @@ export function useDesktopPet() {
     if (isSleeping) {
       globalPetState.actionState = 'idle'
       globalPetState.energy = Math.min(100, globalPetState.energy + 40)
-      showSpeech("Good morning! Feeling energized! ☀️")
+      showSpeech("Good morning! Feeling energized!")
       playPetSound()
     } else {
       globalPetState.actionState = 'sleeping'
-      showSpeech("Taking a sweet nap... Zzz 💤")
+      showSpeech("Taking a sweet nap... Zzz")
     }
     notifyPetListeners()
   }, [showSpeech, playPetSound])
@@ -168,9 +168,9 @@ export function useDesktopPet() {
   const patPet = useCallback(() => {
     globalPetState.happiness = Math.min(100, globalPetState.happiness + 8)
     globalPetState.actionState = 'playing'
-    const phrases = currentSpecies.phrases || ['❤️', 'Purr~']
+    const phrases = currentSpecies.phrases || ['Purr~', 'Happy!']
     const phrase = phrases[Math.floor(Math.random() * phrases.length)]
-    showSpeech(`❤️ ${phrase}`)
+    showSpeech(phrase)
     playPetSound()
     notifyPetListeners()
 

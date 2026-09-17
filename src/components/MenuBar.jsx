@@ -467,7 +467,9 @@ export default function MenuBar({ onSelectMenuAction }) {
               {/* Pet Info Header */}
               <div className="flex items-center justify-between border-b border-[var(--os-border)]/40 pb-1.5">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-base">{currentSpecies.icon}</span>
+                  <div className="w-4 h-4 border border-[var(--os-border)] flex items-center justify-center text-[9px] font-bold">
+                    P
+                  </div>
                   <div>
                     <div className="font-black text-xs">{currentSpecies.name}</div>
                     <div className="text-[9px] opacity-65">
@@ -532,14 +534,13 @@ export default function MenuBar({ onSelectMenuAction }) {
                       type="button"
                       onClick={() => setPetId(spec.id)}
                       title={`${spec.name} - ${spec.subtitle}`}
-                      className={`p-1 border text-center font-bold text-xs cursor-pointer transition-colors ${
+                      className={`py-1 px-0.5 border text-center font-bold text-xs cursor-pointer transition-colors ${
                         petState.petId === spec.id
                           ? "bg-[var(--os-fg)] text-[var(--os-bg)] border-[var(--os-border)]"
                           : "border-[var(--os-border)]/50 hover:bg-[var(--os-fg)]/10"
                       }`}
                     >
-                      <div>{spec.icon}</div>
-                      <div className="text-[8px] truncate mt-0.5">
+                      <div className="text-[9px] truncate">
                         {spec.name.split(" ")[0]}
                       </div>
                     </button>
@@ -554,28 +555,28 @@ export default function MenuBar({ onSelectMenuAction }) {
                   onClick={() => feedPet()}
                   className="py-1 px-1 border border-[var(--os-border)] text-center text-[10px] font-bold hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] cursor-pointer"
                 >
-                  🍖 Feed
+                  Feed
                 </button>
                 <button
                   type="button"
                   onClick={() => playWithPet()}
                   className="py-1 px-1 border border-[var(--os-border)] text-center text-[10px] font-bold hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] cursor-pointer"
                 >
-                  🎾 Play
+                  Play
                 </button>
                 <button
                   type="button"
                   onClick={toggleSleep}
                   className="py-1 px-1 border border-[var(--os-border)] text-center text-[10px] font-bold hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] cursor-pointer"
                 >
-                  💤 {petState.actionState === "sleeping" ? "Wake" : "Sleep"}
+                  {petState.actionState === "sleeping" ? "Wake" : "Sleep"}
                 </button>
                 <button
                   type="button"
                   onClick={patPet}
                   className="py-1 px-1 border border-[var(--os-border)] text-center text-[10px] font-bold hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] cursor-pointer"
                 >
-                  ❤️ Pet
+                  Pet
                 </button>
               </div>
 

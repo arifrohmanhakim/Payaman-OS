@@ -1,5 +1,6 @@
 import { useITunes } from './useITunes.js'
 import { itunesService } from './itunesService.js'
+import AppIconGraphic from '../../components/common/AppIconGraphic.jsx'
 
 function EqualizerBars({ isPlaying }) {
   return (
@@ -139,9 +140,9 @@ export default function ITunesApp() {
               type="button"
               onClick={toggleMute}
               title={isMuted ? 'Unmute' : 'Mute'}
-              className="text-[11px] opacity-80 hover:opacity-100"
+              className="text-[10px] font-bold opacity-80 hover:opacity-100"
             >
-              {isMuted || volume === 0 ? '🔇' : '🔊'}
+              {isMuted || volume === 0 ? 'MUT' : 'VOL'}
             </button>
             <input
               type="range"
@@ -188,7 +189,7 @@ export default function ITunesApp() {
           onSubmit={handleSearchSubmit}
           className="flex-1 flex items-center gap-2 max-w-md"
         >
-          <span className="text-xs opacity-60">🔍</span>
+          <span className="text-[10px] font-bold opacity-60">Find:</span>
           <input
             type="text"
             value={searchQuery}
@@ -223,13 +224,14 @@ export default function ITunesApp() {
                 key={genre.id}
                 type="button"
                 onClick={() => selectGenre(genre.id)}
-                className={`w-full flex items-center justify-between px-2 py-1 text-left text-xs font-mono cursor-default ${
+                className={`w-full flex items-center gap-1.5 px-2 py-1 text-left text-xs font-mono cursor-default ${
                   isSelected
                     ? 'bg-[var(--os-fg)] text-[var(--os-bg)] font-bold'
                     : 'hover:bg-[var(--os-fg)]/10 text-[var(--os-fg)]'
                 }`}
               >
-                <span className="truncate">🎵 {genre.title}</span>
+                <AppIconGraphic iconType="itunes" className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">{genre.title}</span>
               </button>
             )
           })}
@@ -240,7 +242,7 @@ export default function ITunesApp() {
           {isLoading ? (
             <div className="h-full flex items-center justify-center p-6 text-center text-xs opacity-70">
               <div className="space-y-2">
-                <div className="animate-spin text-lg">⏳</div>
+                <div className="w-5 h-5 border-2 border-[var(--os-fg)] border-t-transparent rounded-full animate-spin mx-auto" />
                 <div>Loading tracks from iTunes...</div>
               </div>
             </div>

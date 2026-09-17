@@ -231,7 +231,7 @@ export function useBrowser() {
           id: `bm_${Date.now()}`,
           title: activeTab.title || 'Saved Bookmark',
           url: activeTab.url,
-          icon: '🔖',
+          iconType: 'document',
           category: 'Personal',
         },
       ]

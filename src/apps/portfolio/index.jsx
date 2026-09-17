@@ -45,9 +45,9 @@ export default function PortfolioApp() {
           </p>
 
           <p className="text-[11px] opacity-70 mt-0.5 flex items-center justify-center sm:justify-start gap-1">
-            <span>📍 {DEVELOPER_PROFILE.location}</span>
+            <span>{DEVELOPER_PROFILE.location}</span>
             <span>•</span>
-            <span>🌐 {DEVELOPER_PROFILE.website}</span>
+            <span>{DEVELOPER_PROFILE.website}</span>
           </p>
 
           {/* Action Links */}
@@ -86,10 +86,10 @@ export default function PortfolioApp() {
       {/* Tabs Header Navigation */}
       <div className="flex border-b-2 border-[var(--os-border)] bg-[var(--os-bg)]">
         {[
-          { id: "overview", label: "👤 Bio & Overview" },
-          { id: "projects", label: "🚀 Projects (13)" },
-          { id: "skills", label: "🛠 Tech Stack" },
-          { id: "terminal", label: "⚡ CLI Commands" },
+          { id: "overview", label: "Bio & Overview" },
+          { id: "projects", label: "Projects (13)" },
+          { id: "skills", label: "Tech Stack" },
+          { id: "terminal", label: "CLI Commands" },
         ].map((tab) => (
           <button
             key={tab.id}

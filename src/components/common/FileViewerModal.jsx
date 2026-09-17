@@ -277,7 +277,7 @@ export default function FileViewerModal({
               className="py-0.5 px-2 text-[10px]"
               onClick={handleDownload}
             >
-              Download File 💾
+              Download File ↓
             </Button>
           </div>
         </div>

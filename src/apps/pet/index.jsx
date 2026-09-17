@@ -56,16 +56,16 @@ export default function DesktopPetApp() {
           onClick={patPet}
           className="px-3 py-1.5 bg-[var(--os-fg)] text-[var(--os-bg)] font-bold text-xs hover:opacity-90 active:scale-95 border border-[var(--os-border)] shrink-0 shadow-[2px_2px_0px_var(--os-shadow)] cursor-pointer"
         >
-          ❤️ Pet Me!
+          [•] Pet Me
         </button>
       </div>
 
       {/* Navigation Tabs */}
       <div className="flex border-b-2 border-[var(--os-border)] bg-[var(--os-bg)] text-[11px]">
         {[
-          { id: 'care', label: '🐾 Pet Care' },
-          { id: 'species', label: '🐶 Species Chooser' },
-          { id: 'settings', label: '⚙️ Settings' },
+          { id: 'care', label: 'Pet Care' },
+          { id: 'species', label: 'Species Chooser' },
+          { id: 'settings', label: 'Settings' },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -149,7 +149,7 @@ export default function DesktopPetApp() {
                     onClick={() => feedPet(treat)}
                     className="p-2 border border-[var(--os-border)] bg-[var(--os-bg)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] active:scale-95 text-left transition-colors cursor-pointer shadow-[1px_1px_0px_var(--os-shadow)]"
                   >
-                    <div className="text-base">{treat.icon}</div>
+                    <div className="text-[10px] font-bold uppercase tracking-wider opacity-60">Item</div>
                     <div className="font-bold text-[11px] truncate mt-0.5">{treat.name}</div>
                     <div className="text-[9px] opacity-60">+{treat.nutrition} Fullness</div>
                   </button>
@@ -170,7 +170,7 @@ export default function DesktopPetApp() {
                     onClick={() => playWithPet(toy)}
                     className="p-2 border border-[var(--os-border)] bg-[var(--os-bg)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] active:scale-95 text-center transition-colors cursor-pointer shadow-[1px_1px_0px_var(--os-shadow)]"
                   >
-                    <div className="text-base">{toy.icon}</div>
+                    <div className="text-[10px] font-bold uppercase tracking-wider opacity-60">Toy</div>
                     <div className="font-bold text-[10px] truncate mt-0.5">{toy.name}</div>
                     <div className="text-[9px] opacity-60">+{toy.fun} Fun</div>
                   </button>
@@ -185,7 +185,7 @@ export default function DesktopPetApp() {
                 onClick={toggleSleep}
                 className="w-full py-2 border-2 border-[var(--os-border)] bg-[var(--os-bg)] text-[var(--os-fg)] font-bold text-xs hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] active:scale-95 transition-all shadow-[2px_2px_0px_var(--os-shadow)] cursor-pointer flex items-center justify-center gap-2"
               >
-                <span>{petState.actionState === 'sleeping' ? '☀️ Wake Up Pet' : '💤 Put Pet to Sleep'}</span>
+                <span>{petState.actionState === 'sleeping' ? 'Wake Up Pet' : 'Put Pet to Sleep'}</span>
               </button>
             </div>
           </div>
@@ -221,7 +221,6 @@ export default function DesktopPetApp() {
                       <div>
                         <div className="font-black text-xs flex items-center gap-1.5">
                           <span>{species.name}</span>
-                          <span className="text-sm">{species.icon}</span>
                         </div>
                         <div className="text-[10px] opacity-80 mt-0.5">
                           {species.subtitle}
@@ -324,7 +323,7 @@ export default function DesktopPetApp() {
 
             {/* Hint Note */}
             <div className="p-2.5 border border-dashed border-[var(--os-border)] text-[10px] opacity-75 bg-[var(--os-fg)]/5">
-              💡 <strong>Pro-tip:</strong> You can also access pet controls directly from the top menu bar icon anytime!
+              <strong>Tip:</strong> You can also access pet controls directly from the top menu bar icon anytime!
             </div>
           </div>
         )}

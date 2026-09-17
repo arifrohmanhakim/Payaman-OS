@@ -231,42 +231,35 @@ export default function Desktop() {
         items: [
           {
             label: 'Developer Portfolio',
-            icon: '👤',
             shortcut: '⌘P',
             onSelect: () => openApp('portfolio'),
           },
           {
             label: 'New Folder',
-            icon: '📁',
             shortcut: '⇧⌘N',
             onSelect: () => openApp('files'),
           },
           {
             label: 'New Note',
-            icon: '📝',
             shortcut: '⌘N',
             onSelect: () => openApp('write'),
           },
           {
             label: 'Open iTunes',
-            icon: '🎵',
             onSelect: () => openApp('itunes'),
           },
           {
             label: 'Open Terminal',
-            icon: '⚡',
             onSelect: () => openApp('terminal'),
           },
           {
             label: 'Open Browser',
-            icon: '🌐',
             shortcut: '⌘B',
             onSelect: () => openApp('browser'),
           },
           { divider: true },
           {
             label: 'Clean Up Desktop',
-            icon: '🧹',
             onSelect: () => {
               resetPositions()
               soundService.playClick()
@@ -274,7 +267,6 @@ export default function Desktop() {
           },
           {
             label: 'Reset Window Session...',
-            icon: '↺',
             onSelect: () => {
               showModal({
                 type: 'reset_session',
@@ -290,13 +282,11 @@ export default function Desktop() {
           { divider: true },
           {
             label: 'Desktop Preferences...',
-            icon: '🎨',
             shortcut: '⌘,',
             onSelect: () => openApp('preferences'),
           },
           {
             label: 'About Payaman OS',
-            icon: 'ℹ️',
             onSelect: () =>
               openApp('about', {
                 targetAppId: 'system',
@@ -329,13 +319,11 @@ export default function Desktop() {
           },
           {
             label: `Open ${appTitle}`,
-            icon: '🚀',
             shortcut: '↵',
             onSelect: () => openApp(iconId),
           },
           {
             label: 'Get Info...',
-            icon: 'ℹ️',
             shortcut: '⌘I',
             onSelect: () =>
               openApp('about', {
@@ -346,15 +334,13 @@ export default function Desktop() {
           { divider: true },
           {
             label: 'Clean Up Desktop',
-            icon: '🧹',
             onSelect: () => {
               resetPositions()
               soundService.playClick()
             },
           },
           {
-            label: 'Close Active Windows',
-            icon: '✕',
+            label: 'Close Active Window',
             disabled: !activeWindowId,
             onSelect: () => {
               if (activeWindowId) closeWindow(activeWindowId)

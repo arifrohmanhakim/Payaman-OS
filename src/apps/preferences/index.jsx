@@ -348,8 +348,8 @@ export default function PreferencesApp() {
                     3
                   </div>
                   <div className="w-px bg-current opacity-30 mx-0.5" />
-                  <div className="w-3 h-3 border border-current flex items-center justify-center text-[6px]">
-                    🗑
+                  <div className="w-3 h-3 border border-current flex items-center justify-center text-[6px] font-bold">
+                    T
                   </div>
                 </div>
               </div>

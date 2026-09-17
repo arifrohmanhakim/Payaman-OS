@@ -492,7 +492,7 @@ export async function executeShellCommand(commandLine, { osContext, onClose }) {
       const freq = parseFloat(args[0]) || 880
       const dur = parseFloat(args[1]) || 0.15
       soundService.playBeep(freq, dur)
-      outputLines.push(`🔔 Beep (${freq}Hz, ${dur}s)`)
+      outputLines.push(`[*] Beep (${freq}Hz, ${dur}s)`)
       break
     }
 
