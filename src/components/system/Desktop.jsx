@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import MenuBar from '../MenuBar.jsx'
 import DesktopIcon from '../DesktopIcon.jsx'
 import Window from '../Window.jsx'
@@ -6,12 +6,21 @@ import ModalDialog from '../ModalDialog.jsx'
 import Dock from './Dock.jsx'
 import Launchpad from './Launchpad.jsx'
 import ErrorBoundary from '../common/ErrorBoundary.jsx'
+import ContextMenu from '../common/ContextMenu.jsx'
+import { soundService } from '../../services/soundService.js'
 import { useOS } from '../../hooks/useOS.js'
 import { useDesktopIcons } from '../../hooks/useDesktopIcons.js'
 import { getDesktopApps, getAppById } from '../../apps/appRegistry.js'
 
 export default function Desktop() {
   const [selectedIconId, setSelectedIconId] = useState(null)
+  const [contextMenu, setContextMenu] = useState({
+    isOpen: false,
+    x: 0,
+    y: 0,
+    items: [],
+  })
+
   const {
     windows,
     activeWindowId,
@@ -34,7 +43,7 @@ export default function Desktop() {
   } = useOS()
 
   const desktopApps = getDesktopApps()
-  const { getIconPosition, setIconPosition } = useDesktopIcons()
+  const { getIconPosition, setIconPosition, resetPositions } = useDesktopIcons()
 
   const handleMenuAction = (action, activeAppId) => {
     switch (action) {
@@ -194,6 +203,153 @@ export default function Desktop() {
     )
   }
 
+  const closeContextMenu = useCallback(() => {
+    setContextMenu((prev) => (prev.isOpen ? { ...prev, isOpen: false } : prev))
+  }, [])
+
+  const handleDesktopContextMenu = useCallback(
+    (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      soundService.playClick()
+      setSelectedIconId(null)
+
+      setContextMenu({
+        isOpen: true,
+        x: e.clientX,
+        y: e.clientY,
+        items: [
+          {
+            label: 'New Folder',
+            icon: '📁',
+            shortcut: '⇧⌘N',
+            onSelect: () => openApp('files'),
+          },
+          {
+            label: 'New Note',
+            icon: '📝',
+            shortcut: '⌘N',
+            onSelect: () => openApp('write'),
+          },
+          {
+            label: 'Open iTunes',
+            icon: '🎵',
+            onSelect: () => openApp('itunes'),
+          },
+          {
+            label: 'Open Terminal',
+            icon: '⚡',
+            onSelect: () => openApp('terminal'),
+          },
+          {
+            label: 'Open Browser',
+            icon: '🌐',
+            shortcut: '⌘B',
+            onSelect: () => openApp('browser'),
+          },
+          { divider: true },
+          {
+            label: 'Clean Up Desktop',
+            icon: '🧹',
+            onSelect: () => {
+              resetPositions()
+              soundService.playClick()
+            },
+          },
+          {
+            label: 'Reset Window Session...',
+            icon: '↺',
+            onSelect: () => {
+              showModal({
+                type: 'reset_session',
+                title: 'Reset Window Session',
+                message: 'Do you want to restore desktop window arrangement to default?',
+                onConfirm: () => {
+                  resetSession()
+                  closeModal()
+                },
+              })
+            },
+          },
+          { divider: true },
+          {
+            label: 'Desktop Preferences...',
+            icon: '🎨',
+            shortcut: '⌘,',
+            onSelect: () => openApp('preferences'),
+          },
+          {
+            label: 'About Payaman OS',
+            icon: 'ℹ️',
+            onSelect: () =>
+              openApp('about', {
+                targetAppId: 'system',
+                title: 'About Payaman OS',
+              }),
+          },
+        ],
+      })
+    },
+    [openApp, resetPositions, resetSession, showModal, closeModal]
+  )
+
+  const handleIconContextMenu = useCallback(
+    (e, iconId) => {
+      e.preventDefault()
+      e.stopPropagation()
+      soundService.playClick()
+      setSelectedIconId(iconId)
+
+      const appDef = getAppById(iconId)
+      const appTitle = appDef?.title || iconId
+
+      setContextMenu({
+        isOpen: true,
+        x: e.clientX,
+        y: e.clientY,
+        items: [
+          {
+            header: appTitle,
+          },
+          {
+            label: `Open ${appTitle}`,
+            icon: '🚀',
+            shortcut: '↵',
+            onSelect: () => openApp(iconId),
+          },
+          {
+            label: 'Get Info...',
+            icon: 'ℹ️',
+            shortcut: '⌘I',
+            onSelect: () =>
+              openApp('about', {
+                targetAppId: iconId,
+                title: `About ${appTitle}`,
+              }),
+          },
+          { divider: true },
+          {
+            label: 'Clean Up Desktop',
+            icon: '🧹',
+            onSelect: () => {
+              resetPositions()
+              soundService.playClick()
+            },
+          },
+          {
+            label: 'Close Active Windows',
+            icon: '✕',
+            disabled: !activeWindowId,
+            onSelect: () => {
+              if (activeWindowId) closeWindow(activeWindowId)
+            },
+          },
+        ],
+      })
+    },
+    [openApp, resetPositions, activeWindowId, closeWindow]
+  )
+
   const renderWindowContent = (appId, windowId, windowData) => {
     const appDef = getAppById(appId)
     if (!appDef || !appDef.component) {
@@ -219,8 +375,10 @@ export default function Desktop() {
         if (e.target === e.currentTarget) {
           setSelectedIconId(null)
           focusWindow(null)
+          closeContextMenu()
         }
       }}
+      onContextMenu={handleDesktopContextMenu}
       className={`relative w-screen h-screen overflow-hidden font-mono text-[var(--os-fg)] select-none ${
         customWallpaper ? 'bg-neutral-900' : patternClass
       }`}
@@ -242,8 +400,10 @@ export default function Desktop() {
             if (e.target === e.currentTarget) {
               setSelectedIconId(null)
               focusWindow(null)
+              closeContextMenu()
             }
           }}
+          onContextMenu={handleDesktopContextMenu}
           className="relative w-full h-full pointer-events-auto"
         >
           {desktopApps.map((app, index) => (
@@ -254,9 +414,13 @@ export default function Desktop() {
               iconType={app.iconType}
               position={getIconPosition(app.id, index)}
               isSelected={selectedIconId === app.id}
-              onSelect={(id) => setSelectedIconId(id)}
+              onSelect={(id) => {
+                setSelectedIconId(id)
+                closeContextMenu()
+              }}
               onOpen={(id) => openApp(id)}
               onPositionChange={setIconPosition}
+              onContextMenu={handleIconContextMenu}
             />
           ))}
         </div>
@@ -267,7 +431,10 @@ export default function Desktop() {
           key={win.id}
           windowData={win}
           isActive={activeWindowId === win.id}
-          onFocus={focusWindow}
+          onFocus={(id) => {
+            focusWindow(id)
+            closeContextMenu()
+          }}
           onClose={closeWindow}
           onMinimize={minimizeWindow}
           onMaximize={toggleMaximizeWindow}
@@ -281,6 +448,14 @@ export default function Desktop() {
       <Dock />
 
       <Launchpad />
+
+      <ContextMenu
+        isOpen={contextMenu.isOpen}
+        x={contextMenu.x}
+        y={contextMenu.y}
+        items={contextMenu.items}
+        onClose={closeContextMenu}
+      />
 
       <ModalDialog
         isOpen={Boolean(activeModal)}

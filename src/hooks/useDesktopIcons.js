@@ -24,7 +24,7 @@ function generateRightAlignedPositions(appIds) {
 }
 
 const DEFAULT_APP_ORDER = [
-  'chat', 'maps', 'write', 'paint', 'calendar', 'calc', 'gallery', 'photobot', 'terminal', 'preferences', 'about',
+  'itunes', 'chat', 'maps', 'write', 'paint', 'calendar', 'calc', 'gallery', 'photobot', 'terminal', 'preferences', 'about',
 ]
 
 export function useDesktopIcons() {
