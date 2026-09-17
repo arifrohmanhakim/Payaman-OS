@@ -44,6 +44,27 @@ export const APPS_INFO = {
       { key: '⌘W', desc: 'Close Window' },
     ],
   },
+  itunes: {
+    id: 'itunes',
+    title: 'iTunes',
+    version: '1.0',
+    iconType: 'itunes',
+    category: 'Media & Audio',
+    tagline: 'Digital Music Jukebox & Free Stream Player',
+    description:
+      'Classic digital music player for streaming preview songs, exploring curated playlists, and searching global music tracks via the free iTunes API.',
+    specs: [
+      { label: 'Audio Engine', value: 'HTML5 Web Audio Stream' },
+      { label: 'Music Provider', value: 'Apple iTunes Search API' },
+      { label: 'Visualizer', value: '4-Band Graphic Equalizer' },
+    ],
+    shortcuts: [
+      { key: 'Space', desc: 'Play / Pause Track' },
+      { key: '⌘→', desc: 'Next Song' },
+      { key: '⌘←', desc: 'Previous Song' },
+      { key: '⌘F', desc: 'Focus Search' },
+    ],
+  },
   browser: {
     id: 'browser',
     title: 'Browser',

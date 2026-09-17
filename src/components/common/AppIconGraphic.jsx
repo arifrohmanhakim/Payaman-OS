@@ -61,6 +61,23 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
           <line x1="16" y1="9" x2="22" y2="15" strokeLinecap="round" />
         </svg>
       )
+    case 'itunes':
+    case 'music':
+    case 'song':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <circle cx="16" cy="16" r="13" strokeWidth="1.5" />
+          <circle cx="16" cy="16" r="4" strokeWidth="1.25" />
+          <path d="M12 21 V10 L22 7 V18" strokeWidth="1.5" />
+          <line x1="12" y1="13" x2="22" y2="10" strokeWidth="1.5" />
+          <circle cx="10" cy="21" r="2.5" fill="currentColor" />
+          <circle cx="20" cy="18" r="2.5" fill="currentColor" />
+        </svg>
+      )
     case 'folder':
       return (
         <svg

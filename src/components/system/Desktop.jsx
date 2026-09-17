@@ -77,6 +77,10 @@ export default function Desktop() {
       case 'preferences':
         openApp('preferences')
         break
+      case 'itunes':
+      case 'music':
+        openApp('itunes')
+        break
       case 'browser':
         openApp('browser')
         break

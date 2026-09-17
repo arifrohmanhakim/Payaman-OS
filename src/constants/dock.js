@@ -16,5 +16,5 @@ export const DEFAULT_DOCK_SETTINGS = {
   autoHide: false,
   magnification: true,
   showIndicators: true,
-  pinnedApps: ['files', 'browser', 'chat', 'maps', 'terminal'],
+  pinnedApps: ['files', 'itunes', 'browser', 'chat', 'maps', 'terminal'],
 }
