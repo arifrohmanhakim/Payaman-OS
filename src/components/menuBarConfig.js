@@ -435,6 +435,8 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
         {
           label: 'File',
           items: [
+            { label: 'Set as Desktop Background', action: 'gallery:set_background', shortcut: '⌘B' },
+            { divider: true },
             { label: 'Reload Photos', action: 'gallery:reload', shortcut: '⌘R' },
             { divider: true },
             { label: 'Close Window', action: 'close_active', shortcut: '⌘W' },

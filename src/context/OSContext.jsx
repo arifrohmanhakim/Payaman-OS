@@ -12,8 +12,6 @@ const getInitialWindows = () => {
 
   const aboutW = 320
   const aboutH = 310
-  const prefW = 500
-  const prefH = 380
 
   return [
     {
@@ -26,17 +24,6 @@ const getInitialWindows = () => {
       height: aboutH,
       isMinimized: false,
       zIndex: 10,
-    },
-    {
-      id: 'preferences',
-      appId: 'preferences',
-      title: 'System Preferences',
-      x: Math.max(12, Math.round((screenWidth - prefW) / 2)),
-      y: Math.max(30, Math.round((screenHeight - prefH) / 2)),
-      width: prefW,
-      height: prefH,
-      isMinimized: false,
-      zIndex: 11,
     },
   ]
 }
@@ -53,6 +40,9 @@ export function OSProvider({ children }) {
   const [dockSettings, setDockSettingsState] = useState(() => {
     const saved = storageService.getItem('os_dock_settings', {})
     return { ...DEFAULT_DOCK_SETTINGS, ...saved }
+  })
+  const [customWallpaper, setCustomWallpaperState] = useState(() => {
+    return storageService.getItem('os_custom_wallpaper', null)
   })
   const [isLaunchpadOpen, setIsLaunchpadOpen] = useState(false)
 
@@ -150,6 +140,18 @@ export function OSProvider({ children }) {
     setIsLaunchpadOpen((prev) => !prev)
   }, [])
 
+  const setCustomWallpaper = useCallback((wallpaperUrl) => {
+    setCustomWallpaperState(wallpaperUrl)
+    storageService.setItem('os_custom_wallpaper', wallpaperUrl)
+    soundService.playClick()
+  }, [])
+
+  const clearCustomWallpaper = useCallback(() => {
+    setCustomWallpaperState(null)
+    storageService.removeItem('os_custom_wallpaper')
+    soundService.playClick()
+  }, [])
+
   const reboot = useCallback(() => {
     setSystemPhase('booting')
   }, [])
@@ -173,10 +175,13 @@ export function OSProvider({ children }) {
       activeModal,
       theme,
       pattern,
+      customWallpaper,
       dockSettings,
       isLaunchpadOpen,
       setTheme,
       setPattern,
+      setCustomWallpaper,
+      clearCustomWallpaper,
       updateDockSettings,
       openApp,
       closeWindow: handleCloseWindow,
@@ -202,10 +207,13 @@ export function OSProvider({ children }) {
       activeModal,
       theme,
       pattern,
+      customWallpaper,
       dockSettings,
       isLaunchpadOpen,
       setTheme,
       setPattern,
+      setCustomWallpaper,
+      clearCustomWallpaper,
       updateDockSettings,
       openApp,
       handleCloseWindow,

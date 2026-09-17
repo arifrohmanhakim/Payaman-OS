@@ -1,4 +1,5 @@
-const UNSPLASH_ACCESS_KEY = 'oU4luUo6112qpdFjQ0RRUM88cPDINyZW35uOwES61Ks'
+const UNSPLASH_ACCESS_KEY =
+  import.meta.env.VITE_UNSPLASH_ACCESS_KEY || 'oU4luUo6112qpdFjQ0RRUM88cPDINyZW35uOwES61Ks'
 const BASE_URL = 'https://api.unsplash.com'
 
 const cache = new Map()

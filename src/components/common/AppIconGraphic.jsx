@@ -1,5 +1,66 @@
+import CaveLogo from './CaveLogo.jsx'
+
 export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
   switch (iconType) {
+    case 'cave':
+    case 'system':
+    case 'payaman':
+    case 'apple':
+      return <CaveLogo className={className} />
+    case 'wifi':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.75]`}
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path d="M5 12.55a11 11 0 0 1 14.08 0" strokeLinecap="round" />
+          <path d="M1.42 9a16 16 0 0 1 21.16 0" strokeLinecap="round" />
+          <path d="M8.53 16.11a6 6 0 0 1 6.95 0" strokeLinecap="round" />
+          <circle cx="12" cy="19.5" r="1.25" fill="currentColor" />
+        </svg>
+      )
+    case 'bluetooth':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.75]`}
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <polyline
+            points="6.5 6.5 17.5 17.5 12 23 12 1 17.5 6.5 6.5 17.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      )
+    case 'sound':
+    case 'volume':
+    case 'speaker':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.75]`}
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none" />
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07" strokeLinecap="round" />
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14" strokeLinecap="round" />
+        </svg>
+      )
+    case 'sound-mute':
+    case 'volume-mute':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.75]`}
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none" />
+          <line x1="22" y1="9" x2="16" y2="15" strokeLinecap="round" />
+          <line x1="16" y1="9" x2="22" y2="15" strokeLinecap="round" />
+        </svg>
+      )
     case 'folder':
       return (
         <svg

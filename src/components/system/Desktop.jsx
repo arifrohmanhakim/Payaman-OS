@@ -18,6 +18,7 @@ export default function Desktop() {
     activeModal,
     theme,
     pattern,
+    customWallpaper,
     openApp,
     closeWindow,
     focusWindow,
@@ -216,8 +217,19 @@ export default function Desktop() {
           focusWindow(null)
         }
       }}
-      className={`relative w-screen h-screen overflow-hidden font-mono text-[var(--os-fg)] select-none ${patternClass}`}
+      className={`relative w-screen h-screen overflow-hidden font-mono text-[var(--os-fg)] select-none ${
+        customWallpaper ? 'bg-neutral-900' : patternClass
+      }`}
     >
+      {customWallpaper && (
+        <div
+          className="absolute inset-0 bg-cover bg-center pointer-events-none transition-all duration-300"
+          style={{ backgroundImage: `url(${customWallpaper})` }}
+        >
+          <div className="absolute inset-0 bg-black/15 pointer-events-none" />
+        </div>
+      )}
+
       <MenuBar onSelectMenuAction={handleMenuAction} />
 
       <main className="absolute inset-0 pt-6 pointer-events-none">
