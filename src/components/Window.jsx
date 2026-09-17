@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import { useOS } from "../hooks/useOS.js";
 
 export default function Window({
   windowData,
@@ -14,6 +15,8 @@ export default function Window({
 }) {
   const { id, title, x, y, width, height, zIndex, isMinimized, isMaximized } =
     windowData;
+  const { displaySettings } = useOS();
+  const uiScale = displaySettings?.scale || 1.15;
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [resizeDirection, setResizeDirection] = useState(null);
@@ -31,20 +34,23 @@ export default function Window({
 
   useEffect(() => {
     const handleMouseMove = (event) => {
+      const clientX = event.clientX / uiScale;
+      const clientY = event.clientY / uiScale;
+
       if (isDragging && !isMaximized) {
-        const nextX = Math.max(0, event.clientX - dragOffsetRef.current.x);
-        const nextY = Math.max(24, event.clientY - dragOffsetRef.current.y);
+        const nextX = Math.max(0, clientX - dragOffsetRef.current.x);
+        const nextY = Math.max(24, clientY - dragOffsetRef.current.y);
         onPositionChange(id, nextX, nextY);
 
         // Detect screen edges for snapping
-        const screenW = window.innerWidth;
-        if (event.clientX <= 20) {
+        const screenW = window.innerWidth / uiScale;
+        if (clientX <= 20) {
           snapCandidateRef.current = 'left';
           setSnapPreview('left');
-        } else if (event.clientX >= screenW - 20) {
+        } else if (clientX >= screenW - 20) {
           snapCandidateRef.current = 'right';
           setSnapPreview('right');
-        } else if (event.clientY <= 30) {
+        } else if (clientY <= 30) {
           snapCandidateRef.current = 'top';
           setSnapPreview('top');
         } else {
@@ -52,8 +58,8 @@ export default function Window({
           setSnapPreview(null);
         }
       } else if (isResizing && onSizeChange && !isMaximized) {
-        const deltaX = event.clientX - resizeStartRef.current.mouseX;
-        const deltaY = event.clientY - resizeStartRef.current.mouseY;
+        const deltaX = clientX - resizeStartRef.current.mouseX;
+        const deltaY = clientY - resizeStartRef.current.mouseY;
 
         let nextWidth = resizeStartRef.current.startWidth;
         let nextHeight = resizeStartRef.current.startHeight;
@@ -102,15 +108,18 @@ export default function Window({
     onPositionChange,
     onSizeChange,
     onSnap,
+    uiScale,
   ]);
 
   const handleTitleBarMouseDown = (event) => {
     onFocus(id);
     if (isMaximized) return;
     setIsDragging(true);
+    const clientX = event.clientX / uiScale;
+    const clientY = event.clientY / uiScale;
     dragOffsetRef.current = {
-      x: event.clientX - x,
-      y: event.clientY - y,
+      x: clientX - x,
+      y: clientY - y,
     };
   };
 
@@ -121,9 +130,11 @@ export default function Window({
     onFocus(id);
     setIsResizing(true);
     setResizeDirection(direction);
+    const clientX = event.clientX / uiScale;
+    const clientY = event.clientY / uiScale;
     resizeStartRef.current = {
-      mouseX: event.clientX,
-      mouseY: event.clientY,
+      mouseX: clientX,
+      mouseY: clientY,
       startWidth: width,
       startHeight: height || 300,
     };

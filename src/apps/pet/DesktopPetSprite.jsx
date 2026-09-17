@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { PetSpriteGraphics } from './PetSprites.jsx'
 import { useDesktopPet } from './useDesktopPet.js'
+import { useOS } from '../../hooks/useOS.js'
 
 export default function DesktopPetSprite() {
   const {
@@ -9,6 +10,8 @@ export default function DesktopPetSprite() {
     patPet,
     setPetAction,
   } = useDesktopPet()
+  const { displaySettings } = useOS()
+  const uiScale = displaySettings?.scale || 1.15
 
   const [position, setPosition] = useState({
     x: typeof window !== 'undefined' ? Math.max(60, window.innerWidth - 180) : 320,
@@ -42,8 +45,8 @@ export default function DesktopPetSprite() {
   // Pick a new random destination on desktop
   const pickNewDestination = useCallback(() => {
     if (typeof window === 'undefined') return
-    const screenW = window.innerWidth
-    const screenH = window.innerHeight
+    const screenW = window.innerWidth / uiScale
+    const screenH = window.innerHeight / uiScale
 
     // Boundaries: leave space for MenuBar at top (30px) and Dock at bottom (70px)
     const minX = 20
@@ -67,7 +70,7 @@ export default function DesktopPetSprite() {
     targetPosRef.current = { x: targetX, y: targetY }
     setDirection(targetX < currentX ? 'left' : 'right')
     setPetAction('walking')
-  }, [setPetAction])
+  }, [setPetAction, uiScale])
 
   // Continuous walking animation engine
   useEffect(() => {
@@ -160,26 +163,30 @@ export default function DesktopPetSprite() {
     setIsDragging(true)
     targetPosRef.current = null
     if (idleTimerRef.current) clearTimeout(idleTimerRef.current)
+    const clientX = e.clientX / uiScale
+    const clientY = e.clientY / uiScale
     dragOffsetRef.current = {
-      x: e.clientX - posRef.current.x,
-      y: e.clientY - posRef.current.y,
+      x: clientX - posRef.current.x,
+      y: clientY - posRef.current.y,
     }
     e.stopPropagation()
-  }, [])
+  }, [uiScale])
 
   const handleMouseMove = useCallback((e) => {
     if (!isDragging) return
-    const screenW = typeof window !== 'undefined' ? window.innerWidth : 1024
-    const screenH = typeof window !== 'undefined' ? window.innerHeight : 768
+    const screenW = (typeof window !== 'undefined' ? window.innerWidth : 1024) / uiScale
+    const screenH = (typeof window !== 'undefined' ? window.innerHeight : 768) / uiScale
+    const clientX = e.clientX / uiScale
+    const clientY = e.clientY / uiScale
 
-    const newX = Math.min(Math.max(10, e.clientX - dragOffsetRef.current.x), screenW - 60)
-    const newY = Math.min(Math.max(30, e.clientY - dragOffsetRef.current.y), screenH - 75)
+    const newX = Math.min(Math.max(10, clientX - dragOffsetRef.current.x), screenW - 60)
+    const newY = Math.min(Math.max(30, clientY - dragOffsetRef.current.y), screenH - 75)
 
     if (newX < posRef.current.x) setDirection('left')
     else if (newX > posRef.current.x) setDirection('right')
 
     setPosition({ x: newX, y: newY })
-  }, [isDragging])
+  }, [isDragging, uiScale])
 
   const handleMouseUp = useCallback(() => {
     if (isDragging) {

@@ -292,6 +292,24 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
           <circle cx="24" cy="18" r="1.5" fill="currentColor" />
         </svg>
       )
+    case 'stickynote':
+    case 'stickies':
+    case 'sticky':
+    case 'memo':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <path d="M5 4 H27 V20 L20 27 H5 Z" />
+          <path d="M20 20 H27 L20 27 Z" fill="currentColor" fillOpacity="0.2" />
+          <circle cx="16" cy="7" r="1.25" fill="currentColor" />
+          <line x1="9" y1="12" x2="23" y2="12" />
+          <line x1="9" y1="16" x2="19" y2="16" />
+          <line x1="9" y1="20" x2="16" y2="20" />
+        </svg>
+      )
     case 'paint':
     case 'macpaint':
       return (
@@ -550,6 +568,31 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
           <circle cx="10" cy="14.5" r="1.2" fill="currentColor" />
           <circle cx="16" cy="14.5" r="1.2" fill="currentColor" />
           <circle cx="22" cy="14.5" r="1.2" fill="currentColor" />
+        </svg>
+      )
+    case 'sheets':
+    case 'sheet':
+    case 'spreadsheet':
+    case 'excel':
+    case 'calc-sheet':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          {/* Main Grid Frame */}
+          <rect x="4" y="4" width="24" height="24" rx="2" strokeWidth="1.75" />
+          {/* Header row */}
+          <line x1="4" y1="12" x2="28" y2="12" strokeWidth="1.5" />
+          {/* Row dividers */}
+          <line x1="4" y1="18" x2="28" y2="18" />
+          <line x1="4" y1="23" x2="28" y2="23" />
+          {/* Column dividers */}
+          <line x1="12" y1="4" x2="12" y2="28" strokeWidth="1.5" />
+          <line x1="20" y1="4" x2="20" y2="28" />
+          {/* Formula symbol on top-left header */}
+          <path d="M6 7 H10 L7.5 9 L10 11 H6" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       )
     default:

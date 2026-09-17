@@ -10,6 +10,7 @@ import ScreenSaver from './ScreenSaver.jsx'
 import ErrorBoundary from '../common/ErrorBoundary.jsx'
 import ContextMenu from '../common/ContextMenu.jsx'
 import DesktopPetSprite from '../../apps/pet/DesktopPetSprite.jsx'
+import DesktopStickyNotes from '../../apps/stickynotes/DesktopStickyNotes.jsx'
 import { soundService } from '../../services/soundService.js'
 import { useOS } from '../../hooks/useOS.js'
 import { useDesktopIcons } from '../../hooks/useDesktopIcons.js'
@@ -29,6 +30,7 @@ export default function Desktop() {
     activeWindowId,
     activeModal,
     theme,
+    customThemeColors,
     pattern,
     customWallpaper,
     displaySettings,
@@ -52,8 +54,15 @@ export default function Desktop() {
     reboot,
   } = useOS()
 
+  const uiScale = displaySettings?.scale || 1.15
   const desktopApps = getDesktopApps()
-  const { getIconPosition, setIconPosition, resetPositions } = useDesktopIcons()
+  const {
+    getIconPosition,
+    setIconPosition,
+    cleanUpIcons,
+    sortIconsByName,
+    resetPositions,
+  } = useDesktopIcons(uiScale)
 
   const handleMenuAction = (action, activeAppId) => {
     switch (action) {
@@ -162,8 +171,17 @@ export default function Desktop() {
       case 'calculator':
         openApp('calc')
         break
+      case 'sheets':
+      case 'payamancalc':
+      case 'spreadsheet':
+        openApp('sheets')
+        break
       case 'minesweeper':
         openApp('minesweeper')
+        break
+      case 'stickynotes':
+      case 'stickies':
+        openApp('stickynotes')
         break
       case 'snake':
         openApp('snake')
@@ -259,14 +277,9 @@ export default function Desktop() {
 
       setContextMenu({
         isOpen: true,
-        x: e.clientX,
-        y: e.clientY,
+        x: Math.round(e.clientX / uiScale),
+        y: Math.round(e.clientY / uiScale),
         items: [
-          {
-            label: 'Developer Portfolio',
-            shortcut: '⌘P',
-            onSelect: () => openApp('portfolio'),
-          },
           {
             label: 'New Folder',
             shortcut: '⇧⌘N',
@@ -277,63 +290,41 @@ export default function Desktop() {
             shortcut: '⌘N',
             onSelect: () => openApp('write'),
           },
-          {
-            label: 'Open iTunes',
-            onSelect: () => openApp('itunes'),
-          },
-          {
-            label: 'Open Terminal',
-            onSelect: () => openApp('terminal'),
-          },
-          {
-            label: 'Open Browser',
-            shortcut: '⌘B',
-            onSelect: () => openApp('browser'),
-          },
           { divider: true },
           {
-            label: 'Clean Up Desktop',
+            label: 'Clean Up Icons',
             onSelect: () => {
-              resetPositions()
+              cleanUpIcons()
               soundService.playClick()
             },
           },
           {
-            label: 'Reset Window Session...',
+            label: 'Sort by Name (A-Z)',
             onSelect: () => {
-              showModal({
-                type: 'reset_session',
-                title: 'Reset Window Session',
-                message: 'Do you want to restore desktop window arrangement to default?',
-                onConfirm: () => {
-                  resetSession()
-                  closeModal()
-                },
-              })
+              sortIconsByName()
+              soundService.playClick()
             },
           },
           { divider: true },
           {
+            label: 'Change Appearance...',
+            shortcut: '⌘,',
+            onSelect: () => openApp('preferences', { initialTab: 'appearance' }),
+          },
+          {
             label: 'Start Screen Saver',
             onSelect: () => startScreenSaver(),
-          },
-          {
-            label: 'Desktop Preferences...',
-            shortcut: '⌘,',
-            onSelect: () => openApp('preferences'),
-          },
-          {
-            label: 'About Payaman OS',
-            onSelect: () =>
-              openApp('about', {
-                targetAppId: 'system',
-                title: 'About Payaman OS',
-              }),
           },
         ],
       })
     },
-    [openApp, resetPositions, resetSession, showModal, closeModal, startScreenSaver]
+    [
+      openApp,
+      cleanUpIcons,
+      sortIconsByName,
+      startScreenSaver,
+      uiScale,
+    ]
   )
 
   const handleIconContextMenu = useCallback(
@@ -348,8 +339,8 @@ export default function Desktop() {
 
       setContextMenu({
         isOpen: true,
-        x: e.clientX,
-        y: e.clientY,
+        x: Math.round(e.clientX / uiScale),
+        y: Math.round(e.clientY / uiScale),
         items: [
           {
             header: appTitle,
@@ -370,23 +361,16 @@ export default function Desktop() {
           },
           { divider: true },
           {
-            label: 'Clean Up Desktop',
+            label: 'Clean Up Icons',
             onSelect: () => {
-              resetPositions()
+              cleanUpIcons()
               soundService.playClick()
-            },
-          },
-          {
-            label: 'Close Active Window',
-            disabled: !activeWindowId,
-            onSelect: () => {
-              if (activeWindowId) closeWindow(activeWindowId)
             },
           },
         ],
       })
     },
-    [openApp, resetPositions, activeWindowId, closeWindow]
+    [openApp, cleanUpIcons, uiScale]
   )
 
   const renderWindowContent = (appId, windowId, windowData) => {
@@ -406,7 +390,6 @@ export default function Desktop() {
   }
 
   const patternClass = `pattern-${pattern || 'halftone'}`
-  const uiScale = displaySettings?.scale || 1.0
 
   return (
     <div
@@ -421,8 +404,20 @@ export default function Desktop() {
       onContextMenu={handleDesktopContextMenu}
       style={{
         zoom: uiScale !== 1.0 ? uiScale : undefined,
+        width: uiScale !== 1.0 ? `calc(100vw / ${uiScale})` : '100vw',
+        height: uiScale !== 1.0 ? `calc(100vh / ${uiScale})` : '100vh',
+        ...(theme === 'custom' && customThemeColors
+          ? {
+              '--os-fg': customThemeColors.fg,
+              '--os-bg': customThemeColors.bg,
+              '--os-desktop-bg': customThemeColors.desktopBg,
+              '--os-border': customThemeColors.fg,
+              '--os-shadow': customThemeColors.fg,
+              '--os-active-stripe': customThemeColors.fg,
+            }
+          : {}),
       }}
-      className={`relative w-screen h-screen overflow-hidden font-mono text-[var(--os-fg)] select-none ${
+      className={`fixed inset-0 overflow-hidden font-mono text-[var(--os-fg)] select-none ${
         customWallpaper ? 'bg-neutral-900' : patternClass
       }`}
     >
@@ -491,6 +486,9 @@ export default function Desktop() {
 
       {/* Floating Desktop Pet */}
       <DesktopPetSprite />
+
+      {/* Floating Desktop Sticky Notes */}
+      <DesktopStickyNotes />
 
       <Dock />
 

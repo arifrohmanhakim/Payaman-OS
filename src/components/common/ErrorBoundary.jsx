@@ -35,7 +35,7 @@ export default class ErrorBoundary extends Component {
               Aplikasi mengalami kendala internal dan ditangguhkan secara aman.
             </p>
           </div>
-          <Button variant="default" onClick={handleReset}>
+          <Button variant="default" onClick={this.handleReset}>
             Muat Ulang Aplikasi
           </Button>
         </div>

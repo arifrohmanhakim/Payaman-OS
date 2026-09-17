@@ -6,11 +6,12 @@ import { useWindowManager } from '../hooks/useWindowManager.js'
 import { useScreenSaver } from '../hooks/useScreenSaver.js'
 import { DEFAULT_DOCK_SETTINGS } from '../constants/dock.js'
 import { DEFAULT_DISPLAY_SETTINGS } from '../constants/display.js'
+import { DEFAULT_CUSTOM_THEME } from '../constants/theme.js'
 import { OSContext } from './OSContextInstance.js'
 
-const getInitialWindows = () => {
-  const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1024
-  const screenHeight = typeof window !== 'undefined' ? window.innerHeight : 768
+const getInitialWindows = (uiScale = 1.0) => {
+  const screenWidth = (typeof window !== 'undefined' ? window.innerWidth : 1024) / uiScale
+  const screenHeight = (typeof window !== 'undefined' ? window.innerHeight : 768) / uiScale
 
   const aboutW = 320
   const aboutH = 310
@@ -36,6 +37,9 @@ export function OSProvider({ children }) {
   const [theme, setThemeState] = useState(() => {
     return storageService.getItem('os_theme', 'classic')
   })
+  const [customThemeColors, setCustomThemeColorsState] = useState(() => {
+    return storageService.getItem('os_custom_theme', DEFAULT_CUSTOM_THEME)
+  })
   const [pattern, setPatternState] = useState(() => {
     return storageService.getItem('os_pattern', 'halftone')
   })
@@ -52,6 +56,8 @@ export function OSProvider({ children }) {
   })
   const [isLaunchpadOpen, setIsLaunchpadOpen] = useState(false)
   const [isSpotlightOpen, setIsSpotlightOpen] = useState(false)
+
+  const uiScale = displaySettings?.scale || 1.15
 
   const {
     isScreenSaverActive,
@@ -75,12 +81,20 @@ export function OSProvider({ children }) {
     updateWindowPosition,
     updateWindowSize,
     resetSession,
-  } = useWindowManager(getInitialWindows())
+  } = useWindowManager(getInitialWindows(uiScale), uiScale)
 
   const setTheme = useCallback((newTheme) => {
     setThemeState(newTheme)
     storageService.setItem('os_theme', newTheme)
     soundService.playClick()
+  }, [])
+
+  const setCustomThemeColors = useCallback((colors) => {
+    setCustomThemeColorsState((prev) => {
+      const updated = typeof colors === 'function' ? colors(prev) : { ...prev, ...colors }
+      storageService.setItem('os_custom_theme', updated)
+      return updated
+    })
   }, [])
 
   const setPattern = useCallback((newPattern) => {
@@ -112,6 +126,12 @@ export function OSProvider({ children }) {
   const openApp = useCallback(
     (appId, customProps = {}) => {
       soundService.playClick()
+      if (appId === 'stickynotes' || appId === 'stickies') {
+        window.dispatchEvent(
+          new CustomEvent('payaman-create-sticky-note', { detail: customProps })
+        )
+        return
+      }
       const appDef = getAppById(appId)
       if (appDef) {
         openWindow({ ...appDef, ...customProps })
@@ -230,6 +250,7 @@ export function OSProvider({ children }) {
       activeWindowId,
       activeModal,
       theme,
+      customThemeColors,
       pattern,
       customWallpaper,
       dockSettings,
@@ -237,6 +258,7 @@ export function OSProvider({ children }) {
       isLaunchpadOpen,
       isSpotlightOpen,
       setTheme,
+      setCustomThemeColors,
       setPattern,
       setCustomWallpaper,
       clearCustomWallpaper,
@@ -276,6 +298,7 @@ export function OSProvider({ children }) {
       activeWindowId,
       activeModal,
       theme,
+      customThemeColors,
       pattern,
       customWallpaper,
       dockSettings,
@@ -283,6 +306,7 @@ export function OSProvider({ children }) {
       isLaunchpadOpen,
       isSpotlightOpen,
       setTheme,
+      setCustomThemeColors,
       setPattern,
       setCustomWallpaper,
       clearCustomWallpaper,

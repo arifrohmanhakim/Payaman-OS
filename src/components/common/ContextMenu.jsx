@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useLayoutEffect } from 'react'
+import { useOS } from '../../hooks/useOS.js'
 
 export default function ContextMenu({
   isOpen,
@@ -7,6 +8,8 @@ export default function ContextMenu({
   items = [],
   onClose,
 }) {
+  const { displaySettings } = useOS()
+  const uiScale = displaySettings?.scale || 1.15
   const menuRef = useRef(null)
   const [adjustedPos, setAdjustedPos] = useState({ x, y })
 
@@ -14,22 +17,25 @@ export default function ContextMenu({
     if (!isOpen || !menuRef.current) return
 
     const menuEl = menuRef.current
-    const rect = menuEl.getBoundingClientRect()
     const padding = 8
+    const screenW = window.innerWidth / uiScale
+    const screenH = window.innerHeight / uiScale
+    const menuW = menuEl.offsetWidth
+    const menuH = menuEl.offsetHeight
 
     let targetX = x
     let targetY = y
 
-    if (targetX + rect.width > window.innerWidth - padding) {
-      targetX = Math.max(padding, window.innerWidth - rect.width - padding)
+    if (targetX + menuW > screenW - padding) {
+      targetX = Math.max(padding, screenW - menuW - padding)
     }
 
-    if (targetY + rect.height > window.innerHeight - padding) {
-      targetY = Math.max(padding, window.innerHeight - rect.height - padding)
+    if (targetY + menuH > screenH - padding) {
+      targetY = Math.max(padding, screenH - menuH - padding)
     }
 
     setAdjustedPos({ x: targetX, y: targetY })
-  }, [isOpen, x, y, items])
+  }, [isOpen, x, y, items, uiScale])
 
   useEffect(() => {
     if (!isOpen) return

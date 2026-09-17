@@ -599,6 +599,8 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
           items: [
             { label: 'Developer Portfolio', action: 'portfolio', shortcut: '⌘P' },
             { label: 'Open File Manager', action: 'files', shortcut: '⌘O' },
+            { label: 'Open Payaman Calc (Sheets)', action: 'sheets', shortcut: '⌥⌘S' },
+            { label: 'Open Sticky Notes', action: 'stickynotes', shortcut: '⌥⌘N' },
             { label: 'Open iTunes', action: 'itunes' },
             { label: 'Open Browser', action: 'browser', shortcut: '⌘B' },
             { label: 'Open Payaman Chat', action: 'chat' },
