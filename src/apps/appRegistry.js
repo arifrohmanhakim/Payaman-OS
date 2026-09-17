@@ -58,10 +58,17 @@ import { minesweeperAppConfig } from './minesweeper/config.js'
 import SnakeApp from './snake/index.jsx'
 import { snakeAppConfig } from './snake/config.js'
 
+import StickyNotesApp from './stickynotes/index.jsx'
+import { stickyNotesAppConfig } from './stickynotes/config.js'
+
 export const appRegistry = [
   {
     ...portfolioAppConfig,
     component: PortfolioApp,
+  },
+  {
+    ...stickyNotesAppConfig,
+    component: StickyNotesApp,
   },
   {
     ...minesweeperAppConfig,

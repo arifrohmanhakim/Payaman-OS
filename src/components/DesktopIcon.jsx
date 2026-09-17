@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useOS } from '../hooks/useOS.js'
 import AppIconGraphic from './common/AppIconGraphic.jsx'
 
 export default function DesktopIcon({
@@ -12,6 +13,8 @@ export default function DesktopIcon({
   onPositionChange,
   onContextMenu,
 }) {
+  const { displaySettings } = useOS()
+  const uiScale = displaySettings?.scale || 1.15
   const [isDragging, setIsDragging] = useState(false)
   const dragRef = useRef({
     startX: 0,
@@ -24,8 +27,10 @@ export default function DesktopIcon({
   useEffect(() => {
     const handleMouseMove = (event) => {
       if (!isDragging) return
-      const deltaX = event.clientX - dragRef.current.startX
-      const deltaY = event.clientY - dragRef.current.startY
+      const clientX = event.clientX / uiScale
+      const clientY = event.clientY / uiScale
+      const deltaX = clientX - dragRef.current.startX
+      const deltaY = clientY - dragRef.current.startY
 
       if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
         dragRef.current.hasMoved = true
@@ -57,15 +62,17 @@ export default function DesktopIcon({
       window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [isDragging, id, onPositionChange, onSelect])
+  }, [isDragging, id, onPositionChange, onSelect, uiScale])
 
   const handleMouseDown = (event) => {
     if (event.button !== 0) return
     event.stopPropagation()
     setIsDragging(true)
+    const clientX = event.clientX / uiScale
+    const clientY = event.clientY / uiScale
     dragRef.current = {
-      startX: event.clientX,
-      startY: event.clientY,
+      startX: clientX,
+      startY: clientY,
       originX: position.x,
       originY: position.y,
       hasMoved: false,

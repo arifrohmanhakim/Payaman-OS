@@ -6,6 +6,14 @@ import AppIconGraphic from '../common/AppIconGraphic.jsx'
 
 const QUICK_ACTIONS = [
   {
+    id: 'action-new-sticky',
+    title: 'New Sticky Note',
+    subtitle: 'Create a quick desktop memo in Stickies',
+    iconType: 'stickynote',
+    category: 'Action',
+    action: (openApp) => openApp('stickynotes'),
+  },
+  {
     id: 'action-new-note',
     title: 'New Note',
     subtitle: 'Create a new text document in Write app',

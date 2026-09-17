@@ -292,6 +292,24 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
           <circle cx="24" cy="18" r="1.5" fill="currentColor" />
         </svg>
       )
+    case 'stickynote':
+    case 'stickies':
+    case 'sticky':
+    case 'memo':
+      return (
+        <svg
+          className={`${className} stroke-current fill-none stroke-[1.5]`}
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <path d="M5 4 H27 V20 L20 27 H5 Z" />
+          <path d="M20 20 H27 L20 27 Z" fill="currentColor" fillOpacity="0.2" />
+          <circle cx="16" cy="7" r="1.25" fill="currentColor" />
+          <line x1="9" y1="12" x2="23" y2="12" />
+          <line x1="9" y1="16" x2="19" y2="16" />
+          <line x1="9" y1="20" x2="16" y2="20" />
+        </svg>
+      )
     case 'paint':
     case 'macpaint':
       return (

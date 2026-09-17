@@ -436,7 +436,7 @@ export default function PreferencesApp({ windowData }) {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {DISPLAY_SCALES.map((item) => {
-                  const isCurrent = (displaySettings?.scale || 1.0) === item.scale;
+                  const isCurrent = (displaySettings?.scale ?? 1.15) === item.scale;
                   return (
                     <button
                       key={item.id}

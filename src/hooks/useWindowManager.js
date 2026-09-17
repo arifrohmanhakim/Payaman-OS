@@ -4,7 +4,7 @@ import { storageService } from '../services/storageService.js'
 const STORAGE_KEY_WINDOWS = 'os_session_windows'
 const STORAGE_KEY_ACTIVE_WINDOW = 'os_session_active_window'
 
-export function useWindowManager(initialWindows = []) {
+export function useWindowManager(initialWindows = [], uiScale = 1.0) {
   const [windows, setWindows] = useState(() => {
     const saved = storageService.getItem(STORAGE_KEY_WINDOWS, null)
     if (Array.isArray(saved)) {
@@ -73,8 +73,8 @@ export function useWindowManager(initialWindows = []) {
 
         const winWidth = appConfig.defaultWidth || 400
         const winHeight = appConfig.defaultHeight || 300
-        const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1024
-        const screenHeight = typeof window !== 'undefined' ? window.innerHeight : 768
+        const screenWidth = (typeof window !== 'undefined' ? window.innerWidth : 1024) / uiScale
+        const screenHeight = (typeof window !== 'undefined' ? window.innerHeight : 768) / uiScale
 
         const width = Math.min(winWidth, Math.max(280, screenWidth - 24))
         const height = Math.min(winHeight, Math.max(200, screenHeight - 80))
@@ -100,7 +100,7 @@ export function useWindowManager(initialWindows = []) {
 
       return newZ
     })
-  }, [])
+  }, [uiScale])
 
   const closeWindow = useCallback(
     (windowId) => {
@@ -167,6 +167,9 @@ export function useWindowManager(initialWindows = []) {
           }
         }
 
+        const screenW = (typeof window !== 'undefined' ? window.innerWidth : 1024) / uiScale
+        const screenH = (typeof window !== 'undefined' ? window.innerHeight : 768) / uiScale
+
         return {
           ...w,
           prevBounds: {
@@ -177,21 +180,21 @@ export function useWindowManager(initialWindows = []) {
           },
           x: 0,
           y: 24,
-          width: window.innerWidth,
-          height: window.innerHeight - 24,
+          width: screenW,
+          height: screenH - 24,
           isMaximized: true,
         }
       })
     )
-  }, [])
+  }, [uiScale])
 
   const snapWindow = useCallback((windowId, snapType) => {
     setWindows((prevWindows) =>
       prevWindows.map((w) => {
         if (w.id !== windowId) return w
 
-        const screenW = typeof window !== 'undefined' ? window.innerWidth : 1024
-        const screenH = typeof window !== 'undefined' ? window.innerHeight : 768
+        const screenW = (typeof window !== 'undefined' ? window.innerWidth : 1024) / uiScale
+        const screenH = (typeof window !== 'undefined' ? window.innerHeight : 768) / uiScale
         const availableHeight = screenH - 24
 
         if (!w.prevBounds) {
@@ -240,7 +243,7 @@ export function useWindowManager(initialWindows = []) {
         return w
       })
     )
-  }, [])
+  }, [uiScale])
 
   const resetSession = useCallback(() => {
     storageService.removeItem(STORAGE_KEY_WINDOWS)

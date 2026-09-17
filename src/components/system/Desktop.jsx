@@ -10,6 +10,7 @@ import ScreenSaver from './ScreenSaver.jsx'
 import ErrorBoundary from '../common/ErrorBoundary.jsx'
 import ContextMenu from '../common/ContextMenu.jsx'
 import DesktopPetSprite from '../../apps/pet/DesktopPetSprite.jsx'
+import DesktopStickyNotes from '../../apps/stickynotes/DesktopStickyNotes.jsx'
 import { soundService } from '../../services/soundService.js'
 import { useOS } from '../../hooks/useOS.js'
 import { useDesktopIcons } from '../../hooks/useDesktopIcons.js'
@@ -52,8 +53,9 @@ export default function Desktop() {
     reboot,
   } = useOS()
 
+  const uiScale = displaySettings?.scale || 1.15
   const desktopApps = getDesktopApps()
-  const { getIconPosition, setIconPosition, resetPositions } = useDesktopIcons()
+  const { getIconPosition, setIconPosition, resetPositions } = useDesktopIcons(uiScale)
 
   const handleMenuAction = (action, activeAppId) => {
     switch (action) {
@@ -165,6 +167,10 @@ export default function Desktop() {
       case 'minesweeper':
         openApp('minesweeper')
         break
+      case 'stickynotes':
+      case 'stickies':
+        openApp('stickynotes')
+        break
       case 'snake':
         openApp('snake')
         break
@@ -259,8 +265,8 @@ export default function Desktop() {
 
       setContextMenu({
         isOpen: true,
-        x: e.clientX,
-        y: e.clientY,
+        x: Math.round(e.clientX / uiScale),
+        y: Math.round(e.clientY / uiScale),
         items: [
           {
             label: 'Developer Portfolio',
@@ -273,7 +279,12 @@ export default function Desktop() {
             onSelect: () => openApp('files'),
           },
           {
-            label: 'New Note',
+            label: 'New Sticky Note',
+            shortcut: '⌥⌘N',
+            onSelect: () => openApp('stickynotes'),
+          },
+          {
+            label: 'New Note (Write)',
             shortcut: '⌘N',
             onSelect: () => openApp('write'),
           },
@@ -333,7 +344,7 @@ export default function Desktop() {
         ],
       })
     },
-    [openApp, resetPositions, resetSession, showModal, closeModal, startScreenSaver]
+    [openApp, resetPositions, resetSession, showModal, closeModal, startScreenSaver, uiScale]
   )
 
   const handleIconContextMenu = useCallback(
@@ -348,8 +359,8 @@ export default function Desktop() {
 
       setContextMenu({
         isOpen: true,
-        x: e.clientX,
-        y: e.clientY,
+        x: Math.round(e.clientX / uiScale),
+        y: Math.round(e.clientY / uiScale),
         items: [
           {
             header: appTitle,
@@ -386,7 +397,7 @@ export default function Desktop() {
         ],
       })
     },
-    [openApp, resetPositions, activeWindowId, closeWindow]
+    [openApp, resetPositions, activeWindowId, closeWindow, uiScale]
   )
 
   const renderWindowContent = (appId, windowId, windowData) => {
@@ -406,7 +417,6 @@ export default function Desktop() {
   }
 
   const patternClass = `pattern-${pattern || 'halftone'}`
-  const uiScale = displaySettings?.scale || 1.0
 
   return (
     <div
@@ -491,6 +501,9 @@ export default function Desktop() {
 
       {/* Floating Desktop Pet */}
       <DesktopPetSprite />
+
+      {/* Floating Desktop Sticky Notes */}
+      <DesktopStickyNotes />
 
       <Dock />
 
