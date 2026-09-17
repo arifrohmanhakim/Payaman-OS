@@ -185,6 +185,63 @@ export function useWindowManager(initialWindows = []) {
     )
   }, [])
 
+  const snapWindow = useCallback((windowId, snapType) => {
+    setWindows((prevWindows) =>
+      prevWindows.map((w) => {
+        if (w.id !== windowId) return w
+
+        const screenW = typeof window !== 'undefined' ? window.innerWidth : 1024
+        const screenH = typeof window !== 'undefined' ? window.innerHeight : 768
+        const availableHeight = screenH - 24
+
+        if (!w.prevBounds) {
+          w.prevBounds = {
+            x: w.x,
+            y: w.y,
+            width: w.width,
+            height: w.height,
+          }
+        }
+
+        if (snapType === 'left') {
+          return {
+            ...w,
+            x: 0,
+            y: 24,
+            width: Math.floor(screenW / 2),
+            height: availableHeight,
+            isMaximized: false,
+          }
+        }
+
+        if (snapType === 'right') {
+          const halfW = Math.floor(screenW / 2)
+          return {
+            ...w,
+            x: halfW,
+            y: 24,
+            width: screenW - halfW,
+            height: availableHeight,
+            isMaximized: false,
+          }
+        }
+
+        if (snapType === 'top' || snapType === 'maximize') {
+          return {
+            ...w,
+            x: 0,
+            y: 24,
+            width: screenW,
+            height: availableHeight,
+            isMaximized: true,
+          }
+        }
+
+        return w
+      })
+    )
+  }, [])
+
   const resetSession = useCallback(() => {
     storageService.removeItem(STORAGE_KEY_WINDOWS)
     storageService.removeItem(STORAGE_KEY_ACTIVE_WINDOW)
@@ -200,6 +257,7 @@ export function useWindowManager(initialWindows = []) {
     focusWindow,
     minimizeWindow,
     toggleMaximizeWindow,
+    snapWindow,
     updateWindowPosition,
     updateWindowSize,
     resetSession,

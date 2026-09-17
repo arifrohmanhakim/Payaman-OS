@@ -5,6 +5,8 @@ import Window from '../Window.jsx'
 import ModalDialog from '../ModalDialog.jsx'
 import Dock from './Dock.jsx'
 import Launchpad from './Launchpad.jsx'
+import SpotlightSearch from './SpotlightSearch.jsx'
+import ScreenSaver from './ScreenSaver.jsx'
 import ErrorBoundary from '../common/ErrorBoundary.jsx'
 import ContextMenu from '../common/ContextMenu.jsx'
 import DesktopPetSprite from '../../apps/pet/DesktopPetSprite.jsx'
@@ -34,11 +36,17 @@ export default function Desktop() {
     focusWindow,
     minimizeWindow,
     toggleMaximizeWindow,
+    snapWindow,
     updateWindowPosition,
     updateWindowSize,
     showModal,
     closeModal,
     toggleLaunchpad,
+    toggleSpotlight,
+    isScreenSaverActive,
+    screenSaverMode,
+    startScreenSaver,
+    dismissScreenSaver,
     resetSession,
     reboot,
   } = useOS()
@@ -48,6 +56,21 @@ export default function Desktop() {
 
   const handleMenuAction = (action, activeAppId) => {
     switch (action) {
+      case 'screensaver':
+      case 'start_screensaver':
+        startScreenSaver()
+        break
+      case 'toggle_fullscreen':
+      case 'fullscreen':
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {})
+        } else if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {})
+        }
+        break
+      case 'spotlight':
+        toggleSpotlight()
+        break
       case 'launchpad':
         toggleLaunchpad()
         break
@@ -134,6 +157,12 @@ export default function Desktop() {
         break
       case 'calculator':
         openApp('calc')
+        break
+      case 'minesweeper':
+        openApp('minesweeper')
+        break
+      case 'snake':
+        openApp('snake')
         break
       case 'terminal':
         openApp('terminal')
@@ -281,6 +310,10 @@ export default function Desktop() {
           },
           { divider: true },
           {
+            label: 'Start Screen Saver',
+            onSelect: () => startScreenSaver(),
+          },
+          {
             label: 'Desktop Preferences...',
             shortcut: '⌘,',
             onSelect: () => openApp('preferences'),
@@ -296,7 +329,7 @@ export default function Desktop() {
         ],
       })
     },
-    [openApp, resetPositions, resetSession, showModal, closeModal]
+    [openApp, resetPositions, resetSession, showModal, closeModal, startScreenSaver]
   )
 
   const handleIconContextMenu = useCallback(
@@ -440,6 +473,7 @@ export default function Desktop() {
           onClose={closeWindow}
           onMinimize={minimizeWindow}
           onMaximize={toggleMaximizeWindow}
+          onSnap={snapWindow}
           onPositionChange={updateWindowPosition}
           onSizeChange={updateWindowSize}
         >
@@ -453,6 +487,8 @@ export default function Desktop() {
       <Dock />
 
       <Launchpad />
+
+      <SpotlightSearch />
 
       <ContextMenu
         isOpen={contextMenu.isOpen}
@@ -468,6 +504,12 @@ export default function Desktop() {
         message={activeModal?.message}
         onConfirm={activeModal?.onConfirm}
         onCancel={closeModal}
+      />
+
+      <ScreenSaver
+        isActive={isScreenSaverActive}
+        onDismiss={dismissScreenSaver}
+        mode={screenSaverMode}
       />
     </div>
   )

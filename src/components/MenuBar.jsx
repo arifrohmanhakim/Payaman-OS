@@ -607,12 +607,22 @@ export default function MenuBar({ onSelectMenuAction }) {
           )}
         </div>
 
+        {/* Spotlight Search Trigger */}
+        <button
+          type="button"
+          onClick={() => onSelectMenuAction?.("spotlight")}
+          title="Spotlight Search (⌘Space / Ctrl+Space)"
+          className="flex items-center justify-center p-1 text-[var(--os-fg)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] text-xs cursor-pointer"
+        >
+          <AppIconGraphic iconType="spotlight" className="w-3.5 h-3.5" />
+        </button>
+
         {/* Date & Time Calendar Trigger */}
         <button
           type="button"
           onClick={() => onSelectMenuAction?.("calendar")}
           title="Open Calendar"
-          className="flex items-center gap-1.5 font-mono font-bold text-[var(--os-fg)] px-1.5 py-0.5 hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] text-xs ml-0.5"
+          className="flex items-center gap-1.5 font-mono font-bold text-[var(--os-fg)] px-1.5 py-0.5 hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] text-xs ml-0.5 cursor-pointer"
         >
           <span>{currentDate}</span>
           <span>{currentTime}</span>
