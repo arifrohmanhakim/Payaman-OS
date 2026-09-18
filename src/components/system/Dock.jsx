@@ -29,6 +29,7 @@ export default function Dock({ onItemContextMenu, onCanvasContextMenu }) {
     size = "medium",
     position = "bottom",
     autoHide = false,
+    magnification = true,
     showIndicators = true,
     pinnedApps: customPinnedApps,
   } = settings;
@@ -55,6 +56,32 @@ export default function Dock({ onItemContextMenu, onCanvasContextMenu }) {
 
   const dockApps = [...pinnedApps, ...runningOnlyApps];
   const trashApp = getAppById("wastebasket");
+
+  const allItemIds = [
+    "launchpad",
+    ...dockApps.map((a) => a.id),
+    ...(trashApp ? [trashApp.id] : []),
+  ];
+
+  const getItemScale = (itemId) => {
+    if (!magnification || !hoveredAppId) return 1;
+    const hoveredIndex = allItemIds.indexOf(hoveredAppId);
+    const currentIndex = allItemIds.indexOf(itemId);
+    if (hoveredIndex === -1 || currentIndex === -1) return 1;
+
+    const distance = Math.abs(hoveredIndex - currentIndex);
+    if (distance === 0) return 1.45;
+    if (distance === 1) return 1.2;
+    if (distance === 2) return 1.08;
+    return 1;
+  };
+
+  const transformOrigin =
+    position === "bottom"
+      ? "bottom center"
+      : position === "left"
+        ? "center left"
+        : "center right";
 
   const handleItemClick = (appId) => {
     const existingWindow = windows.find((w) => w.appId === appId);
@@ -114,7 +141,7 @@ export default function Dock({ onItemContextMenu, onCanvasContextMenu }) {
           }`,
           content: "flex-col items-center",
           divider: "h-[2px] w-6 bg-[var(--os-border)] my-1 mx-auto",
-          tooltip: "left-full ml-2 top-1/2 -translate-y-1/2",
+          tooltip: "left-full ml-3 top-1/2 -translate-y-1/2",
           indicatorContainer: "w-1.5 flex items-center justify-center ml-0.5",
         };
       case "right":
@@ -124,7 +151,7 @@ export default function Dock({ onItemContextMenu, onCanvasContextMenu }) {
           }`,
           content: "flex-col items-center",
           divider: "h-[2px] w-6 bg-[var(--os-border)] my-1 mx-auto",
-          tooltip: "right-full mr-2 top-1/2 -translate-y-1/2",
+          tooltip: "right-full mr-3 top-1/2 -translate-y-1/2",
           indicatorContainer: "w-1.5 flex items-center justify-center mr-0.5",
         };
       case "bottom":
@@ -135,7 +162,7 @@ export default function Dock({ onItemContextMenu, onCanvasContextMenu }) {
           }`,
           content: "flex-row items-end",
           divider: "w-[2px] h-6 bg-[var(--os-border)] self-center mx-1 my-auto",
-          tooltip: "bottom-full mb-2 left-1/2 -translate-x-1/2",
+          tooltip: "bottom-full mb-3 left-1/2 -translate-x-1/2",
           indicatorContainer: "h-1.5 flex items-center justify-center mt-0.5",
         };
     }
@@ -148,6 +175,7 @@ export default function Dock({ onItemContextMenu, onCanvasContextMenu }) {
     const isOpen = Boolean(existingWindow);
     const isFront = activeWindowId === app.id && !existingWindow?.isMinimized;
     const isHovered = hoveredAppId === app.id;
+    const scale = getItemScale(app.id);
 
     return (
       <div
@@ -160,7 +188,7 @@ export default function Dock({ onItemContextMenu, onCanvasContextMenu }) {
       >
         {isHovered && (
           <div
-            className={`absolute ${posClasses.tooltip} bg-[var(--os-bg)] text-[var(--os-fg)] border-2 border-[var(--os-border)] px-2 py-0.5 text-[10px] font-mono whitespace-nowrap shadow-[2px_2px_0px_var(--os-shadow)] pointer-events-none z-50`}
+            className={`absolute ${posClasses.tooltip} bg-[var(--os-bg)] text-[var(--os-fg)] border-2 border-[var(--os-border)] px-2 py-0.5 text-[10px] font-mono whitespace-nowrap shadow-[2px_2px_0px_var(--os-shadow)] pointer-events-none z-50 animate-in fade-in zoom-in-95 duration-75`}
           >
             {app.title}
           </div>
@@ -175,13 +203,11 @@ export default function Dock({ onItemContextMenu, onCanvasContextMenu }) {
             e.stopPropagation();
             onItemContextMenu?.(e, app.id);
           }}
-          className={`${sizeClasses.button} flex items-center justify-center border-2 transition-none cursor-pointer focus:outline-none ${
-            isFront
-              ? "bg-[var(--os-fg)]/20 border-[var(--os-border)] shadow-[inset_1px_1px_0px_var(--os-border)]"
-              : isHovered
-                ? "bg-[var(--os-fg)]/10 border-[var(--os-border)]"
-                : "bg-transparent border-transparent"
-          }`}
+          style={{
+            transform: `scale(${scale})`,
+            transformOrigin,
+          }}
+          className={`${sizeClasses.button} flex items-center justify-center border-2 border-transparent bg-transparent transition-transform duration-100 ease-out cursor-pointer focus:outline-none active:scale-90`}
         >
           <AppIconGraphic
             iconType={app.iconType}
@@ -210,6 +236,8 @@ export default function Dock({ onItemContextMenu, onCanvasContextMenu }) {
 
   const renderLaunchpadItem = () => {
     const isHovered = hoveredAppId === "launchpad";
+    const scale = getItemScale("launchpad");
+
     return (
       <div
         key="launchpad"
@@ -221,7 +249,7 @@ export default function Dock({ onItemContextMenu, onCanvasContextMenu }) {
       >
         {isHovered && (
           <div
-            className={`absolute ${posClasses.tooltip} bg-[var(--os-bg)] text-[var(--os-fg)] border-2 border-[var(--os-border)] px-2 py-0.5 text-[10px] font-mono whitespace-nowrap shadow-[2px_2px_0px_var(--os-shadow)] pointer-events-none z-50`}
+            className={`absolute ${posClasses.tooltip} bg-[var(--os-bg)] text-[var(--os-fg)] border-2 border-[var(--os-border)] px-2 py-0.5 text-[10px] font-mono whitespace-nowrap shadow-[2px_2px_0px_var(--os-shadow)] pointer-events-none z-50 animate-in fade-in zoom-in-95 duration-75`}
           >
             Launchpad
           </div>
@@ -231,13 +259,11 @@ export default function Dock({ onItemContextMenu, onCanvasContextMenu }) {
           type="button"
           aria-label="Open Launchpad"
           onClick={toggleLaunchpad}
-          className={`${sizeClasses.button} flex items-center justify-center border-2 transition-none cursor-pointer focus:outline-none ${
-            isLaunchpadOpen
-              ? "bg-[var(--os-fg)]/20 border-[var(--os-border)] shadow-[inset_1px_1px_0px_var(--os-border)]"
-              : isHovered
-                ? "bg-[var(--os-fg)]/10 border-[var(--os-border)]"
-                : "bg-transparent border-transparent"
-          }`}
+          style={{
+            transform: `scale(${scale})`,
+            transformOrigin,
+          }}
+          className={`${sizeClasses.button} flex items-center justify-center border-2 border-transparent bg-transparent transition-transform duration-100 ease-out cursor-pointer focus:outline-none active:scale-90`}
         >
           <AppIconGraphic iconType="launchpad" className={sizeClasses.icon} />
         </button>
