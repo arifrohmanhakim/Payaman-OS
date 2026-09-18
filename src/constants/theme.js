@@ -97,6 +97,11 @@ export const PATTERNS = [
     description: 'Kotak garis-garis mikro teratur',
   },
   {
+    id: 'logo',
+    name: 'Payaman Logo',
+    description: 'Ubin motif logo resmi Payaman OS',
+  },
+  {
     id: 'solid',
     name: 'Polos (Solid)',
     description: 'Warna latar solid tanpa tekstur',

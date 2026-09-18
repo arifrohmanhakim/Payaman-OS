@@ -1,7 +1,7 @@
 export const portfolioAppConfig = {
   id: "portfolio",
-  title: "Portfolio",
-  iconType: "portfolio",
+  title: "About Me",
+  iconType: "user",
   defaultWidth: 680,
   defaultHeight: 480,
   minWidth: 500,

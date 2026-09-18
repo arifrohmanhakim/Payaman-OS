@@ -7,7 +7,7 @@ import { getPrompt, executeShellCommand } from "./terminalShell.js";
 import { storageService } from "../../services/storageService.js";
 import { fileSystemService } from "../../services/fileSystemService.js";
 import { appRegistry } from "../appRegistry.js";
-import { THEMES } from "../../constants/theme.js";
+import { THEMES, PATTERNS } from "../../constants/theme.js";
 
 const STORAGE_KEY_TERMINAL_PROFILE = "terminal_active_profile";
 
@@ -315,6 +315,8 @@ export default function TerminalApp({ onClose }) {
             candidates = Object.keys(TERMINAL_PROFILES);
           } else if (command === "theme") {
             candidates = THEMES.map((t) => t.id);
+          } else if (command === "pattern") {
+            candidates = PATTERNS.map((p) => p.id);
           } else if (command === "spaces" || command === "space") {
             candidates = ["1", "2", "3", "4"];
           } else if (command === "scanlines" || command === "crt") {

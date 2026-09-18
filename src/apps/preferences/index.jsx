@@ -459,7 +459,7 @@ export default function PreferencesApp({ windowData }) {
                 Payaman OS 1-bit monochrome textures
               </span>
             </div>
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
               {PATTERNS.map((p) => {
                 const isCurrentPattern = (pattern || "halftone") === p.id;
                 return (
@@ -477,7 +477,7 @@ export default function PreferencesApp({ windowData }) {
                     }`}
                   >
                     <div
-                      className={`w-full h-10 border border-[var(--os-border)] pattern-${p.id}`}
+                      className={`w-full h-10 border border-[var(--os-border)] pattern-${p.id} relative overflow-hidden`}
                     />
                     <span className="text-[10px] font-bold truncate w-full text-center">
                       {p.name}

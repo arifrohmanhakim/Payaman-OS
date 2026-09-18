@@ -97,24 +97,39 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
       )
 
     case 'portfolio':
+    case 'aboutme':
+    case 'about-me':
     case 'profile':
     case 'developer':
     case 'user':
+    case 'avatar':
       return (
         <svg {...pixelSvgProps}>
-          {/* Badge Frame */}
-          <rect x="1" y="1" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1" />
-          {/* Clip on top */}
-          <rect x="6" y="1" width="4" height="2" />
+          {/* Circular Frame Pixel Outline */}
+          <rect x="4" y="1" width="8" height="1" />
+          <rect x="2" y="2" width="2" height="1" />
+          <rect x="12" y="2" width="2" height="1" />
+          <rect x="1" y="3" width="1" height="2" />
+          <rect x="14" y="3" width="1" height="2" />
+          <rect x="1" y="5" width="1" height="6" />
+          <rect x="14" y="5" width="1" height="6" />
+          <rect x="1" y="11" width="1" height="2" />
+          <rect x="14" y="11" width="1" height="2" />
+          <rect x="2" y="13" width="2" height="1" />
+          <rect x="12" y="13" width="2" height="1" />
+          <rect x="4" y="14" width="8" height="1" />
+
           {/* User Head */}
-          <rect x="4" y="5" width="4" height="4" />
-          {/* User Torso */}
-          <rect x="3" y="10" width="6" height="3" />
-          {/* Text lines on right */}
-          <rect x="10" y="5" width="4" height="1" />
-          <rect x="10" y="7" width="4" height="1" />
-          <rect x="10" y="9" width="3" height="1" />
-          <rect x="10" y="11" width="4" height="1" />
+          <rect x="6" y="3" width="4" height="4" />
+          <rect x="5" y="4" width="6" height="2" />
+
+          {/* Neck */}
+          <rect x="7" y="7" width="2" height="1" />
+
+          {/* User Shoulders / Bust */}
+          <rect x="5" y="8" width="6" height="1" />
+          <rect x="4" y="9" width="8" height="1" />
+          <rect x="3" y="10" width="10" height="3" />
         </svg>
       )
 
@@ -611,15 +626,43 @@ export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
     case 'map':
     case 'maps':
     case 'location':
+    case 'navigation':
+    case 'gps':
       return (
         <svg {...pixelSvgProps}>
-          {/* Folded Map Panels */}
-          <rect x="1" y="2" width="14" height="12" fill="none" stroke="currentColor" strokeWidth="1" />
-          <rect x="5" y="2" width="1" height="12" />
-          <rect x="10" y="2" width="1" height="12" />
-          {/* Pin in center */}
-          <rect x="7" y="4" width="3" height="3" />
-          <rect x="8" y="7" width="1" height="3" />
+          {/* Folded Map Zigzag Top */}
+          <rect x="1" y="3" width="1" height="11" />
+          <rect x="2" y="2" width="2" height="1" />
+          <rect x="4" y="1" width="2" height="1" />
+          <rect x="6" y="2" width="2" height="1" />
+          <rect x="8" y="3" width="2" height="1" />
+          <rect x="10" y="2" width="2" height="1" />
+          <rect x="12" y="1" width="2" height="1" />
+          <rect x="14" y="2" width="1" height="11" />
+
+          {/* Folded Map Zigzag Bottom */}
+          <rect x="2" y="13" width="2" height="1" />
+          <rect x="4" y="12" width="2" height="1" />
+          <rect x="6" y="13" width="2" height="1" />
+          <rect x="8" y="14" width="2" height="1" />
+          <rect x="10" y="13" width="2" height="1" />
+          <rect x="12" y="12" width="2" height="1" />
+
+          {/* Panel Fold Creases */}
+          <rect x="5" y="2" width="1" height="10" />
+          <rect x="10" y="2" width="1" height="10" />
+
+          {/* Route / Road Paths */}
+          <rect x="2" y="8" width="3" height="1" />
+          <rect x="4" y="6" width="1" height="2" />
+          <rect x="11" y="9" width="3" height="1" />
+          <rect x="12" y="6" width="1" height="3" />
+
+          {/* Map Location Pin Marker */}
+          <rect x="6" y="2" width="4" height="4" />
+          <rect x="7" y="3" width="2" height="2" fill="var(--os-bg)" />
+          <rect x="7" y="6" width="2" height="2" />
+          <rect x="7.5" y="8" width="1" height="1" />
         </svg>
       )
 
