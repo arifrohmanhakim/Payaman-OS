@@ -1,11 +1,11 @@
 import { OSProvider } from './context/OSContext.jsx'
-import { useOS } from './hooks/useOS.js'
+import { useSystemUI } from './hooks/useOS.js'
 import Desktop from './components/system/Desktop.jsx'
 import BootScreen from './components/system/BootScreen.jsx'
 import WelcomeScreen from './components/system/WelcomeScreen.jsx'
 
 function OSShell() {
-  const { systemPhase, enterWelcome, enterDesktop, reboot } = useOS()
+  const { systemPhase, enterWelcome, enterDesktop, reboot } = useSystemUI()
 
   if (systemPhase === 'booting') {
     return <BootScreen onBootComplete={enterWelcome} />

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef, Suspense } from 'react'
 import MenuBar from '../MenuBar.jsx'
 import DesktopIcon from '../DesktopIcon.jsx'
 import Window from '../Window.jsx'
@@ -10,6 +10,7 @@ import ScreenSaver from './ScreenSaver.jsx'
 import AppSwitcher from './AppSwitcher.jsx'
 import ErrorBoundary from '../common/ErrorBoundary.jsx'
 import ContextMenu from '../common/ContextMenu.jsx'
+import AppLoadingFallback from '../common/AppLoadingFallback.jsx'
 import DesktopPetSprite from '../../apps/pet/DesktopPetSprite.jsx'
 import DesktopStickyNotes from '../../apps/stickynotes/DesktopStickyNotes.jsx'
 import DesktopWidgets from '../widgets/DesktopWidgets.jsx'
@@ -832,10 +833,12 @@ export default function Desktop() {
     const AppComponent = appDef.component
     return (
       <ErrorBoundary>
-        <AppComponent
-          onClose={() => closeWindow(windowId)}
-          windowData={windowData}
-        />
+        <Suspense fallback={<AppLoadingFallback title={appDef.title} />}>
+          <AppComponent
+            onClose={() => closeWindow(windowId)}
+            windowData={windowData}
+          />
+        </Suspense>
       </ErrorBoundary>
     )
   }

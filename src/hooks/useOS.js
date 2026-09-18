@@ -1,10 +1,25 @@
-import { useContext } from 'react'
-import { OSContext } from '../context/OSContextInstance.js'
+import { useThemeContext } from '../context/ThemeContext.jsx'
+import { useDockContext } from '../context/DockContext.jsx'
+import { useSystemUIContext } from '../context/SystemUIContext.jsx'
+import { useWindowManagerContext } from '../context/WindowManagerContext.jsx'
 
 export function useOS() {
-  const context = useContext(OSContext)
-  if (!context) {
-    throw new Error('useOS harus digunakan di dalam OSProvider')
+  const theme = useThemeContext()
+  const dock = useDockContext()
+  const systemUI = useSystemUIContext()
+  const windowManager = useWindowManagerContext()
+
+  return {
+    ...theme,
+    ...dock,
+    ...systemUI,
+    ...windowManager,
   }
-  return context
+}
+
+export {
+  useThemeContext as useTheme,
+  useDockContext as useDockSettings,
+  useSystemUIContext as useSystemUI,
+  useWindowManagerContext as useOSWindowManager,
 }

@@ -1,68 +1,50 @@
-import WriteApp from './write/index.jsx'
+import { lazy } from 'react'
+
+import { sheetsAppConfig } from './sheets/config.js'
+import { portfolioAppConfig } from './portfolio/config.js'
+import { stickyNotesAppConfig } from './stickynotes/config.js'
+import { minesweeperAppConfig } from './minesweeper/config.js'
+import { snakeAppConfig } from './snake/config.js'
+import { desktopPetConfig } from './pet/config.js'
+import { browserAppConfig } from './browser/config.js'
+import { itunesAppConfig } from './itunes/config.js'
+import { payamanChatConfig } from './chat/config.js'
+import { weatherAppConfig } from './weather/config.js'
+import { mapsAppConfig } from './maps/config.js'
+import { fileManagerAppConfig } from './files/config.js'
+import { paintAppConfig } from './paint/config.js'
+import { calendarAppConfig } from './calendar/config.js'
+import { galleryAppConfig } from './gallery/config.js'
+import { photobotAppConfig } from './photobot/config.js'
+import { terminalAppConfig } from './terminal/config.js'
 import { writeAppConfig } from './write/config.js'
-
-import CalcApp from './calculator/index.jsx'
 import { calculatorAppConfig } from './calculator/config.js'
-
-import AboutApp from './about/index.jsx'
-import { aboutAppConfig } from './about/config.js'
-
-import PreferencesApp from './preferences/index.jsx'
 import { preferencesAppConfig } from './preferences/config.js'
-
-import WastebasketApp from './wastebasket/index.jsx'
+import { aboutAppConfig } from './about/config.js'
 import { wastebasketAppConfig } from './wastebasket/config.js'
 
-import TerminalApp from './terminal/index.jsx'
-import { terminalAppConfig } from './terminal/config.js'
-
-import FileManagerApp from './files/index.jsx'
-import { fileManagerAppConfig } from './files/config.js'
-
-import GalleryApp from './gallery/index.jsx'
-import { galleryAppConfig } from './gallery/config.js'
-
-import PhotobotApp from './photobot/index.jsx'
-import { photobotAppConfig } from './photobot/config.js'
-
-import PaintApp from './paint/index.jsx'
-import { paintAppConfig } from './paint/config.js'
-
-import CalendarApp from './calendar/index.jsx'
-import { calendarAppConfig } from './calendar/config.js'
-
-import BrowserApp from './browser/index.jsx'
-import { browserAppConfig } from './browser/config.js'
-
-import WeatherApp from './weather/index.jsx'
-import { weatherAppConfig } from './weather/config.js'
-
-import MapsApp from './maps/index.jsx'
-import { mapsAppConfig } from './maps/config.js'
-
-import PayamanChatApp from './chat/index.jsx'
-import { payamanChatConfig } from './chat/config.js'
-
-import ITunesApp from './itunes/index.jsx'
-import { itunesAppConfig } from './itunes/config.js'
-
-import PortfolioApp from './portfolio/index.jsx'
-import { portfolioAppConfig } from './portfolio/config.js'
-
-import DesktopPetApp from './pet/index.jsx'
-import { desktopPetConfig } from './pet/config.js'
-
-import MinesweeperApp from './minesweeper/index.jsx'
-import { minesweeperAppConfig } from './minesweeper/config.js'
-
-import SnakeApp from './snake/index.jsx'
-import { snakeAppConfig } from './snake/config.js'
-
-import StickyNotesApp from './stickynotes/index.jsx'
-import { stickyNotesAppConfig } from './stickynotes/config.js'
-
-import PayamanCalcApp from './sheets/index.jsx'
-import { sheetsAppConfig } from './sheets/config.js'
+const PayamanCalcApp = lazy(() => import('./sheets/index.jsx'))
+const PortfolioApp = lazy(() => import('./portfolio/index.jsx'))
+const StickyNotesApp = lazy(() => import('./stickynotes/index.jsx'))
+const MinesweeperApp = lazy(() => import('./minesweeper/index.jsx'))
+const SnakeApp = lazy(() => import('./snake/index.jsx'))
+const DesktopPetApp = lazy(() => import('./pet/index.jsx'))
+const BrowserApp = lazy(() => import('./browser/index.jsx'))
+const ITunesApp = lazy(() => import('./itunes/index.jsx'))
+const PayamanChatApp = lazy(() => import('./chat/index.jsx'))
+const WeatherApp = lazy(() => import('./weather/index.jsx'))
+const MapsApp = lazy(() => import('./maps/index.jsx'))
+const FileManagerApp = lazy(() => import('./files/index.jsx'))
+const PaintApp = lazy(() => import('./paint/index.jsx'))
+const CalendarApp = lazy(() => import('./calendar/index.jsx'))
+const GalleryApp = lazy(() => import('./gallery/index.jsx'))
+const PhotobotApp = lazy(() => import('./photobot/index.jsx'))
+const TerminalApp = lazy(() => import('./terminal/index.jsx'))
+const WriteApp = lazy(() => import('./write/index.jsx'))
+const CalcApp = lazy(() => import('./calculator/index.jsx'))
+const PreferencesApp = lazy(() => import('./preferences/index.jsx'))
+const AboutApp = lazy(() => import('./about/index.jsx'))
+const WastebasketApp = lazy(() => import('./wastebasket/index.jsx'))
 
 export const appRegistry = [
   {
