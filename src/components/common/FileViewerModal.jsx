@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { createPortal } from 'react-dom'
 import Button from '../ui/Button.jsx'
 import AppIconGraphic from './AppIconGraphic.jsx'
 import { getFileCategory, getFileExtension, formatFileSize } from '../../utils/fileTypes.js'
@@ -138,7 +139,7 @@ export default function FileViewerModal({
     )
   }
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-2 sm:p-4 select-none">
       <div
         className={`bg-[var(--os-bg)] border-2 border-[var(--os-border)] os-window-shadow flex flex-col font-mono text-xs text-[var(--os-fg)] transition-all ${
@@ -411,6 +412,7 @@ export default function FileViewerModal({
           <span>Payaman File Viewer</span>
         </footer>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

@@ -462,28 +462,32 @@ export default function Desktop() {
 
       setContextMenu({
         isOpen: true,
-        x: Math.round(e.clientX / uiScale),
-        y: Math.round(e.clientY / uiScale),
+        x: e.clientX,
+        y: e.clientY,
         items: [
           {
             label: 'New Folder',
+            icon: 'folder',
             shortcut: '⇧⌘N',
             onSelect: () => openApp('files'),
           },
           {
             label: 'New Note',
+            icon: 'write',
             shortcut: '⌘N',
             onSelect: () => openApp('write'),
           },
           { divider: true },
           {
             label: 'Desktop Widgets...',
+            icon: 'calculator',
             shortcut: '⌥W',
             onSelect: () => setIsWidgetGalleryOpen(true),
           },
           { divider: true },
           {
             label: 'Clean Up Icons',
+            icon: 'grid',
             onSelect: () => {
               cleanUpIcons()
               soundService.playClick()
@@ -491,6 +495,7 @@ export default function Desktop() {
           },
           {
             label: 'Sort by Name (A-Z)',
+            icon: 'list',
             onSelect: () => {
               sortIconsByName()
               soundService.playClick()
@@ -499,11 +504,13 @@ export default function Desktop() {
           { divider: true },
           {
             label: 'Change Appearance...',
+            icon: 'preferences',
             shortcut: '⌘,',
             onSelect: () => openApp('preferences', { initialTab: 'appearance' }),
           },
           {
             label: 'Start Screen Saver',
+            icon: 'moon',
             onSelect: () => startScreenSaver(),
           },
         ],
@@ -514,7 +521,6 @@ export default function Desktop() {
       cleanUpIcons,
       sortIconsByName,
       startScreenSaver,
-      uiScale,
     ]
   )
 
@@ -530,19 +536,21 @@ export default function Desktop() {
 
       setContextMenu({
         isOpen: true,
-        x: Math.round(e.clientX / uiScale),
-        y: Math.round(e.clientY / uiScale),
+        x: e.clientX,
+        y: e.clientY,
         items: [
           {
             header: appTitle,
           },
           {
             label: `Open ${appTitle}`,
+            icon: appDef?.iconType || 'apps',
             shortcut: '↵',
             onSelect: () => openApp(iconId),
           },
           {
             label: 'Quick Look...',
+            icon: 'eye',
             shortcut: 'Space',
             onSelect: () => {
               if (appDef) {
@@ -560,6 +568,7 @@ export default function Desktop() {
           },
           {
             label: 'Get Info...',
+            icon: 'about',
             shortcut: '⌘I',
             onSelect: () =>
               openApp('about', {
@@ -570,6 +579,7 @@ export default function Desktop() {
           { divider: true },
           {
             label: 'Clean Up Icons',
+            icon: 'grid',
             onSelect: () => {
               cleanUpIcons()
               soundService.playClick()
@@ -578,7 +588,7 @@ export default function Desktop() {
         ],
       })
     },
-    [openApp, cleanUpIcons, uiScale]
+    [openApp, cleanUpIcons]
   )
 
   const handleWindowContextMenu = useCallback(
@@ -588,43 +598,48 @@ export default function Desktop() {
 
       setContextMenu({
         isOpen: true,
-        x: Math.round(e.clientX / uiScale),
-        y: Math.round(e.clientY / uiScale),
+        x: e.clientX,
+        y: e.clientY,
         items: [
           {
             header: windowData.title,
           },
           {
             label: 'Minimize',
+            icon: 'moon',
             shortcut: '⌘M',
             onSelect: () => minimizeWindow(windowData.id),
           },
           {
             label: windowData.isMaximized ? 'Restore Window' : 'Maximize',
+            icon: 'grid',
             shortcut: '⌘+',
             onSelect: () => toggleMaximizeWindow(windowData.id),
           },
           { divider: true },
           {
             label: 'Tile Left (Split Screen)',
+            icon: 'list',
             shortcut: '⌥←',
             onSelect: () => snapWindow(windowData.id, 'left'),
           },
           {
             label: 'Tile Right (Split Screen)',
+            icon: 'list',
             shortcut: '⌥→',
             onSelect: () => snapWindow(windowData.id, 'right'),
           },
           { divider: true },
           {
             label: 'Close Window',
+            icon: 'trash',
             shortcut: '⌘W',
             onSelect: () => closeWindow(windowData.id),
           },
         ],
       })
     },
-    [focusWindow, minimizeWindow, toggleMaximizeWindow, snapWindow, closeWindow, uiScale]
+    [focusWindow, minimizeWindow, toggleMaximizeWindow, snapWindow, closeWindow]
   )
 
   const handleDockItemContextMenu = useCallback(
@@ -638,8 +653,8 @@ export default function Desktop() {
 
       setContextMenu({
         isOpen: true,
-        x: Math.round(e.clientX / uiScale),
-        y: Math.round(e.clientY / uiScale),
+        x: e.clientX,
+        y: e.clientY,
         items: [
           {
             header: appTitle,
@@ -650,6 +665,7 @@ export default function Desktop() {
                 ? 'Restore Window'
                 : 'Bring to Front'
               : `Open ${appTitle}`,
+            icon: appDef?.iconType || 'apps',
             shortcut: '↵',
             onSelect: () => {
               openApp(appId)
@@ -659,6 +675,7 @@ export default function Desktop() {
             ? [
                 {
                   label: 'Close Window',
+                  icon: 'trash',
                   shortcut: '⌘W',
                   onSelect: () => {
                     if (existingWindow) closeWindow(existingWindow.id)
@@ -669,6 +686,7 @@ export default function Desktop() {
           { divider: true },
           {
             label: 'Get Info...',
+            icon: 'about',
             shortcut: '⌘I',
             onSelect: () =>
               openApp('about', {
@@ -678,13 +696,14 @@ export default function Desktop() {
           },
           {
             label: 'Dock Preferences...',
+            icon: 'preferences',
             shortcut: '⌘,',
             onSelect: () => openApp('preferences', { initialTab: 'dock' }),
           },
         ],
       })
     },
-    [windows, openApp, closeWindow, uiScale]
+    [windows, openApp, closeWindow]
   )
 
   const handleDockCanvasContextMenu = useCallback(
@@ -692,20 +711,22 @@ export default function Desktop() {
       soundService.playClick()
       setContextMenu({
         isOpen: true,
-        x: Math.round(e.clientX / uiScale),
-        y: Math.round(e.clientY / uiScale),
+        x: e.clientX,
+        y: e.clientY,
         items: [
           {
             header: 'Dock Options',
           },
           {
             label: 'Dock Preferences...',
+            icon: 'preferences',
             shortcut: '⌘,',
             onSelect: () => openApp('preferences', { initialTab: 'dock' }),
           },
           { divider: true },
           {
             label: 'Clean Up Icons',
+            icon: 'grid',
             onSelect: () => {
               cleanUpIcons()
               soundService.playClick()
@@ -714,7 +735,7 @@ export default function Desktop() {
         ],
       })
     },
-    [openApp, cleanUpIcons, uiScale]
+    [openApp, cleanUpIcons]
   )
 
   const handleDropFiles = useCallback(

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useLayoutEffect } from 'react'
-import { useOS } from '../../hooks/useOS.js'
+import { createPortal } from 'react-dom'
+import AppIconGraphic from './AppIconGraphic.jsx'
 
 export default function ContextMenu({
   isOpen,
@@ -8,34 +9,34 @@ export default function ContextMenu({
   items = [],
   onClose,
 }) {
-  const { displaySettings } = useOS()
-  const uiScale = displaySettings?.scale || 1.15
   const menuRef = useRef(null)
   const [adjustedPos, setAdjustedPos] = useState({ x, y })
 
   useLayoutEffect(() => {
-    if (!isOpen || !menuRef.current) return
-
-    const menuEl = menuRef.current
-    const padding = 8
-    const screenW = window.innerWidth / uiScale
-    const screenH = window.innerHeight / uiScale
-    const menuW = menuEl.offsetWidth
-    const menuH = menuEl.offsetHeight
+    if (!isOpen) return
 
     let targetX = x
     let targetY = y
 
-    if (targetX + menuW > screenW - padding) {
-      targetX = Math.max(padding, screenW - menuW - padding)
-    }
+    if (menuRef.current) {
+      const menuEl = menuRef.current
+      const padding = 6
+      const screenW = window.innerWidth
+      const screenH = window.innerHeight
+      const menuW = menuEl.offsetWidth || 200
+      const menuH = menuEl.offsetHeight || 180
 
-    if (targetY + menuH > screenH - padding) {
-      targetY = Math.max(padding, screenH - menuH - padding)
+      if (targetX + menuW > screenW - padding) {
+        targetX = Math.max(padding, targetX - menuW)
+      }
+
+      if (targetY + menuH > screenH - padding) {
+        targetY = Math.max(padding, targetY - menuH)
+      }
     }
 
     setAdjustedPos({ x: targetX, y: targetY })
-  }, [isOpen, x, y, items, uiScale])
+  }, [isOpen, x, y, items])
 
   useEffect(() => {
     if (!isOpen) return
@@ -71,14 +72,14 @@ export default function ContextMenu({
     return null
   }
 
-  return (
+  return createPortal(
     <div
       ref={menuRef}
       style={{
         top: `${adjustedPos.y}px`,
         left: `${adjustedPos.x}px`,
       }}
-      className="fixed z-[9999] bg-[var(--os-bg)] text-[var(--os-fg)] border-2 border-[var(--os-border)] os-window-shadow min-w-48 py-1 font-mono text-xs select-none shadow-[3px_3px_0px_var(--os-shadow)]"
+      className="fixed z-[99999] bg-[var(--os-bg)] text-[var(--os-fg)] border-2 border-[var(--os-border)] os-window-shadow min-w-48 py-1 font-mono text-xs select-none shadow-[3px_3px_0px_var(--os-shadow)]"
       onContextMenu={(e) => e.preventDefault()}
     >
       {items.map((item, index) => {
@@ -95,7 +96,7 @@ export default function ContextMenu({
           return (
             <div
               key={`header-${index}`}
-              className="px-3 py-1 text-[10px] uppercase font-bold opacity-60 tracking-wider"
+              className="px-3 py-1 text-[10px] uppercase font-bold opacity-60 tracking-wider truncate"
             >
               {item.header}
             </div>
@@ -113,14 +114,22 @@ export default function ContextMenu({
               onClose?.()
               item.onSelect?.()
             }}
-            className={`w-full flex items-center justify-between px-3 py-1 text-xs font-mono cursor-default text-left transition-none ${
+            className={`w-full flex items-center justify-between px-3 py-1.5 text-xs font-mono cursor-default text-left transition-none ${
               item.disabled
                 ? 'opacity-35 cursor-not-allowed'
                 : 'hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] active:bg-[var(--os-fg)] active:text-[var(--os-bg)]'
             }`}
           >
             <div className="flex items-center gap-2 truncate">
-              {item.icon && <span className="text-xs shrink-0">{item.icon}</span>}
+              {item.icon && (
+                <span className="w-3.5 h-3.5 shrink-0 flex items-center justify-center">
+                  {typeof item.icon === 'string' ? (
+                    <AppIconGraphic iconType={item.icon} className="w-3.5 h-3.5" />
+                  ) : (
+                    item.icon
+                  )}
+                </span>
+              )}
               <span className="truncate">{item.label}</span>
             </div>
             {item.shortcut && (
@@ -131,6 +140,7 @@ export default function ContextMenu({
           </button>
         )
       })}
-    </div>
+    </div>,
+    document.body
   )
 }

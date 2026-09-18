@@ -4,6 +4,7 @@ import { useGoogleDrive } from './useGoogleDrive.js'
 import { useOS } from '../../hooks/useOS.js'
 import { storageService } from '../../services/storageService.js'
 import AppIconGraphic from '../../components/common/AppIconGraphic.jsx'
+import ContextMenu from '../../components/common/ContextMenu.jsx'
 import FileViewerModal from '../../components/common/FileViewerModal.jsx'
 import QuickLookModal from '../../components/common/QuickLookModal.jsx'
 import Button from '../../components/ui/Button.jsx'
@@ -44,12 +45,18 @@ export default function FileManagerApp() {
   // Tab aktif: 'local' | 'gdrive'
   const [storageSource, setStorageSource] = useState('local')
 
-  // Dialog & Pratinjau
+  // Dialog, Pratinjau & Context Menu
   const [activeDialog, setActiveDialog] = useState(null)
   const [dialogInput, setDialogInput] = useState('')
   const [dialogSecondaryInput, setDialogSecondaryInput] = useState('')
   const [filePreview, setFilePreview] = useState(null)
   const [quickLookFile, setQuickLookFile] = useState(null)
+  const [contextMenu, setContextMenu] = useState({
+    isOpen: false,
+    x: 0,
+    y: 0,
+    item: null,
+  })
 
   const quickLinks = [
     { name: 'Home (~)', path: '/home/arif', icon: 'folder' },
@@ -237,9 +244,15 @@ export default function FileManagerApp() {
     }
   }, [storageSource, readFileContent, gdrive])
 
+  const currentItems = storageSource === 'local' ? items : (gdrive.isConnected ? gdrive.files : [])
+  const currentItemsRef = useRef(currentItems)
   const selectedItemRef = useRef(selectedItem)
   const quickLookFileRef = useRef(quickLookFile)
   const previewItemKeyRef = useRef(null)
+
+  useEffect(() => {
+    currentItemsRef.current = currentItems
+  }, [currentItems])
 
   useEffect(() => {
     selectedItemRef.current = selectedItem
@@ -248,6 +261,14 @@ export default function FileManagerApp() {
   useEffect(() => {
     quickLookFileRef.current = quickLookFile
   }, [quickLookFile])
+
+  useEffect(() => {
+    if (!selectedItem) return
+    const el = document.querySelector('[data-file-selected="true"]')
+    if (el) {
+      el.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+    }
+  }, [selectedItem])
 
   const toggleQuickLook = useCallback(async (targetItem) => {
     const item = targetItem || selectedItemRef.current
@@ -285,6 +306,9 @@ export default function FileManagerApp() {
       if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return
       if (activeDialog) return
 
+      const list = currentItemsRef.current || []
+
+      // 1. Space: Quick Look Toggle
       if (e.code === 'Space' || e.key === ' ') {
         if (quickLookFileRef.current) {
           e.preventDefault()
@@ -298,13 +322,234 @@ export default function FileManagerApp() {
           e.preventDefault()
           e.stopPropagation()
           toggleQuickLook(selectedItemRef.current)
+          return
         }
+      }
+
+      // 2. Arrow Keys Navigation (Up, Down, Left, Right, Home, End)
+      if (['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft', 'Home', 'End'].includes(e.key)) {
+        if (list.length === 0) return
+        e.preventDefault()
+
+        const currentSel = selectedItemRef.current
+        const currentIdx = currentSel
+          ? list.findIndex((it) => (it.id ? it.id === currentSel.id : it.name === currentSel.name))
+          : -1
+
+        let nextIdx = 0
+        if (e.key === 'Home') {
+          nextIdx = 0
+        } else if (e.key === 'End') {
+          nextIdx = list.length - 1
+        } else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+          nextIdx = currentIdx === -1 ? 0 : Math.min(list.length - 1, currentIdx + 1)
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+          nextIdx = currentIdx === -1 ? list.length - 1 : Math.max(0, currentIdx - 1)
+        }
+
+        const targetItem = list[nextIdx]
+        if (targetItem) {
+          setSelectedItem(targetItem)
+        }
+        return
+      }
+
+      // 3. Enter: Open folder / preview file
+      if (e.key === 'Enter') {
+        if (selectedItemRef.current) {
+          e.preventDefault()
+          if (storageSource === 'local') {
+            handleOpenLocalItem(selectedItemRef.current)
+          } else {
+            handleOpenGdriveItem(selectedItemRef.current)
+          }
+        }
+        return
+      }
+
+      // 4. Backspace: Navigate back / up
+      if (e.key === 'Backspace' && !e.metaKey && !e.ctrlKey) {
+        if (storageSource === 'local') {
+          e.preventDefault()
+          if (canGoBack) navigateBack()
+          else navigateUp()
+        } else if (gdrive.isConnected && gdrive.currentFolder?.id !== 'root') {
+          e.preventDefault()
+          gdrive.navigateBack()
+        }
+        return
+      }
+
+      // 5. Delete: Remove selected item
+      if (e.key === 'Delete' || (e.key === 'Backspace' && (e.metaKey || e.ctrlKey))) {
+        if (selectedItemRef.current) {
+          e.preventDefault()
+          handleDeleteSelected()
+        }
+        return
+      }
+
+      // 6. F2: Rename selected item
+      if (e.key === 'F2') {
+        if (selectedItemRef.current && storageSource === 'local') {
+          e.preventDefault()
+          openRenameDialog()
+        }
+        return
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [activeDialog, toggleQuickLook])
+  }, [
+    activeDialog,
+    toggleQuickLook,
+    storageSource,
+    canGoBack,
+    navigateBack,
+    navigateUp,
+    gdrive,
+    handleDeleteSelected,
+    openRenameDialog,
+    setSelectedItem,
+  ])
+
+  const handleItemContextMenu = (e, item) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setSelectedItem(item)
+    setContextMenu({
+      isOpen: true,
+      x: e.clientX,
+      y: e.clientY,
+      item,
+    })
+  }
+
+  const handleContainerContextMenu = (e) => {
+    e.preventDefault()
+    setContextMenu({
+      isOpen: true,
+      x: e.clientX,
+      y: e.clientY,
+      item: null,
+    })
+  }
+
+  const contextMenuItems = (() => {
+    const item = contextMenu.item || selectedItem
+    if (item) {
+      const isDir =
+        storageSource === 'local'
+          ? item.type === 'dir'
+          : item.mimeType === 'application/vnd.google-apps.folder'
+
+      const menu = [
+        { header: item.name },
+        {
+          label: isDir ? 'Open Folder' : 'Open',
+          icon: isDir ? 'folder' : 'document',
+          shortcut: '↵',
+          onSelect: () => {
+            if (storageSource === 'local') {
+              handleOpenLocalItem(item)
+            } else {
+              handleOpenGdriveItem(item)
+            }
+          },
+        },
+        {
+          label: 'Quick Look',
+          icon: 'eye',
+          shortcut: 'Space',
+          onSelect: () => toggleQuickLook(item),
+        },
+        { divider: true },
+      ]
+
+      if (storageSource === 'gdrive' && !isDir) {
+        menu.push({
+          label: 'Copy to Local VFS',
+          icon: 'download',
+          onSelect: () => gdrive.importToVFS(item, '/home/arif'),
+        })
+      }
+
+      if (storageSource === 'local') {
+        menu.push({
+          label: 'Rename...',
+          icon: 'edit',
+          shortcut: 'F2',
+          onSelect: () => openRenameDialog(),
+        })
+      }
+
+      menu.push({
+        label: 'Delete',
+        icon: 'trash',
+        shortcut: 'Del',
+        onSelect: () => handleDeleteSelected(),
+      })
+
+      return menu
+    }
+
+    return [
+      { header: storageSource === 'local' ? currentPath : gdrive.currentFolder.name },
+      {
+        label: 'New Folder...',
+        icon: 'folder',
+        onSelect: () => {
+          setDialogInput('')
+          setActiveDialog(storageSource === 'local' ? 'new_folder' : 'gdrive_new_folder')
+        },
+      },
+      ...(storageSource === 'local'
+        ? [
+            {
+              label: 'New File...',
+              icon: 'document',
+              onSelect: () => {
+                setDialogInput('')
+                setActiveDialog('new_file')
+              },
+            },
+            {
+              label: 'Upload File...',
+              icon: 'upload',
+              onSelect: () => fileInputRef.current?.click(),
+            },
+          ]
+        : [
+            {
+              label: 'Upload File...',
+              icon: 'upload',
+              onSelect: () => {
+                setDialogInput('')
+                setDialogSecondaryInput('')
+                setActiveDialog('gdrive_upload')
+              },
+            },
+          ]),
+      { divider: true },
+      {
+        label: viewMode === 'grid' ? 'Switch to List View' : 'Switch to Grid View',
+        icon: viewMode === 'grid' ? 'list' : 'grid',
+        onSelect: () => setViewMode(viewMode === 'grid' ? 'list' : 'grid'),
+      },
+      {
+        label: 'Refresh',
+        icon: 'refresh',
+        onSelect: () => {
+          if (storageSource === 'local') {
+            navigateTo(currentPath)
+          } else {
+            gdrive.fetchFiles(gdrive.currentFolder.id)
+          }
+        },
+      },
+    ]
+  })()
 
   const handleImportGdriveSelected = async () => {
     if (!selectedItem) return
@@ -678,6 +923,7 @@ export default function FileManagerApp() {
         {/* Content Explorer Area */}
         <main
           onClick={() => setSelectedItem(null)}
+          onContextMenu={handleContainerContextMenu}
           className="flex-1 bg-[var(--os-bg)] p-3 overflow-auto relative"
         >
           {storageSource === 'local' ? (
@@ -708,6 +954,7 @@ export default function FileManagerApp() {
                   return (
                     <div
                       key={item.name}
+                      data-file-selected={isSelected}
                       onClick={(e) => {
                         e.stopPropagation()
                         setSelectedItem(item)
@@ -716,6 +963,7 @@ export default function FileManagerApp() {
                         e.stopPropagation()
                         handleOpenLocalItem(item)
                       }}
+                      onContextMenu={(e) => handleItemContextMenu(e, item)}
                       className={`flex flex-col items-center justify-center p-2 text-center group cursor-default ${
                         isSelected
                           ? 'bg-[var(--os-fg)] text-[var(--os-bg)]'
@@ -745,44 +993,46 @@ export default function FileManagerApp() {
                   </tr>
                 </thead>
                 <tbody>
-                    {items.map((item) => {
-                      const isSelected = selectedItem?.name === item.name
-                      const isDir = item.type === 'dir'
-                      const category = isDir ? 'folder' : getFileCategory(item.name)
-                      const ext = isDir ? '' : getFileExtension(item.name)
-                      let iconType = 'document'
-                      if (isDir) iconType = 'folder'
-                      else if (category === 'image') iconType = 'image'
-                      else if (category === 'pdf') iconType = 'pdf'
-                      else if (category === 'audio' || category === 'video') iconType = 'media'
-                      else if (
-                        category === 'text' &&
-                        ['js', 'jsx', 'ts', 'tsx', 'html', 'css', 'json', 'py', 'sh'].includes(ext)
-                      ) {
-                        iconType = 'code'
-                      }
+                  {items.map((item) => {
+                    const isSelected = selectedItem?.name === item.name
+                    const isDir = item.type === 'dir'
+                    const category = isDir ? 'folder' : getFileCategory(item.name)
+                    const ext = isDir ? '' : getFileExtension(item.name)
+                    let iconType = 'document'
+                    if (isDir) iconType = 'folder'
+                    else if (category === 'image') iconType = 'image'
+                    else if (category === 'pdf') iconType = 'pdf'
+                    else if (category === 'audio' || category === 'video') iconType = 'media'
+                    else if (
+                      category === 'text' &&
+                      ['js', 'jsx', 'ts', 'tsx', 'html', 'css', 'json', 'py', 'sh'].includes(ext)
+                    ) {
+                      iconType = 'code'
+                    }
 
-                      return (
-                        <tr
-                          key={item.name}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setSelectedItem(item)
-                          }}
-                          onDoubleClick={(e) => {
-                            e.stopPropagation()
-                            handleOpenLocalItem(item)
-                          }}
-                          className={`border-b border-[var(--os-border)]/30 cursor-default ${
-                            isSelected
-                              ? 'bg-[var(--os-fg)] text-[var(--os-bg)]'
-                              : 'hover:bg-[var(--os-fg)]/10'
-                          }`}
-                        >
-                          <td className="py-1 px-2 flex items-center gap-1.5">
-                            <AppIconGraphic iconType={iconType} className="w-4 h-4 shrink-0" />
-                            <span className="font-medium">{item.name}</span>
-                          </td>
+                    return (
+                      <tr
+                        key={item.name}
+                        data-file-selected={isSelected}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setSelectedItem(item)
+                        }}
+                        onDoubleClick={(e) => {
+                          e.stopPropagation()
+                          handleOpenLocalItem(item)
+                        }}
+                        onContextMenu={(e) => handleItemContextMenu(e, item)}
+                        className={`border-b border-[var(--os-border)]/30 cursor-default ${
+                          isSelected
+                            ? 'bg-[var(--os-fg)] text-[var(--os-bg)]'
+                            : 'hover:bg-[var(--os-fg)]/10'
+                        }`}
+                      >
+                        <td className="py-1 px-2 flex items-center gap-1.5">
+                          <AppIconGraphic iconType={iconType} className="w-4 h-4 shrink-0" />
+                          <span className="font-medium">{item.name}</span>
+                        </td>
                         <td className="py-1 px-2 uppercase text-[10px]">
                           {isDir ? 'Folder' : ext || category}
                         </td>
@@ -802,7 +1052,6 @@ export default function FileManagerApp() {
           ) : (
             /* Explorer Google Drive */
             !gdrive.isConnected ? (
-              /* Layar Sederhana Belum Terhubung: Hanya Tombol Hubungkan */
               <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-4 max-w-sm mx-auto">
                 <div className="w-16 h-16 border-2 border-[var(--os-border)] rounded-full flex items-center justify-center p-3 os-window-shadow">
                   <AppIconGraphic iconType="cloud" className="w-10 h-10" />
@@ -840,7 +1089,6 @@ export default function FileManagerApp() {
                 This Google Drive folder is empty.
               </div>
             ) : viewMode === 'grid' ? (
-              /* Langsung masuk ke tampilan grid berkas */
               <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
                 {gdrive.files.map((file) => {
                   const isFolder = file.mimeType === 'application/vnd.google-apps.folder'
@@ -862,6 +1110,7 @@ export default function FileManagerApp() {
                   return (
                     <div
                       key={file.id}
+                      data-file-selected={isSelected}
                       onClick={(e) => {
                         e.stopPropagation()
                         setSelectedItem(file)
@@ -870,6 +1119,7 @@ export default function FileManagerApp() {
                         e.stopPropagation()
                         handleOpenGdriveItem(file)
                       }}
+                      onContextMenu={(e) => handleItemContextMenu(e, file)}
                       className={`flex flex-col items-center justify-center p-2 text-center group cursor-default ${
                         isSelected
                           ? 'bg-[var(--os-fg)] text-[var(--os-bg)]'
@@ -890,7 +1140,6 @@ export default function FileManagerApp() {
                 })}
               </div>
             ) : (
-              /* Langsung masuk ke tampilan list berkas */
               <table className="w-full text-left border-collapse text-[11px]">
                 <thead>
                   <tr className="border-b-2 border-[var(--os-border)] opacity-70">
@@ -920,6 +1169,7 @@ export default function FileManagerApp() {
                     return (
                       <tr
                         key={file.id}
+                        data-file-selected={isSelected}
                         onClick={(e) => {
                           e.stopPropagation()
                           setSelectedItem(file)
@@ -928,6 +1178,7 @@ export default function FileManagerApp() {
                           e.stopPropagation()
                           handleOpenGdriveItem(file)
                         }}
+                        onContextMenu={(e) => handleItemContextMenu(e, file)}
                         className={`border-b border-[var(--os-border)]/30 cursor-default ${
                           isSelected
                             ? 'bg-[var(--os-fg)] text-[var(--os-bg)]'
@@ -953,84 +1204,6 @@ export default function FileManagerApp() {
           )}
         </main>
       </div>
-
-      {/* Context Action Bar saat ada item dipilih */}
-      {selectedItem && (
-        <div className="border-t-2 border-[var(--os-border)] bg-[var(--os-bg)] px-3 py-1.5 flex items-center justify-between text-xs shrink-0 flex-wrap gap-2">
-          <div className="flex items-center gap-2 truncate">
-            <span className="font-bold">Selected:</span>
-            <span className="truncate">{selectedItem.name}</span>
-          </div>
-
-          <div className="flex items-center gap-1.5">
-            <Button
-              variant="default"
-              onClick={() => toggleQuickLook(selectedItem)}
-              className="px-2 py-0.5 bg-[var(--os-fg)] text-[var(--os-bg)] font-bold shadow-[1px_1px_0px_var(--os-shadow)]"
-              title="Quick Look preview (Spacebar)"
-            >
-              👁 Quick Look (Space)
-            </Button>
-
-            {storageSource === 'local' ? (
-              <>
-                <Button
-                  variant="default"
-                  onClick={() => handleOpenLocalItem(selectedItem)}
-                  className="px-2 py-0.5"
-                >
-                  Open
-                </Button>
-                <Button
-                  variant="default"
-                  onClick={openRenameDialog}
-                  className="px-2 py-0.5"
-                >
-                  Rename
-                </Button>
-                <Button
-                  variant="default"
-                  onClick={handleDeleteSelected}
-                  className="px-2 py-0.5"
-                >
-                  Delete
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  variant="default"
-                  onClick={() => handleOpenGdriveItem(selectedItem)}
-                  className="px-2 py-0.5"
-                >
-                  {selectedItem.mimeType === 'application/vnd.google-apps.folder'
-                    ? 'Open Folder'
-                    : 'Open / Preview'}
-                </Button>
-
-                {selectedItem.mimeType !== 'application/vnd.google-apps.folder' && (
-                  <Button
-                    variant="primary"
-                    onClick={handleImportGdriveSelected}
-                    className="px-2 py-0.5"
-                    title="Copy Google Drive file to local VFS storage (/home/arif/)"
-                  >
-                    Copy to Local VFS
-                  </Button>
-                )}
-
-                <Button
-                  variant="default"
-                  onClick={handleDeleteSelected}
-                  className="px-2 py-0.5"
-                >
-                  Delete
-                </Button>
-              </>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* Status Bar */}
       <footer className="border-t border-[var(--os-border)] bg-[var(--os-bg)] px-3 py-1 flex items-center justify-between text-[10px] opacity-70 shrink-0">
@@ -1105,6 +1278,15 @@ export default function FileManagerApp() {
           </form>
         </div>
       )}
+
+      {/* Context Menu Klik Kanan */}
+      <ContextMenu
+        isOpen={contextMenu.isOpen}
+        x={contextMenu.x}
+        y={contextMenu.y}
+        items={contextMenuItems}
+        onClose={() => setContextMenu((prev) => ({ ...prev, isOpen: false }))}
+      />
 
       {/* Instant Quick Look Overlay (Spacebar) */}
       <QuickLookModal

@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import AppIconGraphic from './AppIconGraphic.jsx'
 import { getFileCategory, getFileExtension, formatFileSize } from '../../utils/fileTypes.js'
 import { soundService } from '../../services/soundService.js'
@@ -83,7 +84,7 @@ export default function QuickLookModal({
     }
   }
 
-  return (
+  return createPortal(
     <div
       onClick={onClose}
       className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-2xs flex items-center justify-center p-3 sm:p-6 font-mono text-xs select-none text-[var(--os-fg)]"
@@ -272,6 +273,7 @@ export default function QuickLookModal({
           <span>{textContent ? `${textContent.split('\n').length} lines` : ''}</span>
         </footer>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
