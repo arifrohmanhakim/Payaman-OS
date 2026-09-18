@@ -1,4 +1,4 @@
-import { useOS } from '../../hooks/useOS.js'
+import { useTheme, useOSWindowManager, useSystemUI } from '../../hooks/useOS.js'
 import { soundService } from '../../services/soundService.js'
 import { THEMES } from '../../constants/theme.js'
 import { DISPLAY_SCALES } from '../../constants/display.js'
@@ -11,10 +11,9 @@ export default function ControlCenter({ isOpen, onClose }) {
     toggleCrtScanlines,
     displaySettings,
     updateDisplaySettings,
-    activeSpace,
-    setActiveSpace,
-    startScreenSaver,
-  } = useOS()
+  } = useTheme()
+  const { activeSpace, setActiveSpace } = useOSWindowManager()
+  const { startScreenSaver } = useSystemUI()
 
   if (!isOpen) return null
 

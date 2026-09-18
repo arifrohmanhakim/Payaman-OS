@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { useOS } from '../hooks/useOS.js'
+import { useTheme } from '../hooks/useOS.js'
 import AppIconGraphic from './common/AppIconGraphic.jsx'
 
 export default function DesktopIcon({
@@ -13,7 +13,7 @@ export default function DesktopIcon({
   onPositionChange,
   onContextMenu,
 }) {
-  const { displaySettings } = useOS()
+  const { displaySettings } = useTheme()
   const uiScale = displaySettings?.scale || 1.15
   const [isDragging, setIsDragging] = useState(false)
   const dragRef = useRef({

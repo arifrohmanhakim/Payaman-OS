@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { soundService } from '../../services/soundService.js'
-import { useOS } from '../../hooks/useOS.js'
+import { useTheme } from '../../hooks/useOS.js'
 import CaveLogo from '../common/CaveLogo.jsx'
 
 const INSPIRATIONAL_QUOTES = [
@@ -72,7 +72,7 @@ function RetroComputerGraphic({ className = 'w-16 h-16' }) {
 }
 
 export default function WelcomeScreen({ onEnterDesktop, onReboot }) {
-  const { theme, pattern } = useOS()
+  const { theme, pattern } = useTheme()
   const [currentTime, setCurrentTime] = useState('')
   const [currentDate, setCurrentDate] = useState('')
   const [quoteIndex, setQuoteIndex] = useState(() =>

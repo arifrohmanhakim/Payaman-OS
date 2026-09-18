@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useGallery } from './useGallery.js'
-import { useOS } from '../../hooks/useOS.js'
+import { useTheme } from '../../hooks/useOS.js'
 import Button from '../../components/ui/Button.jsx'
 import Input from '../../components/ui/Input.jsx'
 
 export default function GalleryApp() {
-  const { setCustomWallpaper } = useOS()
+  const { setCustomWallpaper } = useTheme()
   const [feedbackMessage, setFeedbackMessage] = useState(null)
 
   const {

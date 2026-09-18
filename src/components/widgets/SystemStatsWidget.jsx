@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import { useOS } from '../../hooks/useOS.js'
+import { useOSWindowManager } from '../../hooks/useOS.js'
 import { fileSystemService } from '../../services/fileSystemService.js'
 
 const SYSTEM_BOOT_TIME = Date.now()
 
 export default function SystemStatsWidget() {
-  const { windows, activeSpace } = useOS()
+  const { windows, activeSpace } = useOSWindowManager()
   const [uptimeSec, setUptimeSec] = useState(0)
   const [cpuPulse, setCpuPulse] = useState(18)
 

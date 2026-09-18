@@ -1,11 +1,11 @@
 import StickyNoteItem from './StickyNoteItem.jsx'
 import { useStickyNotes } from './useStickyNotes.js'
-import { useOS } from '../../hooks/useOS.js'
+import { useTheme } from '../../hooks/useOS.js'
 
 export default function DesktopStickyNotes() {
   const { stickies, createSticky, updateSticky, deleteSticky, bringToFront } =
     useStickyNotes()
-  const { displaySettings } = useOS()
+  const { displaySettings } = useTheme()
   const uiScale = displaySettings?.scale || 1.15
 
   if (!stickies || stickies.length === 0) {

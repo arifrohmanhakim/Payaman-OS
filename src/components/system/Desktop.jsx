@@ -19,7 +19,7 @@ import QuickLookModal from '../common/QuickLookModal.jsx'
 import RetroTooltip from '../common/RetroTooltip.jsx'
 import { soundService } from '../../services/soundService.js'
 import { fileSystemService } from '../../services/fileSystemService.js'
-import { useOS } from '../../hooks/useOS.js'
+import { useTheme, useOSWindowManager, useSystemUI } from '../../hooks/useOS.js'
 import { useDesktopIcons } from '../../hooks/useDesktopIcons.js'
 import { useDesktopWidgets } from '../../hooks/useDesktopWidgets.js'
 import { getDesktopApps, getAppById } from '../../apps/appRegistry.js'
@@ -42,17 +42,20 @@ export default function Desktop() {
   })
 
   const {
-    windows,
-    activeWindowId,
-    activeModal,
     theme,
     customThemeColors,
     pattern,
     customWallpaper,
     displaySettings,
+    crtScanlines,
+  } = useTheme()
+
+  const {
+    windows,
+    activeWindowId,
+    activeModal,
     activeSpace,
     setActiveSpace,
-    crtScanlines,
     openApp,
     closeWindow,
     focusWindow,
@@ -63,6 +66,9 @@ export default function Desktop() {
     updateWindowSize,
     showModal,
     closeModal,
+  } = useOSWindowManager()
+
+  const {
     toggleLaunchpad,
     toggleSpotlight,
     isScreenSaverActive,
@@ -71,7 +77,7 @@ export default function Desktop() {
     dismissScreenSaver,
     resetSession,
     reboot,
-  } = useOS()
+  } = useSystemUI()
 
   const uiScale = displaySettings?.scale || 1.15
   const desktopApps = getDesktopApps()

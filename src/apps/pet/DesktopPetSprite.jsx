@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { PetSpriteGraphics } from './PetSprites.jsx'
 import { useDesktopPet } from './useDesktopPet.js'
-import { useOS } from '../../hooks/useOS.js'
+import { useTheme } from '../../hooks/useOS.js'
 
 export default function DesktopPetSprite() {
   const {
@@ -10,7 +10,7 @@ export default function DesktopPetSprite() {
     patPet,
     setPetAction,
   } = useDesktopPet()
-  const { displaySettings } = useOS()
+  const { displaySettings } = useTheme()
   const uiScale = displaySettings?.scale || 1.15
 
   const [position, setPosition] = useState({

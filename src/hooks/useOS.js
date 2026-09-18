@@ -22,4 +22,6 @@ export {
   useDockContext as useDockSettings,
   useSystemUIContext as useSystemUI,
   useWindowManagerContext as useOSWindowManager,
+  useWindowManagerContext as useWindowManager,
 }
+

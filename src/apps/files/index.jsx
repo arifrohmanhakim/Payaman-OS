@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useFileManager } from './useFileManager.js'
 import { useGoogleDrive } from './useGoogleDrive.js'
-import { useOS } from '../../hooks/useOS.js'
+import { useOSWindowManager } from '../../hooks/useOS.js'
 import { storageService } from '../../services/storageService.js'
 import AppIconGraphic from '../../components/common/AppIconGraphic.jsx'
 import ContextMenu from '../../components/common/ContextMenu.jsx'
@@ -12,7 +12,7 @@ import Input from '../../components/ui/Input.jsx'
 import { getFileCategory, getFileExtension } from '../../utils/fileTypes.js'
 
 export default function FileManagerApp() {
-  const { openApp } = useOS()
+  const { openApp } = useOSWindowManager()
   const fileInputRef = useRef(null)
 
   // Storage lokal VFS

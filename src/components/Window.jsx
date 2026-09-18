@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { useOS } from "../hooks/useOS.js";
+import { useTheme } from "../hooks/useOS.js";
 import { soundService } from "../services/soundService.js";
 
 export default function Window({
@@ -17,7 +17,7 @@ export default function Window({
 }) {
   const { id, title, x, y, width, height, zIndex, isMinimized, isMaximized } =
     windowData;
-  const { displaySettings } = useOS();
+  const { displaySettings } = useTheme();
   const uiScale = displaySettings?.scale || 1.15;
 
   const [isDragging, setIsDragging] = useState(false);

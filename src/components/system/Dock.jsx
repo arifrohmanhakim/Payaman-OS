@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getAppById } from "../../apps/appRegistry.js";
-import { useOS } from "../../hooks/useOS.js";
+import { useOSWindowManager, useDockSettings, useSystemUI } from "../../hooks/useOS.js";
 import { fileSystemService } from "../../services/fileSystemService.js";
 import AppIconGraphic from "../common/AppIconGraphic.jsx";
 
@@ -8,12 +8,11 @@ export default function Dock({ onItemContextMenu, onCanvasContextMenu }) {
   const {
     windows,
     activeWindowId,
-    dockSettings,
     openApp,
     minimizeWindow,
-    isLaunchpadOpen,
-    toggleLaunchpad,
-  } = useOS();
+  } = useOSWindowManager();
+  const { dockSettings } = useDockSettings();
+  const { isLaunchpadOpen, toggleLaunchpad } = useSystemUI();
   const [hoveredAppId, setHoveredAppId] = useState(null);
   const [isHoveringDock, setIsHoveringDock] = useState(false);
   const [isTrashFull, setIsTrashFull] = useState(() => !fileSystemService.isTrashEmpty());

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { appRegistry } from '../../apps/appRegistry.js'
-import { useOS } from '../../hooks/useOS.js'
+import { useSystemUI, useOSWindowManager } from '../../hooks/useOS.js'
 import { soundService } from '../../services/soundService.js'
 import AppIconGraphic from '../common/AppIconGraphic.jsx'
 
@@ -304,7 +304,8 @@ function SpotlightModal({ onClose, openApp }) {
 }
 
 export default function SpotlightSearch() {
-  const { isSpotlightOpen, closeSpotlight, openApp } = useOS()
+  const { isSpotlightOpen, closeSpotlight } = useSystemUI()
+  const { openApp } = useOSWindowManager()
 
   if (!isSpotlightOpen) return null
 

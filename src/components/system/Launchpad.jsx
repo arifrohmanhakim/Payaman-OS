@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { appRegistry } from '../../apps/appRegistry.js'
-import { useOS } from '../../hooks/useOS.js'
+import { useSystemUI, useOSWindowManager } from '../../hooks/useOS.js'
 import { soundService } from '../../services/soundService.js'
 import AppIconGraphic from '../common/AppIconGraphic.jsx'
 
 const ITEMS_PER_PAGE = 18
 
 function LaunchpadOverlay() {
-  const { closeLaunchpad, openApp } = useOS()
+  const { closeLaunchpad } = useSystemUI()
+  const { openApp } = useOSWindowManager()
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(0)
   const searchInputRef = useRef(null)
@@ -283,7 +284,7 @@ function LaunchpadOverlay() {
 }
 
 export default function Launchpad() {
-  const { isLaunchpadOpen } = useOS()
+  const { isLaunchpadOpen } = useSystemUI()
 
   if (!isLaunchpadOpen) return null
 

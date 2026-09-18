@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { useOS } from "../hooks/useOS.js";
+import { useOSWindowManager } from "../hooks/useOS.js";
 import { getAppById } from "../apps/appRegistry.js";
 import { getMenuBarConfig } from "./menuBarConfig.js";
 import { useWeather } from "../apps/weather/useWeather.js";
@@ -11,7 +11,7 @@ import { useDesktopPet } from "../apps/pet/useDesktopPet.js";
 import { PET_SPECIES } from "../apps/pet/petData.js";
 
 export default function MenuBar({ onSelectMenuAction }) {
-  const { windows, activeWindowId, activeSpace, setActiveSpace } = useOS();
+  const { windows, activeWindowId, activeSpace, setActiveSpace } = useOSWindowManager();
   const { weatherData, location, formatTemp } = useWeather();
   const [activeMenuIndex, setActiveMenuIndex] = useState(null);
   const [activeStatusPopup, setActiveStatusPopup] = useState(null);
