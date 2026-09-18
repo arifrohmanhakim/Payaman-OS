@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { useOS } from "../hooks/useOS.js";
+import { soundService } from "../services/soundService.js";
 
 export default function Window({
   windowData,
@@ -11,16 +12,19 @@ export default function Window({
   onSnap,
   onPositionChange,
   onSizeChange,
+  onContextMenu,
   children,
 }) {
   const { id, title, x, y, width, height, zIndex, isMinimized, isMaximized } =
     windowData;
   const { displaySettings } = useOS();
   const uiScale = displaySettings?.scale || 1.15;
+
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [resizeDirection, setResizeDirection] = useState(null);
   const [snapPreview, setSnapPreview] = useState(null); // 'left' | 'right' | 'top' | null
+  const [isMinimizingAnim, setIsMinimizingAnim] = useState(false);
 
   const dragOffsetRef = useRef({ x: 0, y: 0 });
   const snapCandidateRef = useRef(null);
@@ -38,21 +42,25 @@ export default function Window({
       const clientY = event.clientY / uiScale;
 
       if (isDragging && !isMaximized) {
-        const nextX = Math.max(0, clientX - dragOffsetRef.current.x);
-        const nextY = Math.max(24, clientY - dragOffsetRef.current.y);
+        const screenW = window.innerWidth / uiScale;
+        const screenH = window.innerHeight / uiScale;
+        const rawNextX = clientX - dragOffsetRef.current.x;
+        const rawNextY = clientY - dragOffsetRef.current.y;
+
+        const nextX = Math.max(-width + 80, Math.min(screenW - 80, rawNextX));
+        const nextY = Math.max(24, Math.min(screenH - 32, rawNextY));
         onPositionChange(id, nextX, nextY);
 
         // Detect screen edges for snapping
-        const screenW = window.innerWidth / uiScale;
         if (clientX <= 20) {
-          snapCandidateRef.current = 'left';
-          setSnapPreview('left');
+          snapCandidateRef.current = "left";
+          setSnapPreview("left");
         } else if (clientX >= screenW - 20) {
-          snapCandidateRef.current = 'right';
-          setSnapPreview('right');
-        } else if (clientY <= 30) {
-          snapCandidateRef.current = 'top';
-          setSnapPreview('top');
+          snapCandidateRef.current = "right";
+          setSnapPreview("right");
+        } else if (clientY <= 28) {
+          snapCandidateRef.current = "top";
+          setSnapPreview("top");
         } else {
           snapCandidateRef.current = null;
           setSnapPreview(null);
@@ -82,6 +90,7 @@ export default function Window({
       if (isDragging) {
         setIsDragging(false);
         if (snapCandidateRef.current && onSnap) {
+          soundService.playClick();
           onSnap(id, snapCandidateRef.current);
         }
         snapCandidateRef.current = null;
@@ -142,56 +151,104 @@ export default function Window({
 
   const handleToggleMaximize = (event) => {
     event.stopPropagation();
+    soundService.playClick();
     if (onMaximize) {
       onMaximize(id);
     }
   };
 
-  if (isMinimized) return null;
+  const handleMinimizeWithAnim = (event) => {
+    event.stopPropagation();
+    soundService.playClick();
+    setIsMinimizingAnim(true);
+    setTimeout(() => {
+      setIsMinimizingAnim(false);
+      onMinimize(id);
+    }, 150);
+  };
+
+  const handleTileLeft = (e) => {
+    e.stopPropagation();
+    soundService.playClick();
+    onSnap?.(id, "left");
+  };
+
+  const handleTileRight = (e) => {
+    e.stopPropagation();
+    soundService.playClick();
+    onSnap?.(id, "right");
+  };
+
+  if (isMinimized && !isMinimizingAnim) return null;
 
   return (
     <>
       {/* Snap Outline Indicator Overlay */}
       {isDragging && snapPreview && (
         <div
-          className={`fixed pointer-events-none z-40 border-2 border-dashed border-[var(--os-border)] bg-[var(--os-fg)]/10 backdrop-blur-xs transition-all duration-150 ${
-            snapPreview === 'left'
-              ? 'top-6 left-0 w-1/2 bottom-0'
-              : snapPreview === 'right'
-                ? 'top-6 right-0 w-1/2 bottom-0'
-                : 'top-6 left-0 right-0 bottom-0'
+          className={`fixed pointer-events-none z-40 border-2 border-dashed border-[var(--os-border)] bg-[var(--os-fg)]/10 backdrop-blur-xs transition-none ${
+            snapPreview === "left"
+              ? "top-6 left-0 w-1/2 bottom-0"
+              : snapPreview === "right"
+                ? "top-6 right-0 w-1/2 bottom-0"
+                : "top-6 left-0 right-0 bottom-0"
           }`}
-        />
+        >
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="bg-[var(--os-bg)] text-[var(--os-fg)] border-2 border-[var(--os-border)] px-3 py-1 font-mono text-xs font-bold shadow-[2px_2px_0px_var(--os-shadow)]">
+              {snapPreview === "left"
+                ? "Snap: Left Half (Tile)"
+                : snapPreview === "right"
+                  ? "Snap: Right Half (Tile)"
+                  : "Snap: Fullscreen (Maximize)"}
+            </span>
+          </div>
+        </div>
       )}
 
       <div
         ref={windowRef}
         onMouseDown={() => onFocus(id)}
         style={{
-          transform: `translate3d(${x}px, ${y}px, 0)`,
+          transform: isMinimizingAnim
+            ? `translate3d(${x}px, calc(100vh - 60px), 0) scale(0.15)`
+            : `translate3d(${x}px, ${y}px, 0) scale(1)`,
           width: `${width}px`,
           height: height ? `${height}px` : "auto",
           zIndex,
+          opacity: isMinimizingAnim ? 0 : 1,
+        }}
+        onContextMenu={(e) => {
+          // Jangan biarkan klik kanan di dalam window memicu desktop context menu
+          e.stopPropagation();
         }}
         className={`absolute top-0 left-0 bg-[var(--os-bg)] border-2 border-[var(--os-border)] ${
           isMaximized ? "os-window-shadow border-t-0" : "os-window-shadow"
-        } flex flex-col select-none text-[var(--os-fg)] font-mono text-xs ${
-          isDragging ? 'opacity-95' : 'transition-[width,height,transform] duration-150 ease-out'
+        } flex flex-col select-none text-[var(--os-fg)] font-mono text-xs origin-bottom ${
+          isDragging
+            ? "opacity-95 transition-none"
+            : "transition-all duration-150 ease-out"
         }`}
       >
         <header
           onMouseDown={handleTitleBarMouseDown}
           onDoubleClick={handleToggleMaximize}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onContextMenu?.(e, windowData);
+          }}
           className={`h-6 border-b-2 border-[var(--os-border)] relative flex items-center justify-between px-2 ${
             isMaximized ? "cursor-default" : "cursor-move"
           } ${isActive ? "os-titlebar-stripes" : "bg-[var(--os-bg)]"}`}
         >
           {/* Window Control Buttons */}
-          <div className="flex items-center gap-1.5 z-10">
+          <div className="flex items-center gap-1 z-10">
+            {/* Close */}
             <button
               type="button"
               aria-label="Close Window"
-              title="Close"
+              title="Close (⌘W)"
               onClick={(e) => {
                 e.stopPropagation();
                 onClose(id);
@@ -203,16 +260,12 @@ export default function Window({
               </span>
             </button>
 
+            {/* Minimize */}
             <button
               type="button"
               aria-label="Minimize Window"
-              title="Minimize"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onMinimize) {
-                  onMinimize(id);
-                }
-              }}
+              title="Minimize (⌘M)"
+              onClick={handleMinimizeWithAnim}
               className="w-3.5 h-3.5 border border-[var(--os-border)] bg-[var(--os-bg)] flex items-center justify-center hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] active:bg-[var(--os-fg)] group cursor-default"
             >
               <span className="text-[9px] font-bold leading-none hidden group-hover:block select-none">
@@ -220,6 +273,7 @@ export default function Window({
               </span>
             </button>
 
+            {/* Maximize / Restore */}
             <button
               type="button"
               aria-label={
@@ -253,7 +307,27 @@ export default function Window({
             </span>
           </div>
 
-          <div className="w-14" />
+          {/* Tile / Snap Quick Buttons (Right side of Titlebar) */}
+          <div className="flex items-center gap-1 z-10">
+            <button
+              type="button"
+              aria-label="Tile Window Left"
+              title="Tile / Snap Left (⌥←)"
+              onClick={handleTileLeft}
+              className="w-3.5 h-3.5 border border-[var(--os-border)] bg-[var(--os-bg)] flex items-center justify-center hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] active:bg-[var(--os-fg)] cursor-pointer text-[8px] leading-none"
+            >
+              ◧
+            </button>
+            <button
+              type="button"
+              aria-label="Tile Window Right"
+              title="Tile / Snap Right (⌥→)"
+              onClick={handleTileRight}
+              className="w-3.5 h-3.5 border border-[var(--os-border)] bg-[var(--os-bg)] flex items-center justify-center hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] active:bg-[var(--os-fg)] cursor-pointer text-[8px] leading-none"
+            >
+              ◨
+            </button>
+          </div>
         </header>
 
         <section className="flex-1 overflow-auto bg-[var(--os-bg)] p-3 font-mono text-[var(--os-fg)] relative">

@@ -5,6 +5,9 @@ import "@xterm/xterm/css/xterm.css";
 import { useOS } from "../../hooks/useOS.js";
 import { getPrompt, executeShellCommand } from "./terminalShell.js";
 import { storageService } from "../../services/storageService.js";
+import { fileSystemService } from "../../services/fileSystemService.js";
+import { appRegistry } from "../appRegistry.js";
+import { THEMES } from "../../constants/theme.js";
 
 const STORAGE_KEY_TERMINAL_PROFILE = "terminal_active_profile";
 
@@ -171,6 +174,52 @@ function saveProfileId(profileId) {
   storageService.setItem(STORAGE_KEY_TERMINAL_PROFILE, profileId);
 }
 
+const BUILTIN_COMMANDS = [
+  "help",
+  "pwd",
+  "cd",
+  "ls",
+  "dir",
+  "cat",
+  "grep",
+  "find",
+  "touch",
+  "mkdir",
+  "rm",
+  "echo",
+  "df",
+  "top",
+  "htop",
+  "ps",
+  "kill",
+  "launchpad",
+  "paint",
+  "open",
+  "curl",
+  "calc",
+  "theme",
+  "pattern",
+  "dock",
+  "spaces",
+  "scanlines",
+  "clear",
+  "cls",
+  "date",
+  "uptime",
+  "whoami",
+  "portfolio",
+  "projects",
+  "skills",
+  "contact",
+  "hostname",
+  "uname",
+  "beep",
+  "reboot",
+  "restart",
+  "exit",
+  "profile",
+];
+
 export { TERMINAL_PROFILES };
 
 export default function TerminalApp({ onClose }) {
@@ -231,11 +280,75 @@ export default function TerminalApp({ onClose }) {
     const promptText = () => `${getPrompt()} `;
 
     term.writeln("Payaman OS Terminal (Powered by xterm.js)");
-    term.writeln("Type 'help' for a list of available commands.");
+    term.writeln("Type 'help' for a list of available commands. [Tab] for autocompletion.");
     term.writeln("");
     term.write(promptText());
 
     const handleData = async (data) => {
+      if (data === "\t") {
+        if (!lineBuffer.trim()) return;
+
+        const parts = lineBuffer.split(/\s+/);
+        const isFirstWord = !lineBuffer.includes(" ");
+
+        if (isFirstWord) {
+          const prefix = parts[0].toLowerCase();
+          const matches = BUILTIN_COMMANDS.filter((c) => c.startsWith(prefix));
+          if (matches.length === 1) {
+            const completion = matches[0].slice(prefix.length) + " ";
+            lineBuffer += completion;
+            term.write(completion);
+          } else if (matches.length > 1) {
+            term.write("\r\n");
+            term.writeln(matches.join("   "));
+            term.write(promptText() + lineBuffer);
+          }
+        } else {
+          const lastToken = lineBuffer.endsWith(" ") ? "" : parts[parts.length - 1];
+          const command = parts[0].toLowerCase();
+
+          let candidates = [];
+
+          if (command === "open") {
+            candidates = appRegistry.map((a) => a.id.toLowerCase());
+          } else if (command === "profile") {
+            candidates = Object.keys(TERMINAL_PROFILES);
+          } else if (command === "theme") {
+            candidates = THEMES.map((t) => t.id);
+          } else if (command === "spaces" || command === "space") {
+            candidates = ["1", "2", "3", "4"];
+          } else if (command === "scanlines" || command === "crt") {
+            candidates = ["on", "off", "toggle"];
+          } else if (command === "help") {
+            candidates = BUILTIN_COMMANDS;
+          } else {
+            const listRes = fileSystemService.listDirectory();
+            if (listRes.success && listRes.items) {
+              candidates = listRes.items.map((item) =>
+                item.type === "dir" ? `${item.name}/` : item.name
+              );
+            }
+          }
+
+          const matches = candidates.filter((c) =>
+            c.toLowerCase().startsWith(lastToken.toLowerCase())
+          );
+
+          if (matches.length === 1) {
+            const completion =
+              matches[0].slice(lastToken.length) +
+              (matches[0].endsWith("/") ? "" : " ");
+            lineBuffer += completion;
+            term.write(completion);
+          } else if (matches.length > 1) {
+            term.write("\r\n");
+            term.writeln(matches.join("   "));
+            term.write(promptText() + lineBuffer);
+          }
+        }
+        return;
+      }
+
       if (data === "\r") {
         term.write("\r\n");
         const cmdToRun = lineBuffer.trim();

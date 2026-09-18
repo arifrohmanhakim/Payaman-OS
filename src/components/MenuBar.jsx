@@ -6,11 +6,12 @@ import { useWeather } from "../apps/weather/useWeather.js";
 import { soundService } from "../services/soundService.js";
 import AppIconGraphic from "./common/AppIconGraphic.jsx";
 import CaveLogo from "./common/CaveLogo.jsx";
+import ControlCenter from "./system/ControlCenter.jsx";
 import { useDesktopPet } from "../apps/pet/useDesktopPet.js";
 import { PET_SPECIES } from "../apps/pet/petData.js";
 
 export default function MenuBar({ onSelectMenuAction }) {
-  const { windows, activeWindowId } = useOS();
+  const { windows, activeWindowId, activeSpace, setActiveSpace } = useOS();
   const { weatherData, location, formatTemp } = useWeather();
   const [activeMenuIndex, setActiveMenuIndex] = useState(null);
   const [activeStatusPopup, setActiveStatusPopup] = useState(null);
@@ -607,6 +608,39 @@ export default function MenuBar({ onSelectMenuAction }) {
           )}
         </div>
 
+        {/* Virtual Space Indicator */}
+        <div className="flex items-center gap-0.5 border border-[var(--os-border)]/50 px-1 py-0.5 mr-0.5 text-[9px] font-bold">
+          {[1, 2, 3].map((sp) => (
+            <button
+              key={sp}
+              type="button"
+              onClick={() => setActiveSpace(sp)}
+              title={`Switch to Desktop Space ${sp} (Ctrl + ${sp})`}
+              className={`w-3.5 h-3.5 flex items-center justify-center cursor-pointer ${
+                (activeSpace || 1) === sp
+                  ? "bg-[var(--os-fg)] text-[var(--os-bg)] font-bold"
+                  : "hover:bg-[var(--os-fg)]/20"
+              }`}
+            >
+              {sp}
+            </button>
+          ))}
+        </div>
+
+        {/* Control Center Trigger */}
+        <button
+          type="button"
+          onClick={() => toggleStatusPopup("control_center")}
+          title="Retro Control Center"
+          className={`flex items-center justify-center p-1 text-xs cursor-pointer ${
+            activeStatusPopup === "control_center"
+              ? "bg-[var(--os-fg)] text-[var(--os-bg)]"
+              : "text-[var(--os-fg)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)]"
+          }`}
+        >
+          <AppIconGraphic iconType="preferences" className="w-3.5 h-3.5" />
+        </button>
+
         {/* Spotlight Search Trigger */}
         <button
           type="button"
@@ -628,6 +662,11 @@ export default function MenuBar({ onSelectMenuAction }) {
           <span>{currentTime}</span>
         </button>
       </div>
+
+      <ControlCenter
+        isOpen={activeStatusPopup === "control_center"}
+        onClose={() => setActiveStatusPopup(null)}
+      />
     </nav>
   );
 }

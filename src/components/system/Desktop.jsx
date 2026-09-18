@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import MenuBar from '../MenuBar.jsx'
 import DesktopIcon from '../DesktopIcon.jsx'
 import Window from '../Window.jsx'
@@ -7,22 +7,30 @@ import Dock from './Dock.jsx'
 import Launchpad from './Launchpad.jsx'
 import SpotlightSearch from './SpotlightSearch.jsx'
 import ScreenSaver from './ScreenSaver.jsx'
+import AppSwitcher from './AppSwitcher.jsx'
 import ErrorBoundary from '../common/ErrorBoundary.jsx'
 import ContextMenu from '../common/ContextMenu.jsx'
 import DesktopPetSprite from '../../apps/pet/DesktopPetSprite.jsx'
 import DesktopStickyNotes from '../../apps/stickynotes/DesktopStickyNotes.jsx'
 import { soundService } from '../../services/soundService.js'
+import { fileSystemService } from '../../services/fileSystemService.js'
 import { useOS } from '../../hooks/useOS.js'
 import { useDesktopIcons } from '../../hooks/useDesktopIcons.js'
 import { getDesktopApps, getAppById } from '../../apps/appRegistry.js'
 
 export default function Desktop() {
   const [selectedIconId, setSelectedIconId] = useState(null)
+  const [isDragOverFile, setIsDragOverFile] = useState(false)
   const [contextMenu, setContextMenu] = useState({
     isOpen: false,
     x: 0,
     y: 0,
     items: [],
+  })
+
+  const [switcher, setSwitcher] = useState({
+    isOpen: false,
+    selectedIndex: 0,
   })
 
   const {
@@ -34,6 +42,9 @@ export default function Desktop() {
     pattern,
     customWallpaper,
     displaySettings,
+    activeSpace,
+    setActiveSpace,
+    crtScanlines,
     openApp,
     closeWindow,
     focusWindow,
@@ -63,6 +74,126 @@ export default function Desktop() {
     sortIconsByName,
     resetPositions,
   } = useDesktopIcons(uiScale)
+
+  const windowsRef = useRef(windows)
+  const switcherRef = useRef(switcher)
+  const activeWindowIdRef = useRef(activeWindowId)
+  const activeModalRef = useRef(activeModal)
+  const contextMenuRef = useRef(contextMenu)
+
+  useEffect(() => {
+    windowsRef.current = windows
+  }, [windows])
+
+  useEffect(() => {
+    switcherRef.current = switcher
+  }, [switcher])
+
+  useEffect(() => {
+    activeWindowIdRef.current = activeWindowId
+  }, [activeWindowId])
+
+  useEffect(() => {
+    activeModalRef.current = activeModal
+  }, [activeModal])
+
+  useEffect(() => {
+    contextMenuRef.current = contextMenu
+  }, [contextMenu])
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // 1. Esc Key (Close modal, context menu, switcher, etc.)
+      if (e.key === 'Escape') {
+        if (switcherRef.current.isOpen) {
+          setSwitcher({ isOpen: false, selectedIndex: 0 })
+          return
+        }
+        if (contextMenuRef.current.isOpen) {
+          setContextMenu((prev) => (prev.isOpen ? { ...prev, isOpen: false } : prev))
+          return
+        }
+        if (activeModalRef.current) {
+          closeModal()
+          return
+        }
+      }
+
+      // 2. Alt + Tab / Cmd + Tab (App Switcher)
+      if ((e.altKey || e.metaKey) && e.key === 'Tab') {
+        e.preventDefault()
+        const winList = windowsRef.current
+        if (winList.length === 0) return
+
+        soundService.playClick()
+        setSwitcher((prev) => {
+          if (!prev.isOpen) {
+            const currentIdx = winList.findIndex((w) => w.id === activeWindowIdRef.current)
+            const initialIdx = (currentIdx + (e.shiftKey ? -1 : 1) + winList.length) % winList.length
+            return {
+              isOpen: true,
+              selectedIndex: initialIdx,
+            }
+          }
+          const nextIdx = (prev.selectedIndex + (e.shiftKey ? -1 : 1) + winList.length) % winList.length
+          return {
+            ...prev,
+            selectedIndex: nextIdx,
+          }
+        })
+        return
+      }
+
+      // 3. Ctrl + 1 / 2 / 3 (Switch Virtual Spaces)
+      if (e.ctrlKey && ['1', '2', '3'].includes(e.key)) {
+        e.preventDefault()
+        setActiveSpace(parseInt(e.key, 10))
+        return
+      }
+
+      // 4. Alt + Arrow Keys (Window Snapping / Tile)
+      if (e.altKey && activeWindowIdRef.current) {
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault()
+          soundService.playClick()
+          snapWindow(activeWindowIdRef.current, 'left')
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault()
+          soundService.playClick()
+          snapWindow(activeWindowIdRef.current, 'right')
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault()
+          soundService.playClick()
+          snapWindow(activeWindowIdRef.current, 'top')
+        }
+      }
+    }
+
+    const handleKeyUp = (e) => {
+      if ((e.key === 'Alt' || e.key === 'Meta') && switcherRef.current.isOpen) {
+        const winList = windowsRef.current
+        const targetIndex = switcherRef.current.selectedIndex
+        const targetWin = winList[targetIndex]
+        setSwitcher({ isOpen: false, selectedIndex: 0 })
+
+        if (targetWin) {
+          soundService.playClick()
+          if (targetWin.isMinimized) {
+            openApp(targetWin.appId)
+          }
+          focusWindow(targetWin.id)
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keyup', handleKeyUp)
+    }
+  }, [snapWindow, focusWindow, openApp, closeModal])
 
   const handleMenuAction = (action, activeAppId) => {
     switch (action) {
@@ -373,6 +504,199 @@ export default function Desktop() {
     [openApp, cleanUpIcons, uiScale]
   )
 
+  const handleWindowContextMenu = useCallback(
+    (e, windowData) => {
+      soundService.playClick()
+      focusWindow(windowData.id)
+
+      setContextMenu({
+        isOpen: true,
+        x: Math.round(e.clientX / uiScale),
+        y: Math.round(e.clientY / uiScale),
+        items: [
+          {
+            header: windowData.title,
+          },
+          {
+            label: 'Minimize',
+            shortcut: '⌘M',
+            onSelect: () => minimizeWindow(windowData.id),
+          },
+          {
+            label: windowData.isMaximized ? 'Restore Window' : 'Maximize',
+            shortcut: '⌘+',
+            onSelect: () => toggleMaximizeWindow(windowData.id),
+          },
+          { divider: true },
+          {
+            label: 'Tile Left (Split Screen)',
+            shortcut: '⌥←',
+            onSelect: () => snapWindow(windowData.id, 'left'),
+          },
+          {
+            label: 'Tile Right (Split Screen)',
+            shortcut: '⌥→',
+            onSelect: () => snapWindow(windowData.id, 'right'),
+          },
+          { divider: true },
+          {
+            label: 'Close Window',
+            shortcut: '⌘W',
+            onSelect: () => closeWindow(windowData.id),
+          },
+        ],
+      })
+    },
+    [focusWindow, minimizeWindow, toggleMaximizeWindow, snapWindow, closeWindow, uiScale]
+  )
+
+  const handleDockItemContextMenu = useCallback(
+    (e, appId) => {
+      soundService.playClick()
+      const appDef = getAppById(appId)
+      const appTitle = appDef?.title || appId
+      const existingWindow = windows.find((w) => w.appId === appId)
+      const isOpen = Boolean(existingWindow)
+      const isMinimized = existingWindow?.isMinimized
+
+      setContextMenu({
+        isOpen: true,
+        x: Math.round(e.clientX / uiScale),
+        y: Math.round(e.clientY / uiScale),
+        items: [
+          {
+            header: appTitle,
+          },
+          {
+            label: isOpen
+              ? isMinimized
+                ? 'Restore Window'
+                : 'Bring to Front'
+              : `Open ${appTitle}`,
+            shortcut: '↵',
+            onSelect: () => {
+              openApp(appId)
+            },
+          },
+          ...(isOpen
+            ? [
+                {
+                  label: 'Close Window',
+                  shortcut: '⌘W',
+                  onSelect: () => {
+                    if (existingWindow) closeWindow(existingWindow.id)
+                  },
+                },
+              ]
+            : []),
+          { divider: true },
+          {
+            label: 'Get Info...',
+            shortcut: '⌘I',
+            onSelect: () =>
+              openApp('about', {
+                targetAppId: appId,
+                title: `About ${appTitle}`,
+              }),
+          },
+          {
+            label: 'Dock Preferences...',
+            shortcut: '⌘,',
+            onSelect: () => openApp('preferences', { initialTab: 'dock' }),
+          },
+        ],
+      })
+    },
+    [windows, openApp, closeWindow, uiScale]
+  )
+
+  const handleDockCanvasContextMenu = useCallback(
+    (e) => {
+      soundService.playClick()
+      setContextMenu({
+        isOpen: true,
+        x: Math.round(e.clientX / uiScale),
+        y: Math.round(e.clientY / uiScale),
+        items: [
+          {
+            header: 'Dock Options',
+          },
+          {
+            label: 'Dock Preferences...',
+            shortcut: '⌘,',
+            onSelect: () => openApp('preferences', { initialTab: 'dock' }),
+          },
+          { divider: true },
+          {
+            label: 'Clean Up Icons',
+            onSelect: () => {
+              cleanUpIcons()
+              soundService.playClick()
+            },
+          },
+        ],
+      })
+    },
+    [openApp, cleanUpIcons, uiScale]
+  )
+
+  const handleDropFiles = useCallback(
+    (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      setIsDragOverFile(false)
+
+      const files = Array.from(e.dataTransfer.files || [])
+      if (files.length === 0) return
+
+      soundService.playClick()
+
+      files.forEach((file) => {
+        const ext = file.name.split('.').pop()?.toLowerCase() || ''
+
+        // 1. Spreadsheet (.xlsx, .xls, .csv)
+        if (['xlsx', 'xls', 'csv'].includes(ext)) {
+          fileSystemService.writeFile(`/home/arif/dokumen/${file.name}`, `[Imported Spreadsheet: ${file.name}]`)
+          openApp('sheets', { importedFile: file, fileName: file.name })
+          return
+        }
+
+        // 2. Images (.png, .jpg, .jpeg, .gif, .svg, .webp)
+        if (['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp'].includes(ext)) {
+          const reader = new FileReader()
+          reader.onload = (loadEvt) => {
+            const dataUrl = loadEvt.target?.result
+            if (dataUrl) {
+              fileSystemService.writeFile(`/home/arif/dokumen/${file.name}`, dataUrl)
+              openApp('gallery', { previewUrl: dataUrl, title: file.name })
+            }
+          }
+          reader.readAsDataURL(file)
+          return
+        }
+
+        // 3. Text / Markdown / Code / Document files
+        const reader = new FileReader()
+        reader.onload = (loadEvt) => {
+          const text = loadEvt.target?.result
+          if (typeof text === 'string') {
+            fileSystemService.writeFile(`/home/arif/dokumen/${file.name}`, text)
+            openApp('write', { initialContent: text, fileName: file.name })
+          }
+        }
+        reader.readAsText(file)
+      })
+
+      showModal({
+        type: 'file_imported',
+        title: 'File Imported',
+        message: `Successfully imported ${files.length} file(s) into Payaman OS (/home/arif/dokumen/).`,
+        onConfirm: () => closeModal(),
+      })
+    },
+    [openApp, showModal, closeModal]
+  )
+
   const renderWindowContent = (appId, windowId, windowData) => {
     const appDef = getAppById(appId)
     if (!appDef || !appDef.component) {
@@ -390,10 +714,24 @@ export default function Desktop() {
   }
 
   const patternClass = `pattern-${pattern || 'halftone'}`
+  const filteredWindows = windows.filter(
+    (win) => (win.space || 1) === (activeSpace || 1)
+  )
 
   return (
     <div
       data-theme={theme || 'classic'}
+      onDragOver={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        setIsDragOverFile(true)
+      }}
+      onDragLeave={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+          setIsDragOverFile(false)
+        }
+      }}
+      onDrop={handleDropFiles}
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           setSelectedIconId(null)
@@ -401,7 +739,6 @@ export default function Desktop() {
           closeContextMenu()
         }
       }}
-      onContextMenu={handleDesktopContextMenu}
       style={{
         zoom: uiScale !== 1.0 ? uiScale : undefined,
         width: uiScale !== 1.0 ? `calc(100vw / ${uiScale})` : '100vw',
@@ -419,8 +756,23 @@ export default function Desktop() {
       }}
       className={`fixed inset-0 overflow-hidden font-mono text-[var(--os-fg)] select-none ${
         customWallpaper ? 'bg-neutral-900' : patternClass
-      }`}
+      } ${crtScanlines ? 'crt-scanlines' : ''}`}
     >
+      {/* Real File Drag & Drop Overlay Zone */}
+      {isDragOverFile && (
+        <div className="fixed inset-0 z-[99999] bg-black/60 backdrop-blur-xs flex items-center justify-center pointer-events-none p-6">
+          <div className="border-4 border-dashed border-[var(--os-fg)] bg-[var(--os-bg)] text-[var(--os-fg)] p-8 text-center os-dialog-shadow space-y-2">
+            <div className="text-3xl font-bold">📥</div>
+            <div className="text-sm font-bold uppercase tracking-wider">
+              Drop Files to Payaman OS
+            </div>
+            <div className="text-xs opacity-75">
+              Supports Excel (.xlsx, .csv), Images (.png, .jpg), and Text (.txt, .md)
+            </div>
+          </div>
+        </div>
+      )}
+
       {customWallpaper && (
         <div
           className="absolute inset-0 bg-cover bg-center pointer-events-none transition-all duration-300"
@@ -464,7 +816,7 @@ export default function Desktop() {
         </div>
       </main>
 
-      {windows.map((win) => (
+      {filteredWindows.map((win) => (
         <Window
           key={win.id}
           windowData={win}
@@ -479,6 +831,7 @@ export default function Desktop() {
           onSnap={snapWindow}
           onPositionChange={updateWindowPosition}
           onSizeChange={updateWindowSize}
+          onContextMenu={handleWindowContextMenu}
         >
           {renderWindowContent(win.appId, win.id, win)}
         </Window>
@@ -490,7 +843,10 @@ export default function Desktop() {
       {/* Floating Desktop Sticky Notes */}
       <DesktopStickyNotes />
 
-      <Dock />
+      <Dock
+        onItemContextMenu={handleDockItemContextMenu}
+        onCanvasContextMenu={handleDockCanvasContextMenu}
+      />
 
       <Launchpad />
 
@@ -516,6 +872,12 @@ export default function Desktop() {
         isActive={isScreenSaverActive}
         onDismiss={dismissScreenSaver}
         mode={screenSaverMode}
+      />
+
+      <AppSwitcher
+        isOpen={switcher.isOpen}
+        windows={windows}
+        selectedIndex={switcher.selectedIndex}
       />
     </div>
   )

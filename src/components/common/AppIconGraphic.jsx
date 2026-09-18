@@ -1,609 +1,667 @@
 import CaveLogo from './CaveLogo.jsx'
 
 export default function AppIconGraphic({ iconType, className = 'w-10 h-10' }) {
+  const pixelSvgProps = {
+    className: `${className} fill-current text-current select-none shrink-0`,
+    viewBox: '0 0 16 16',
+    shapeRendering: 'crispEdges',
+    'aria-hidden': 'true',
+  }
+
   switch (iconType) {
     case 'cave':
     case 'system':
     case 'payaman':
     case 'apple':
       return <CaveLogo className={className} />
+
     case 'wifi':
       return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.75]`}
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <path d="M5 12.55a11 11 0 0 1 14.08 0" strokeLinecap="round" />
-          <path d="M1.42 9a16 16 0 0 1 21.16 0" strokeLinecap="round" />
-          <path d="M8.53 16.11a6 6 0 0 1 6.95 0" strokeLinecap="round" />
-          <circle cx="12" cy="19.5" r="1.25" fill="currentColor" />
+        <svg {...pixelSvgProps}>
+          {/* Top arc */}
+          <rect x="2" y="3" width="12" height="1" />
+          <rect x="1" y="4" width="2" height="1" />
+          <rect x="13" y="4" width="2" height="1" />
+          {/* Middle arc */}
+          <rect x="4" y="6" width="8" height="1" />
+          <rect x="3" y="7" width="2" height="1" />
+          <rect x="11" y="7" width="2" height="1" />
+          {/* Inner arc */}
+          <rect x="6" y="9" width="4" height="1" />
+          <rect x="5" y="10" width="2" height="1" />
+          <rect x="9" y="10" width="2" height="1" />
+          {/* Base dot */}
+          <rect x="7" y="12" width="2" height="2" />
         </svg>
       )
+
     case 'bluetooth':
       return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.75]`}
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <polyline
-            points="6.5 6.5 17.5 17.5 12 23 12 1 17.5 6.5 6.5 17.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+        <svg {...pixelSvgProps}>
+          <rect x="7" y="1" width="2" height="14" />
+          {/* Top arrow */}
+          <rect x="9" y="2" width="2" height="2" />
+          <rect x="11" y="4" width="2" height="2" />
+          <rect x="9" y="6" width="2" height="2" />
+          <rect x="5" y="4" width="2" height="2" />
+          <rect x="3" y="6" width="2" height="2" />
+          {/* Bottom arrow */}
+          <rect x="9" y="8" width="2" height="2" />
+          <rect x="11" y="10" width="2" height="2" />
+          <rect x="9" y="12" width="2" height="2" />
+          <rect x="5" y="10" width="2" height="2" />
+          <rect x="3" y="8" width="2" height="2" />
         </svg>
       )
+
     case 'sound':
     case 'volume':
     case 'speaker':
       return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.75]`}
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none" />
-          <path d="M15.54 8.46a5 5 0 0 1 0 7.07" strokeLinecap="round" />
-          <path d="M19.07 4.93a10 10 0 0 1 0 14.14" strokeLinecap="round" />
+        <svg {...pixelSvgProps}>
+          {/* Speaker body */}
+          <rect x="2" y="6" width="3" height="4" />
+          <rect x="5" y="5" width="2" height="6" />
+          <rect x="7" y="4" width="2" height="8" />
+          <rect x="9" y="3" width="1" height="10" />
+          {/* Sound waves */}
+          <rect x="11" y="5" width="1" height="6" />
+          <rect x="12" y="4" width="1" height="2" />
+          <rect x="12" y="10" width="1" height="2" />
+          <rect x="14" y="3" width="1" height="10" />
+          <rect x="13" y="2" width="1" height="2" />
+          <rect x="13" y="12" width="1" height="2" />
         </svg>
       )
+
     case 'sound-mute':
     case 'volume-mute':
       return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.75]`}
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none" />
-          <line x1="22" y1="9" x2="16" y2="15" strokeLinecap="round" />
-          <line x1="16" y1="9" x2="22" y2="15" strokeLinecap="round" />
+        <svg {...pixelSvgProps}>
+          {/* Speaker body */}
+          <rect x="1" y="6" width="3" height="4" />
+          <rect x="4" y="5" width="2" height="6" />
+          <rect x="6" y="4" width="2" height="8" />
+          <rect x="8" y="3" width="1" height="10" />
+          {/* Mute X */}
+          <rect x="11" y="6" width="1" height="1" />
+          <rect x="15" y="6" width="1" height="1" />
+          <rect x="12" y="7" width="1" height="1" />
+          <rect x="14" y="7" width="1" height="1" />
+          <rect x="13" y="8" width="1" height="1" />
+          <rect x="12" y="9" width="1" height="1" />
+          <rect x="14" y="9" width="1" height="1" />
+          <rect x="11" y="10" width="1" height="1" />
+          <rect x="15" y="10" width="1" height="1" />
         </svg>
       )
-    case 'pet':
-    case 'paw':
-    case 'cat':
-    case 'dog':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <ellipse cx="12" cy="15" rx="4.5" ry="3.5" fill="currentColor" />
-          <ellipse cx="6.5" cy="9.5" rx="1.8" ry="2.5" fill="currentColor" transform="rotate(-15 6.5 9.5)" />
-          <ellipse cx="10.2" cy="7" rx="1.8" ry="2.5" fill="currentColor" transform="rotate(-5 10.2 7)" />
-          <ellipse cx="13.8" cy="7" rx="1.8" ry="2.5" fill="currentColor" transform="rotate(5 13.8 7)" />
-          <ellipse cx="17.5" cy="9.5" rx="1.8" ry="2.5" fill="currentColor" transform="rotate(15 17.5 9.5)" />
-        </svg>
-      )
+
     case 'portfolio':
     case 'profile':
     case 'developer':
     case 'user':
       return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <rect x="4" y="4" width="24" height="24" rx="2" />
-          <circle cx="16" cy="12" r="4" />
-          <path d="M8 24 C8 19 12 18 16 18 C20 18 24 19 24 24" />
-          <line x1="8" y1="8" x2="11" y2="8" strokeWidth="2" />
+        <svg {...pixelSvgProps}>
+          {/* Badge Frame */}
+          <rect x="1" y="1" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1" />
+          {/* Clip on top */}
+          <rect x="6" y="1" width="4" height="2" />
+          {/* User Head */}
+          <rect x="4" y="5" width="4" height="4" />
+          {/* User Torso */}
+          <rect x="3" y="10" width="6" height="3" />
+          {/* Text lines on right */}
+          <rect x="10" y="5" width="4" height="1" />
+          <rect x="10" y="7" width="4" height="1" />
+          <rect x="10" y="9" width="3" height="1" />
+          <rect x="10" y="11" width="4" height="1" />
         </svg>
       )
+
     case 'itunes':
     case 'music':
     case 'song':
       return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <circle cx="16" cy="16" r="13" strokeWidth="1.5" />
-          <circle cx="16" cy="16" r="4" strokeWidth="1.25" />
-          <path d="M12 21 V10 L22 7 V18" strokeWidth="1.5" />
-          <line x1="12" y1="13" x2="22" y2="10" strokeWidth="1.5" />
-          <circle cx="10" cy="21" r="2.5" fill="currentColor" />
-          <circle cx="20" cy="18" r="2.5" fill="currentColor" />
+        <svg {...pixelSvgProps}>
+          {/* Top Beam */}
+          <rect x="4" y="2" width="9" height="2" />
+          <rect x="4" y="3" width="9" height="2" />
+          {/* Left Stem */}
+          <rect x="4" y="4" width="2" height="7" />
+          {/* Right Stem */}
+          <rect x="11" y="4" width="2" height="6" />
+          {/* Left Note Head */}
+          <rect x="2" y="9" width="4" height="3" />
+          {/* Right Note Head */}
+          <rect x="9" y="8" width="4" height="3" />
         </svg>
       )
+
     case 'folder':
       return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M2 7 H12 L15 10 H30 V26 H2 Z" />
-          <path d="M2 13 H30" />
+        <svg {...pixelSvgProps}>
+          {/* Folder Tab */}
+          <rect x="1" y="2" width="6" height="3" />
+          {/* Main Body Outline */}
+          <rect x="1" y="4" width="14" height="10" />
+          {/* Folder Cutout Inner Highlight */}
+          <rect x="2" y="6" width="12" height="7" fill="var(--os-bg)" />
+          {/* Horizon Line */}
+          <rect x="2" y="7" width="12" height="1" />
         </svg>
       )
+
     case 'document':
+    case 'write':
+    case 'note':
       return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M6 3 H20 L26 9 V29 H6 Z" />
-          <path d="M20 3 V9 H26" />
-          <line x1="10" y1="14" x2="22" y2="14" />
-          <line x1="10" y1="18" x2="22" y2="18" />
-          <line x1="10" y1="22" x2="18" y2="22" />
+        <svg {...pixelSvgProps}>
+          {/* Document Paper */}
+          <rect x="2" y="1" width="12" height="14" fill="none" stroke="currentColor" strokeWidth="1" />
+          {/* Dog-ear fold */}
+          <rect x="9" y="1" width="5" height="5" />
+          <rect x="9" y="1" width="4" height="4" fill="var(--os-bg)" />
+          <rect x="9" y="5" width="5" height="1" />
+          <rect x="9" y="1" width="1" height="5" />
+          {/* Pixel text lines */}
+          <rect x="4" y="7" width="8" height="1" />
+          <rect x="4" y="9" width="8" height="1" />
+          <rect x="4" y="11" width="6" height="1" />
         </svg>
       )
+
     case 'calculator':
       return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <rect x="5" y="3" width="22" height="26" rx="2" />
-          <rect x="8" y="6" width="16" height="5" />
-          <circle cx="10" cy="16" r="1.5" />
-          <circle cx="16" cy="16" r="1.5" />
-          <circle cx="22" cy="16" r="1.5" />
-          <circle cx="10" cy="21" r="1.5" />
-          <circle cx="16" cy="21" r="1.5" />
-          <circle cx="22" cy="21" r="1.5" />
-          <circle cx="10" cy="25" r="1.5" />
-          <circle cx="16" cy="25" r="1.5" />
-          <circle cx="22" cy="25" r="1.5" />
+        <svg {...pixelSvgProps}>
+          {/* Body */}
+          <rect x="2" y="1" width="12" height="14" fill="none" stroke="currentColor" strokeWidth="1" />
+          {/* LCD Screen */}
+          <rect x="4" y="3" width="8" height="3" />
+          <rect x="5" y="4" width="6" height="1" fill="var(--os-bg)" />
+          {/* Buttons 3x3 */}
+          <rect x="4" y="8" width="2" height="1" />
+          <rect x="7" y="8" width="2" height="1" />
+          <rect x="10" y="8" width="2" height="1" />
+          <rect x="4" y="10" width="2" height="1" />
+          <rect x="7" y="10" width="2" height="1" />
+          <rect x="10" y="10" width="2" height="1" />
+          <rect x="4" y="12" width="2" height="1" />
+          <rect x="7" y="12" width="2" height="1" />
+          <rect x="10" y="12" width="2" height="1" />
         </svg>
       )
-    case 'calendar':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <rect x="4" y="5" width="24" height="23" rx="2" />
-          <line x1="4" y1="11" x2="28" y2="11" />
-          <line x1="9" y1="2" x2="9" y2="6" />
-          <line x1="23" y1="2" x2="23" y2="6" />
-          <circle cx="9" cy="16" r="1.2" fill="currentColor" />
-          <circle cx="16" cy="16" r="1.2" fill="currentColor" />
-          <circle cx="23" cy="16" r="1.2" fill="currentColor" />
-          <circle cx="9" cy="22" r="1.2" fill="currentColor" />
-          <circle cx="16" cy="22" r="1.2" fill="currentColor" />
-          <circle cx="23" cy="22" r="1.2" fill="currentColor" />
-        </svg>
-      )
-    case 'trash':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M8 8 L10 27 H22 L24 8 Z" />
-          <line x1="6" y1="8" x2="26" y2="8" />
-          <path d="M12 8 V5 H20 V8" />
-          <line x1="13" y1="12" x2="13" y2="23" />
-          <line x1="16" y1="12" x2="16" y2="23" />
-          <line x1="19" y1="12" x2="19" y2="23" />
-        </svg>
-      )
-    case 'terminal':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <rect x="3" y="4" width="26" height="24" rx="2" />
-          <path d="M7 11 L12 16 L7 21" />
-          <line x1="14" y1="21" x2="22" y2="21" />
-        </svg>
-      )
-    case 'camera':
-    case 'photobot':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M4 9 H9 L11 6 H21 L23 9 H28 V26 H4 Z" />
-          <circle cx="16" cy="17" r="5" />
-          <circle cx="24" cy="12" r="1" />
-        </svg>
-      )
-    case 'gallery':
-    case 'image':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <rect x="3" y="5" width="26" height="22" rx="2" />
-          <circle cx="10" cy="11" r="2" />
-          <path d="M4 22 L11 15 L19 23" />
-          <path d="M16 20 L21 15 L28 22" />
-        </svg>
-      )
-    case 'launchpad':
-    case 'apps':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <rect x="5" y="5" width="5" height="5" rx="1" fill="currentColor" />
-          <rect x="13.5" y="5" width="5" height="5" rx="1" fill="currentColor" />
-          <rect x="22" y="5" width="5" height="5" rx="1" fill="currentColor" />
-          <rect x="5" y="13.5" width="5" height="5" rx="1" fill="currentColor" />
-          <rect x="13.5" y="13.5" width="5" height="5" rx="1" fill="currentColor" />
-          <rect x="22" y="13.5" width="5" height="5" rx="1" fill="currentColor" />
-          <rect x="5" y="22" width="5" height="5" rx="1" fill="currentColor" />
-          <rect x="13.5" y="22" width="5" height="5" rx="1" fill="currentColor" />
-          <rect x="22" y="22" width="5" height="5" rx="1" fill="currentColor" />
-        </svg>
-      )
-    case 'search':
-    case 'spotlight':
-    case 'find':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.75]`}
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <circle cx="10.5" cy="10.5" r="6.5" />
-          <line x1="15.5" y1="15.5" x2="20.5" y2="20.5" strokeLinecap="round" />
-        </svg>
-      )
-    case 'bomb':
-    case 'minesweeper':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <circle cx="14" cy="18" r="9" />
-          <path d="M20 12 L24 8" strokeWidth="2" strokeLinecap="round" />
-          <path d="M24 8 Q27 6 29 7" strokeWidth="1.5" strokeLinecap="round" />
-          <circle cx="29" cy="7" r="1" fill="currentColor" />
-          <circle cx="11" cy="15" r="1.5" fill="currentColor" />
-        </svg>
-      )
-    case 'game':
-    case 'snake':
-    case 'joystick':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <rect x="4" y="8" width="24" height="16" rx="4" />
-          <line x1="10" y1="13" x2="10" y2="19" strokeWidth="2" strokeLinecap="round" />
-          <line x1="7" y1="16" x2="13" y2="16" strokeWidth="2" strokeLinecap="round" />
-          <circle cx="21" cy="14" r="1.5" fill="currentColor" />
-          <circle cx="24" cy="18" r="1.5" fill="currentColor" />
-        </svg>
-      )
-    case 'stickynote':
-    case 'stickies':
-    case 'sticky':
-    case 'memo':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M5 4 H27 V20 L20 27 H5 Z" />
-          <path d="M20 20 H27 L20 27 Z" fill="currentColor" fillOpacity="0.2" />
-          <circle cx="16" cy="7" r="1.25" fill="currentColor" />
-          <line x1="9" y1="12" x2="23" y2="12" />
-          <line x1="9" y1="16" x2="19" y2="16" />
-          <line x1="9" y1="20" x2="16" y2="20" />
-        </svg>
-      )
-    case 'paint':
-    case 'macpaint':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M16 4 C9 4 4 9 4 16 C4 23 9 28 16 28 C18 28 19 26.5 19 25 C19 24.2 18.7 23.5 18.7 22.7 C18.7 21.2 20 20 21.5 20 H23 C26.8 20 30 16.8 30 13 C30 8 23.7 4 16 4 Z" />
-          <circle cx="9.5" cy="11.5" r="1.5" fill="currentColor" />
-          <circle cx="14.5" cy="9.5" r="1.5" fill="currentColor" />
-          <circle cx="20.5" cy="11.5" r="1.5" fill="currentColor" />
-          <circle cx="24.5" cy="15.5" r="1.5" fill="currentColor" />
-        </svg>
-      )
-    case 'browser':
-    case 'globe':
-    case 'web':
-    case 'internet':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <circle cx="16" cy="16" r="12" />
-          <line x1="4" y1="16" x2="28" y2="16" />
-          <ellipse cx="16" cy="16" rx="6" ry="12" />
-          <path d="M7 10 C10 12, 22 12, 25 10" />
-          <path d="M7 22 C10 20, 22 20, 25 22" />
-        </svg>
-      )
-    case 'weather':
-    case 'sun':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <circle cx="16" cy="16" r="6" />
-          <line x1="16" y1="3" x2="16" y2="6" />
-          <line x1="16" y1="26" x2="16" y2="29" />
-          <line x1="3" y1="16" x2="6" y2="16" />
-          <line x1="26" y1="16" x2="29" y2="16" />
-          <line x1="6.8" y1="6.8" x2="8.9" y2="8.9" />
-          <line x1="23.1" y1="23.1" x2="25.2" y2="25.2" />
-          <line x1="6.8" y1="25.2" x2="8.9" y2="23.1" />
-          <line x1="23.1" y1="8.9" x2="25.2" y2="6.8" />
-        </svg>
-      )
-    case 'moon':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M21 5 C15.5 6 11 10.5 11 16.5 C11 22.5 15.5 27 21 28 C12 28 5 21 5 12 C5 9 6 6.5 7.5 4.5 C7 5.5 7 6.5 7 7.5 C7 14 12 19 18.5 19 C19.5 19 20.5 18.8 21.5 18.5 C20.5 20.5 18.5 22 16 22" />
-          <path d="M14 6 C10 8 8 12 8 16 C8 22 12.5 26.5 18.5 26.5 C21.5 26.5 24 25.5 26 23.5 C20 23.5 15 18.5 15 12.5 C15 9.5 16 7 18 5 C16.5 5 15.2 5.3 14 6 Z" />
-        </svg>
-      )
-    case 'cloud':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M9 24 H23 C26.3 24 29 21.3 29 18 C29 14.8 26.5 12.2 23.4 12 C22.6 7.5 18.7 4 14 4 C8.5 4 4 8.5 4 14 C4 14.3 4 14.7 4.1 15 C2.3 16.3 1 18.5 1 21 C1 24.3 3.7 27 7 27" />
-          <path d="M8 24 H24 C27 24 29 21.8 29 19 C29 16.2 26.8 14 24 14 C23.8 14 23.5 14 23.2 14.1 C22.2 9.5 18.2 6 13.5 6 C8.3 6 4 10.3 4 15.5 C4 16 4.1 16.6 4.2 17.1 C2.3 18.2 1 20.4 1 23 C1 26.3 3.7 29 7 29 H24" />
-        </svg>
-      )
-    case 'cloud-sun':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M12 6 C14 6 15.8 7.2 16.6 9" />
-          <line x1="12" y1="2" x2="12" y2="4" />
-          <line x1="19" y1="5" x2="17.6" y2="6.4" />
-          <line x1="22" y1="12" x2="20" y2="12" />
-          <path d="M7 26 H23 C26.3 26 29 23.3 29 20 C29 17 26.7 14.5 23.8 14.1 C22.8 9.5 18.8 6 14 6 C9 6 4.8 10 4.1 15 C2.3 16.2 1 18.4 1 21 C1 23.8 3.2 26 6 26 Z" />
-        </svg>
-      )
-    case 'cloud-rain':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M7 20 H23 C26.3 20 29 17.5 29 14.5 C29 11.8 26.8 9.5 24 9.1 C23 5.5 19.5 3 15 3 C10.5 3 6.8 6.5 6.1 11 C4.3 12 3 14 3 16.2 C3 18.5 4.8 20 7 20 Z" />
-          <line x1="9" y1="23" x2="7" y2="28" />
-          <line x1="15" y1="23" x2="13" y2="28" />
-          <line x1="21" y1="23" x2="19" y2="28" />
-        </svg>
-      )
-    case 'cloud-snow':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M7 20 H23 C26.3 20 29 17.5 29 14.5 C29 11.8 26.8 9.5 24 9.1 C23 5.5 19.5 3 15 3 C10.5 3 6.8 6.5 6.1 11 C4.3 12 3 14 3 16.2 C3 18.5 4.8 20 7 20 Z" />
-          <circle cx="8" cy="25" r="1" fill="currentColor" />
-          <circle cx="15" cy="25" r="1" fill="currentColor" />
-          <circle cx="22" cy="25" r="1" fill="currentColor" />
-          <circle cx="11.5" cy="28" r="1" fill="currentColor" />
-          <circle cx="18.5" cy="28" r="1" fill="currentColor" />
-        </svg>
-      )
-    case 'cloud-lightning':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M7 19 H23 C26.3 19 29 16.5 29 13.5 C29 10.8 26.8 8.5 24 8.1 C23 4.5 19.5 2 15 2 C10.5 2 6.8 5.5 6.1 10 C4.3 11 3 13 3 15.2 C3 17.5 4.8 19 7 19 Z" />
-          <polygon points="14,20 10,26 15,26 13,31 20,23 15,23" fill="currentColor" stroke="none" />
-        </svg>
-      )
-    case 'fog':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M6 14 H24 C26.5 14 28 12.2 28 10 C28 7.8 26 6 23.5 6 C22.5 3.5 19.5 2 16 2 C12 2 8.8 4.5 8.1 8.2 C6.8 9 6 10.2 6 11.8" />
-          <line x1="4" y1="18" x2="28" y2="18" />
-          <line x1="7" y1="22" x2="25" y2="22" />
-          <line x1="5" y1="26" x2="27" y2="26" />
-        </svg>
-      )
-    case 'preferences':
-    case 'gear':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <circle cx="16" cy="16" r="5" />
-          <path d="M16 3 V7 M16 25 V29 M3 16 H7 M25 16 H29 M6.8 6.8 L9.6 9.6 M22.4 22.4 L25.2 25.2 M6.8 25.2 L9.6 22.4 M22.4 9.6 L25.2 6.8" />
-        </svg>
-      )
-    case 'about':
-    case 'info':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <circle cx="16" cy="16" r="12" />
-          <circle cx="16" cy="11" r="1.5" fill="currentColor" />
-          <line x1="16" y1="15" x2="16" y2="22" />
-          <line x1="14" y1="15" x2="16" y2="15" />
-          <line x1="13" y1="22" x2="19" y2="22" />
-        </svg>
-      )
-    case 'cloud-drive':
-    case 'gdrive':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M9 22 C6 22 4 19.5 4 17 C4 14.5 6 12.5 8.5 12.5 C9 10 11.5 8 14.5 8 C18 8 20.5 10.5 21 13.5 C23 13.5 25 15 25 17.5 C25 20 23 22 20.5 22 Z" />
-          <path d="M12 18 L16 14 L20 18" />
-          <line x1="16" y1="14" x2="16" y2="24" />
-        </svg>
-      )
-    case 'pdf':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M7 3 H21 L27 9 V29 H7 Z" />
-          <path d="M21 3 V9 H27" />
-          <text
-            x="10"
-            y="21"
-            fontSize="7"
-            fontFamily="monospace"
-            fontWeight="bold"
-            fill="currentColor"
-            stroke="none"
-          >
-            PDF
-          </text>
-        </svg>
-      )
-    case 'code':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M6 3 H20 L26 9 V29 H6 Z" />
-          <path d="M20 3 V9 H26" />
-          <path d="M12 16 L9 19 L12 22" />
-          <path d="M20 16 L23 19 L20 22" />
-          <line x1="17" y1="15" x2="15" y2="23" />
-        </svg>
-      )
-    case 'media':
-    case 'audio':
-    case 'video':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <circle cx="16" cy="16" r="12" />
-          <polygon points="13,11 22,16 13,21" fill="currentColor" />
-        </svg>
-      )
-    case 'map':
-    case 'maps':
-    case 'location':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M3 7 L10 4 L22 8 L29 5 V25 L22 28 L10 24 L3 27 Z" />
-          <line x1="10" y1="4" x2="10" y2="24" />
-          <line x1="22" y1="8" x2="22" y2="28" />
-          <circle cx="16" cy="14" r="2" fill="currentColor" />
-          <path d="M16 16 L16 19" />
-        </svg>
-      )
-    case 'chat':
-    case 'message':
-    case 'ai':
-    case 'bot':
-      return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <path d="M5 6 H27 C28.1 6 29 6.9 29 8 V21 C29 22.1 28.1 23 27 23 H11 L6 27 V23 H5 C3.9 23 3 22.1 3 21 V8 C3 6.9 3.9 6 5 6 Z" />
-          <circle cx="10" cy="14.5" r="1.2" fill="currentColor" />
-          <circle cx="16" cy="14.5" r="1.2" fill="currentColor" />
-          <circle cx="22" cy="14.5" r="1.2" fill="currentColor" />
-        </svg>
-      )
+
     case 'sheets':
     case 'sheet':
     case 'spreadsheet':
     case 'excel':
     case 'calc-sheet':
       return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          {/* Main Grid Frame */}
-          <rect x="4" y="4" width="24" height="24" rx="2" strokeWidth="1.75" />
+        <svg {...pixelSvgProps}>
+          {/* Table Grid Frame */}
+          <rect x="1" y="1" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1" />
           {/* Header row */}
-          <line x1="4" y1="12" x2="28" y2="12" strokeWidth="1.5" />
-          {/* Row dividers */}
-          <line x1="4" y1="18" x2="28" y2="18" />
-          <line x1="4" y1="23" x2="28" y2="23" />
-          {/* Column dividers */}
-          <line x1="12" y1="4" x2="12" y2="28" strokeWidth="1.5" />
-          <line x1="20" y1="4" x2="20" y2="28" />
-          {/* Formula symbol on top-left header */}
-          <path d="M6 7 H10 L7.5 9 L10 11 H6" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+          <rect x="1" y="5" width="14" height="1" />
+          {/* Column vertical line */}
+          <rect x="5" y="1" width="1" height="14" />
+          <rect x="10" y="5" width="1" height="10" />
+          {/* Row horizontal line */}
+          <rect x="1" y="9" width="14" height="1" />
+          {/* Cell data pixels */}
+          <rect x="2" y="3" width="2" height="1" />
+          <rect x="7" y="3" width="5" height="1" />
+          <rect x="7" y="7" width="2" height="1" />
+          <rect x="12" y="7" width="2" height="1" />
+          <rect x="7" y="11" width="2" height="1" />
+          <rect x="12" y="11" width="2" height="1" />
         </svg>
       )
+
+    case 'calendar':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Calendar Body */}
+          <rect x="1" y="3" width="14" height="12" fill="none" stroke="currentColor" strokeWidth="1" />
+          {/* Spiral Bindings */}
+          <rect x="3" y="1" width="2" height="3" />
+          <rect x="7" y="1" width="2" height="3" />
+          <rect x="11" y="1" width="2" height="3" />
+          {/* Header bar */}
+          <rect x="1" y="6" width="14" height="1" />
+          {/* Date Dots Grid */}
+          <rect x="3" y="8" width="2" height="1" />
+          <rect x="7" y="8" width="2" height="1" />
+          <rect x="11" y="8" width="2" height="1" />
+          <rect x="3" y="10" width="2" height="1" />
+          <rect x="7" y="10" width="2" height="1" />
+          <rect x="11" y="10" width="2" height="1" />
+          <rect x="3" y="12" width="2" height="1" />
+          <rect x="7" y="12" width="2" height="1" />
+          <rect x="11" y="12" width="2" height="1" />
+        </svg>
+      )
+
+    case 'trash':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Lid Handle */}
+          <rect x="6" y="1" width="4" height="1" />
+          {/* Lid */}
+          <rect x="2" y="2" width="12" height="2" />
+          {/* Bin Base Outline */}
+          <rect x="3" y="4" width="10" height="11" />
+          <rect x="4" y="5" width="8" height="9" fill="var(--os-bg)" />
+          {/* Vertical Ribs */}
+          <rect x="5" y="6" width="1" height="7" />
+          <rect x="7" y="6" width="2" height="7" />
+          <rect x="10" y="6" width="1" height="7" />
+        </svg>
+      )
+
+    case 'terminal':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Monitor Screen Frame */}
+          <rect x="1" y="1" width="14" height="11" fill="none" stroke="currentColor" strokeWidth="1" />
+          {/* Monitor Stand */}
+          <rect x="6" y="12" width="4" height="1" />
+          <rect x="4" y="13" width="8" height="2" />
+          {/* Prompt Symbol '>' */}
+          <rect x="3" y="4" width="1" height="1" />
+          <rect x="4" y="5" width="1" height="1" />
+          <rect x="5" y="6" width="1" height="1" />
+          <rect x="4" y="7" width="1" height="1" />
+          <rect x="3" y="8" width="1" height="1" />
+          {/* Cursor Block '_' */}
+          <rect x="7" y="7" width="3" height="2" />
+        </svg>
+      )
+
+    case 'camera':
+    case 'photobot':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Shutter Button & Flash */}
+          <rect x="4" y="2" width="3" height="2" />
+          <rect x="10" y="2" width="2" height="2" />
+          {/* Camera Body */}
+          <rect x="1" y="4" width="14" height="10" fill="none" stroke="currentColor" strokeWidth="1" />
+          {/* Lens Circle */}
+          <rect x="6" y="6" width="4" height="6" />
+          <rect x="5" y="7" width="6" height="4" />
+          <rect x="7" y="8" width="2" height="2" fill="var(--os-bg)" />
+          {/* Flash window */}
+          <rect x="11" y="6" width="2" height="2" />
+        </svg>
+      )
+
+    case 'gallery':
+    case 'image':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Photo Frame */}
+          <rect x="1" y="1" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1" />
+          {/* Sun Pixel */}
+          <rect x="10" y="3" width="3" height="3" />
+          {/* Mountain Peaks */}
+          <rect x="3" y="11" width="2" height="3" />
+          <rect x="4" y="9" width="2" height="5" />
+          <rect x="5" y="7" width="2" height="7" />
+          <rect x="7" y="9" width="2" height="5" />
+          <rect x="8" y="10" width="2" height="4" />
+          <rect x="9" y="8" width="2" height="6" />
+          <rect x="10" y="6" width="2" height="8" />
+          <rect x="12" y="8" width="2" height="6" />
+        </svg>
+      )
+
+    case 'launchpad':
+    case 'apps':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* 3x3 App Blocks */}
+          <rect x="2" y="2" width="3" height="3" />
+          <rect x="6.5" y="2" width="3" height="3" />
+          <rect x="11" y="2" width="3" height="3" />
+
+          <rect x="2" y="6.5" width="3" height="3" />
+          <rect x="6.5" y="6.5" width="3" height="3" />
+          <rect x="11" y="6.5" width="3" height="3" />
+
+          <rect x="2" y="11" width="3" height="3" />
+          <rect x="6.5" y="11" width="3" height="3" />
+          <rect x="11" y="11" width="3" height="3" />
+        </svg>
+      )
+
+    case 'search':
+    case 'spotlight':
+    case 'find':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Lens Circle 8-bit */}
+          <rect x="3" y="1" width="6" height="1" />
+          <rect x="2" y="2" width="8" height="1" />
+          <rect x="1" y="3" width="10" height="6" />
+          <rect x="2" y="9" width="8" height="1" />
+          <rect x="3" y="10" width="6" height="1" />
+          <rect x="3" y="3" width="6" height="6" fill="var(--os-bg)" />
+          {/* Diagonal Pixel Handle */}
+          <rect x="9" y="9" width="2" height="2" />
+          <rect x="11" y="11" width="2" height="2" />
+          <rect x="13" y="13" width="2" height="2" />
+        </svg>
+      )
+
+    case 'bomb':
+    case 'minesweeper':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Fuse & Spark */}
+          <rect x="12" y="1" width="2" height="2" />
+          <rect x="10" y="3" width="2" height="2" />
+          <rect x="8" y="4" width="2" height="2" />
+          {/* Bomb Sphere */}
+          <rect x="4" y="6" width="8" height="8" />
+          <rect x="3" y="7" width="10" height="6" />
+          <rect x="5" y="5" width="6" height="10" />
+          {/* Specular Highlight */}
+          <rect x="5" y="7" width="2" height="2" fill="var(--os-bg)" />
+        </svg>
+      )
+
+    case 'game':
+    case 'snake':
+    case 'joystick':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Gamepad Body */}
+          <rect x="1" y="4" width="14" height="8" fill="none" stroke="currentColor" strokeWidth="1" />
+          {/* D-Pad + */}
+          <rect x="3" y="7" width="5" height="2" />
+          <rect x="4.5" y="5.5" width="2" height="5" />
+          {/* Buttons A & B */}
+          <rect x="10" y="8" width="2" height="2" />
+          <rect x="12" y="6" width="2" height="2" />
+        </svg>
+      )
+
+    case 'stickynote':
+    case 'stickies':
+    case 'sticky':
+    case 'memo':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Note Frame */}
+          <rect x="2" y="1" width="12" height="14" fill="none" stroke="currentColor" strokeWidth="1" />
+          {/* Folded Corner */}
+          <rect x="10" y="11" width="4" height="4" />
+          <rect x="10" y="11" width="3" height="3" fill="var(--os-bg)" />
+          <rect x="10" y="11" width="4" height="1" />
+          <rect x="10" y="11" width="1" height="4" />
+          {/* Note scribble lines */}
+          <rect x="4" y="4" width="8" height="1" />
+          <rect x="4" y="6" width="8" height="1" />
+          <rect x="4" y="8" width="5" height="1" />
+        </svg>
+      )
+
+    case 'paint':
+    case 'macpaint':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Palette Frame */}
+          <rect x="2" y="2" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1" />
+          {/* Thumb hole */}
+          <rect x="4" y="9" width="3" height="3" />
+          <rect x="5" y="10" width="1" height="1" fill="var(--os-bg)" />
+          {/* Paint Swatches */}
+          <rect x="4" y="4" width="2" height="2" />
+          <rect x="7" y="3" width="2" height="2" />
+          <rect x="10" y="4" width="2" height="2" />
+          {/* Brush handle & tip */}
+          <rect x="11" y="9" width="2" height="2" />
+          <rect x="12" y="11" width="2" height="2" />
+        </svg>
+      )
+
+    case 'browser':
+    case 'globe':
+    case 'web':
+    case 'internet':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Globe Circle Outline */}
+          <rect x="4" y="1" width="8" height="1" />
+          <rect x="2" y="2" width="12" height="1" />
+          <rect x="1" y="4" width="14" height="8" fill="none" stroke="currentColor" strokeWidth="1" />
+          <rect x="2" y="13" width="12" height="1" />
+          <rect x="4" y="14" width="8" height="1" />
+          {/* Equator & Meridians */}
+          <rect x="1" y="7" width="14" height="2" fill="none" stroke="currentColor" strokeWidth="1" />
+          <rect x="7" y="1" width="2" height="14" />
+          <rect x="4" y="3" width="1" height="10" />
+          <rect x="11" y="3" width="1" height="10" />
+        </svg>
+      )
+
+    case 'weather':
+    case 'sun':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Sun Center */}
+          <rect x="5" y="5" width="6" height="6" />
+          {/* Rays */}
+          <rect x="7" y="1" width="2" height="2" />
+          <rect x="7" y="13" width="2" height="2" />
+          <rect x="1" y="7" width="2" height="2" />
+          <rect x="13" y="7" width="2" height="2" />
+          <rect x="3" y="3" width="2" height="2" />
+          <rect x="11" y="11" width="2" height="2" />
+          <rect x="3" y="11" width="2" height="2" />
+          <rect x="11" y="3" width="2" height="2" />
+        </svg>
+      )
+
+    case 'moon':
+      return (
+        <svg {...pixelSvgProps}>
+          <rect x="5" y="2" width="6" height="2" />
+          <rect x="3" y="4" width="8" height="2" />
+          <rect x="2" y="6" width="8" height="4" />
+          <rect x="3" y="10" width="8" height="2" />
+          <rect x="5" y="12" width="6" height="2" />
+          {/* Cutout Inner */}
+          <rect x="7" y="4" width="6" height="8" fill="var(--os-bg)" />
+        </svg>
+      )
+
+    case 'cloud':
+    case 'cloud-sun':
+    case 'cloud-rain':
+    case 'cloud-snow':
+    case 'cloud-lightning':
+    case 'fog':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Cloud Main Puffs */}
+          <rect x="5" y="3" width="6" height="4" />
+          <rect x="2" y="6" width="12" height="5" />
+          {/* Rain / Lightning / Base */}
+          {iconType === 'cloud-rain' ? (
+            <>
+              <rect x="4" y="12" width="1" height="3" />
+              <rect x="8" y="12" width="1" height="3" />
+              <rect x="12" y="12" width="1" height="3" />
+            </>
+          ) : iconType === 'cloud-snow' ? (
+            <>
+              <rect x="4" y="13" width="2" height="2" />
+              <rect x="8" y="12" width="2" height="2" />
+              <rect x="12" y="13" width="2" height="2" />
+            </>
+          ) : iconType === 'cloud-lightning' ? (
+            <>
+              <rect x="8" y="10" width="3" height="2" />
+              <rect x="6" y="12" width="4" height="1" />
+              <rect x="7" y="13" width="2" height="2" />
+            </>
+          ) : iconType === 'fog' ? (
+            <>
+              <rect x="2" y="12" width="12" height="1" />
+              <rect x="4" y="14" width="8" height="1" />
+            </>
+          ) : (
+            <rect x="2" y="10" width="12" height="2" />
+          )}
+        </svg>
+      )
+
+    case 'preferences':
+    case 'gear':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* 8-bit Gear Teeth */}
+          <rect x="6" y="1" width="4" height="14" />
+          <rect x="1" y="6" width="14" height="4" />
+          <rect x="3" y="3" width="10" height="10" />
+          {/* Center Hole */}
+          <rect x="6" y="6" width="4" height="4" fill="var(--os-bg)" />
+          <rect x="7" y="7" width="2" height="2" />
+        </svg>
+      )
+
+    case 'about':
+    case 'info':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* 8-bit Info Badge */}
+          <rect x="2" y="2" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1" />
+          {/* 'i' dot */}
+          <rect x="7" y="4" width="2" height="2" />
+          {/* 'i' body */}
+          <rect x="7" y="7" width="2" height="5" />
+          <rect x="6" y="7" width="2" height="1" />
+          <rect x="6" y="11" width="4" height="1" />
+        </svg>
+      )
+
+    case 'cloud-drive':
+    case 'gdrive':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Cloud Outline */}
+          <rect x="5" y="2" width="6" height="3" />
+          <rect x="2" y="5" width="12" height="5" />
+          {/* Arrow up */}
+          <rect x="7" y="8" width="2" height="6" />
+          <rect x="6" y="9" width="4" height="1" />
+          <rect x="5" y="10" width="6" height="1" />
+        </svg>
+      )
+
+    case 'pdf':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Document Frame */}
+          <rect x="2" y="1" width="12" height="14" fill="none" stroke="currentColor" strokeWidth="1" />
+          {/* PDF Box */}
+          <rect x="3" y="5" width="10" height="6" />
+          <rect x="4" y="6" width="8" height="4" fill="var(--os-bg)" />
+          {/* Text Line */}
+          <rect x="4" y="12" width="8" height="1" />
+        </svg>
+      )
+
+    case 'code':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Document Frame */}
+          <rect x="2" y="1" width="12" height="14" fill="none" stroke="currentColor" strokeWidth="1" />
+          {/* '<' */}
+          <rect x="4" y="6" width="1" height="1" />
+          <rect x="3" y="7" width="1" height="2" />
+          <rect x="4" y="9" width="1" height="1" />
+          {/* '>' */}
+          <rect x="11" y="6" width="1" height="1" />
+          <rect x="12" y="7" width="1" height="2" />
+          <rect x="11" y="9" width="1" height="1" />
+          {/* '/' */}
+          <rect x="9" y="5" width="1" height="2" />
+          <rect x="8" y="7" width="1" height="2" />
+          <rect x="7" y="9" width="1" height="2" />
+          <rect x="6" y="11" width="1" height="2" />
+        </svg>
+      )
+
+    case 'media':
+    case 'audio':
+    case 'video':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Reel Frame */}
+          <rect x="2" y="2" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1" />
+          {/* Play Triangle */}
+          <rect x="6" y="5" width="1" height="6" />
+          <rect x="7" y="6" width="1" height="4" />
+          <rect x="8" y="7" width="2" height="2" />
+        </svg>
+      )
+
+    case 'map':
+    case 'maps':
+    case 'location':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Folded Map Panels */}
+          <rect x="1" y="2" width="14" height="12" fill="none" stroke="currentColor" strokeWidth="1" />
+          <rect x="5" y="2" width="1" height="12" />
+          <rect x="10" y="2" width="1" height="12" />
+          {/* Pin in center */}
+          <rect x="7" y="4" width="3" height="3" />
+          <rect x="8" y="7" width="1" height="3" />
+        </svg>
+      )
+
+    case 'chat':
+    case 'message':
+    case 'ai':
+    case 'bot':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Speech Bubble */}
+          <rect x="1" y="2" width="14" height="10" fill="none" stroke="currentColor" strokeWidth="1" />
+          {/* Bubble Tail */}
+          <rect x="3" y="11" width="3" height="3" />
+          {/* 3 Dots */}
+          <rect x="4" y="6" width="2" height="2" />
+          <rect x="7" y="6" width="2" height="2" />
+          <rect x="10" y="6" width="2" height="2" />
+        </svg>
+      )
+
+    case 'pet':
+    case 'paw':
+    case 'cat':
+    case 'dog':
+      return (
+        <svg {...pixelSvgProps}>
+          {/* Main Paw Pad */}
+          <rect x="4" y="8" width="8" height="6" />
+          <rect x="5" y="7" width="6" height="8" />
+          {/* 4 Toe Pads */}
+          <rect x="3" y="4" width="2" height="3" />
+          <rect x="6" y="3" width="2" height="3" />
+          <rect x="9" y="3" width="2" height="3" />
+          <rect x="12" y="4" width="2" height="3" />
+        </svg>
+      )
+
     default:
       return (
-        <svg
-          className={`${className} stroke-current fill-none stroke-[1.5]`}
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <rect x="4" y="4" width="24" height="24" rx="3" />
-          <circle cx="16" cy="16" r="4" />
+        <svg {...pixelSvgProps}>
+          <rect x="2" y="2" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1" />
+          <rect x="6" y="6" width="4" height="4" />
         </svg>
       )
   }

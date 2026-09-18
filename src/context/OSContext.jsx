@@ -59,6 +59,13 @@ export function OSProvider({ children }) {
 
   const uiScale = displaySettings?.scale || 1.15
 
+  const [activeSpace, setActiveSpaceState] = useState(() => {
+    return storageService.getItem('os_active_space', 1)
+  })
+  const [crtScanlines, setCrtScanlinesState] = useState(() => {
+    return storageService.getItem('os_crt_scanlines', false)
+  })
+
   const {
     isScreenSaverActive,
     screenSaverMode,
@@ -80,8 +87,30 @@ export function OSProvider({ children }) {
     snapWindow,
     updateWindowPosition,
     updateWindowSize,
+    setWindowSpace,
     resetSession,
   } = useWindowManager(getInitialWindows(uiScale), uiScale)
+
+  const setActiveSpace = useCallback((spaceNum) => {
+    soundService.playClick()
+    setActiveSpaceState(spaceNum)
+    storageService.setItem('os_active_space', spaceNum)
+  }, [])
+
+  const setCrtScanlines = useCallback((enabled) => {
+    soundService.playClick()
+    setCrtScanlinesState(enabled)
+    storageService.setItem('os_crt_scanlines', enabled)
+  }, [])
+
+  const toggleCrtScanlines = useCallback(() => {
+    setCrtScanlinesState((prev) => {
+      const next = !prev
+      soundService.playClick()
+      storageService.setItem('os_crt_scanlines', next)
+      return next
+    })
+  }, [])
 
   const setTheme = useCallback((newTheme) => {
     setThemeState(newTheme)
@@ -255,8 +284,13 @@ export function OSProvider({ children }) {
       customWallpaper,
       dockSettings,
       displaySettings,
+      activeSpace,
+      crtScanlines,
       isLaunchpadOpen,
       isSpotlightOpen,
+      setActiveSpace,
+      setCrtScanlines,
+      toggleCrtScanlines,
       setTheme,
       setCustomThemeColors,
       setPattern,
@@ -272,6 +306,7 @@ export function OSProvider({ children }) {
       snapWindow,
       updateWindowPosition,
       updateWindowSize,
+      setWindowSpace,
       showModal,
       closeModal,
       openLaunchpad,
@@ -303,8 +338,13 @@ export function OSProvider({ children }) {
       customWallpaper,
       dockSettings,
       displaySettings,
+      activeSpace,
+      crtScanlines,
       isLaunchpadOpen,
       isSpotlightOpen,
+      setActiveSpace,
+      setCrtScanlines,
+      toggleCrtScanlines,
       setTheme,
       setCustomThemeColors,
       setPattern,
@@ -320,6 +360,7 @@ export function OSProvider({ children }) {
       snapWindow,
       updateWindowPosition,
       updateWindowSize,
+      setWindowSpace,
       showModal,
       closeModal,
       openLaunchpad,
