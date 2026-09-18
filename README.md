@@ -142,6 +142,111 @@ _Payaman OS Desktop — [View Full Resolution Preview](https://payamanos.vercel.
 
 ---
 
+## 🧩 Guide: Adding a New Application
+
+Adding a new application to Payaman OS follows a clean, modular pattern that ensures automatic code-splitting (lazy loading), consistent styling, and separation of concerns.
+
+### 1. Create the App Directory Structure
+Create a new directory in `src/apps/<your-app-id>/`:
+
+```
+src/apps/my-app/
+├── config.js         # Application metadata & window configuration
+├── useMyApp.js       # Business logic & state management hook
+├── index.jsx         # Main UI component (<150 lines, composing sub-components)
+└── components/       # (Optional) Sub-components for complex UIs
+    ├── AppHeader.jsx
+    └── AppBody.jsx
+```
+
+### 2. Define App Configuration (`config.js`)
+Export the app metadata describing its title, window dimensions, icon, and placement:
+
+```javascript
+export const myAppConfig = {
+  id: 'my-app',
+  title: 'My Custom App',
+  category: 'productivity', // 'productivity' | 'utilities' | 'media' | 'system' | 'games'
+  iconType: 'document',     // Icon identifier used in AppIconGraphic
+  defaultWidth: 520,
+  defaultHeight: 400,
+  showOnDesktop: true,      // Display desktop shortcut icon
+  showInDock: true,         // Pin to floating dock
+  space: 1,                 // Initial virtual workspace
+}
+```
+
+### 3. Implement Business Logic in a Custom Hook (`useMyApp.js`)
+Separate your business logic and state from the React UI:
+
+```javascript
+import { useState, useCallback } from 'react'
+
+export function useMyApp() {
+  const [data, setData] = useState([])
+
+  const addItem = useCallback((item) => {
+    setData((prev) => [...prev, item])
+  }, [])
+
+  return { data, addItem }
+}
+```
+
+### 4. Build the UI Component (`index.jsx`)
+Use standard Design System components from `src/components/ui/` (`Button`, `Input`, `Panel`, `Checkbox`):
+
+```jsx
+import Button from '../../components/ui/Button.jsx'
+import Input from '../../components/ui/Input.jsx'
+import { useMyApp } from './useMyApp.js'
+
+export default function MyApp({ onClose, windowData }) {
+  const { data, addItem } = useMyApp()
+
+  return (
+    <div className="flex flex-col h-full font-mono text-xs text-[var(--os-fg)]">
+      <div className="flex gap-2 p-2 border-b-2 border-[var(--os-border)]">
+        <Input placeholder="Enter something..." />
+        <Button variant="primary">Add</Button>
+      </div>
+      <div className="flex-1 p-3 overflow-auto">
+        {data.map((item, idx) => (
+          <div key={idx}>{item}</div>
+        ))}
+      </div>
+    </div>
+  )
+}
+```
+
+### 5. Register in `src/apps/appRegistry.js`
+Add lazy-loaded import and register your app config in the central registry:
+
+```javascript
+import { myAppConfig } from './my-app/config.js'
+
+// 1. Lazy load app component for dynamic chunking
+const MyApp = lazy(() => import('./my-app/index.jsx'))
+
+// 2. Add to appRegistry array
+export const appRegistry = [
+  // ...existing apps
+  {
+    ...myAppConfig,
+    component: MyApp,
+  },
+]
+```
+
+### 6. Verify and Build
+Run the production build to ensure clean compilation and dynamic chunk creation:
+```bash
+npm run build
+```
+
+---
+
 ## 📄 License
 
 This project is licensed under the [MIT License](LICENSE).
