@@ -117,11 +117,11 @@ export function useFileManager(initialPath = '/home/arif') {
 
   const deleteItem = useCallback(
     (itemName) => {
-      soundService.playClick()
+      soundService.playTrash()
       const targetPath = `${currentPath}/${itemName}`
-      const res = fileSystemService.remove(targetPath, true)
+      const res = fileSystemService.moveToTrash(targetPath)
       if (res.success) {
-        setStatusMessage(`'${itemName}' deleted.`)
+        setStatusMessage(`Moved '${itemName}' to Trash.`)
         setSelectedItem(null)
       } else {
         setStatusMessage(res.error)

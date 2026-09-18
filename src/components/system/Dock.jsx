@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getAppById } from "../../apps/appRegistry.js";
 import { useOS } from "../../hooks/useOS.js";
+import { fileSystemService } from "../../services/fileSystemService.js";
 import AppIconGraphic from "../common/AppIconGraphic.jsx";
 
 export default function Dock({ onItemContextMenu, onCanvasContextMenu }) {
@@ -15,6 +16,14 @@ export default function Dock({ onItemContextMenu, onCanvasContextMenu }) {
   } = useOS();
   const [hoveredAppId, setHoveredAppId] = useState(null);
   const [isHoveringDock, setIsHoveringDock] = useState(false);
+  const [isTrashFull, setIsTrashFull] = useState(() => !fileSystemService.isTrashEmpty());
+
+  useEffect(() => {
+    const unsubscribe = fileSystemService.subscribe(() => {
+      setIsTrashFull(!fileSystemService.isTrashEmpty());
+    });
+    return unsubscribe;
+  }, []);
 
   const settings = dockSettings || {
     size: "medium",
@@ -55,7 +64,13 @@ export default function Dock({ onItemContextMenu, onCanvasContextMenu }) {
     .filter(Boolean);
 
   const dockApps = [...pinnedApps, ...runningOnlyApps];
-  const trashApp = getAppById("wastebasket");
+  const rawTrashApp = getAppById("wastebasket");
+  const trashApp = rawTrashApp
+    ? {
+        ...rawTrashApp,
+        iconType: isTrashFull ? 'trash-full' : 'trash',
+      }
+    : null;
 
   const allItemIds = [
     "launchpad",

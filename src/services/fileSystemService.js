@@ -1,6 +1,7 @@
 import { storageService } from './storageService.js'
 
 const VFS_STORAGE_KEY = 'payaman_vfs'
+const TRASH_STORAGE_KEY = 'payaman_vfs_trash'
 
 const INITIAL_VFS = {
   '/': {
@@ -67,6 +68,7 @@ class FileSystemService {
   constructor() {
     this.currentPath = '/home/arif'
     this.fs = this.loadFs()
+    this.trash = this.loadTrash()
     this.listeners = new Set()
   }
 
@@ -83,6 +85,134 @@ class FileSystemService {
         // Abaikan error callback
       }
     })
+  }
+
+  loadTrash() {
+    const saved = storageService.getItem(TRASH_STORAGE_KEY, [])
+    if (Array.isArray(saved)) {
+      return saved
+    }
+    return []
+  }
+
+  saveTrash() {
+    storageService.setItem(TRASH_STORAGE_KEY, this.trash)
+    this.notify()
+  }
+
+  getTrashItems() {
+    return Array.isArray(this.trash) ? [...this.trash] : []
+  }
+
+  isTrashEmpty() {
+    return !this.trash || this.trash.length === 0
+  }
+
+  moveToTrash(targetPath) {
+    const resolved = this.resolvePath(targetPath)
+    if (resolved === '/' || resolved === '/home' || resolved === '/home/arif') {
+      return { success: false, error: 'Cannot delete core system directory.' }
+    }
+
+    const lastSlash = resolved.lastIndexOf('/')
+    const parentPath = resolved.slice(0, lastSlash) || '/'
+    const itemName = resolved.slice(lastSlash + 1)
+
+    const parentNode = this.getNode(parentPath)
+    if (!parentNode || !parentNode.children || !parentNode.children[itemName]) {
+      return { success: false, error: `'${targetPath}' not found.` }
+    }
+
+    const targetNode = parentNode.children[itemName]
+    const trashItem = {
+      id: `trash_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+      name: itemName,
+      originalPath: resolved,
+      type: targetNode.type,
+      size: targetNode.type === 'file' ? (targetNode.content || '').length : 0,
+      content: targetNode.type === 'file' ? targetNode.content : null,
+      children: targetNode.type === 'dir' ? targetNode.children : null,
+      createdAt: targetNode.createdAt || new Date().toISOString(),
+      deletedAt: new Date().toISOString(),
+    }
+
+    delete parentNode.children[itemName]
+    this.trash = [trashItem, ...this.trash]
+    
+    this.saveFs()
+    this.saveTrash()
+    return { success: true, item: trashItem }
+  }
+
+  restoreFromTrash(trashId) {
+    const index = this.trash.findIndex((item) => item.id === trashId)
+    if (index === -1) {
+      return { success: false, error: 'Item not found in trash.' }
+    }
+
+    const item = this.trash[index]
+    const resolved = this.resolvePath(item.originalPath || `/home/arif/${item.name}`)
+    const lastSlash = resolved.lastIndexOf('/')
+    let parentPath = resolved.slice(0, lastSlash) || '/'
+    let itemName = item.name || resolved.slice(lastSlash + 1)
+
+    let parentNode = this.getNode(parentPath)
+    if (!parentNode || parentNode.type !== 'dir') {
+      parentPath = '/home/arif'
+      parentNode = this.getNode(parentPath)
+    }
+
+    if (!parentNode || parentNode.type !== 'dir') {
+      return { success: false, error: 'Could not find a valid directory to restore file.' }
+    }
+
+    if (parentNode.children[itemName]) {
+      const dotIndex = itemName.lastIndexOf('.')
+      if (dotIndex > 0 && item.type === 'file') {
+        const base = itemName.slice(0, dotIndex)
+        const ext = itemName.slice(dotIndex)
+        itemName = `${base} (Restored)${ext}`
+      } else {
+        itemName = `${itemName} (Restored)`
+      }
+    }
+
+    if (item.type === 'dir') {
+      parentNode.children[itemName] = {
+        type: 'dir',
+        children: item.children || {},
+        createdAt: item.createdAt || new Date().toISOString(),
+      }
+    } else {
+      parentNode.children[itemName] = {
+        type: 'file',
+        content: item.content || '',
+        createdAt: item.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }
+    }
+
+    this.trash.splice(index, 1)
+    this.saveFs()
+    this.saveTrash()
+    return { success: true, restoredPath: `${parentPath === '/' ? '' : parentPath}/${itemName}` }
+  }
+
+  deleteFromTrashPermanently(trashId) {
+    const prevLen = this.trash.length
+    this.trash = this.trash.filter((item) => item.id !== trashId)
+    if (this.trash.length === prevLen) {
+      return { success: false, error: 'Item not found in trash.' }
+    }
+    this.saveTrash()
+    return { success: true }
+  }
+
+  emptyTrash() {
+    const count = this.trash.length
+    this.trash = []
+    this.saveTrash()
+    return { success: true, count }
   }
 
   loadFs() {

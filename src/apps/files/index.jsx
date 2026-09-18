@@ -485,7 +485,7 @@ export default function FileManagerApp() {
       }
 
       menu.push({
-        label: 'Delete',
+        label: storageSource === 'local' ? 'Move to Trash' : 'Delete',
         icon: 'trash',
         shortcut: 'Del',
         onSelect: () => handleDeleteSelected(),

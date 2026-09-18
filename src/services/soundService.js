@@ -62,6 +62,108 @@ class SoundService {
     this.playBeep(1200, 0.02)
   }
 
+  playTrash() {
+    if (!this.soundEnabled) return
+
+    try {
+      this.initAudioContext()
+      if (!this.audioContext) return
+
+      if (this.audioContext.state === 'suspended') {
+        this.audioContext.resume()
+      }
+
+      const now = this.audioContext.currentTime
+      const osc = this.audioContext.createOscillator()
+      const gain = this.audioContext.createGain()
+
+      osc.type = 'sawtooth'
+      osc.frequency.setValueAtTime(240, now)
+      osc.frequency.exponentialRampToValueAtTime(60, now + 0.12)
+
+      gain.gain.setValueAtTime(0.12, now)
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12)
+
+      osc.connect(gain)
+      gain.connect(this.audioContext.destination)
+
+      osc.start(now)
+      osc.stop(now + 0.12)
+    } catch {
+      // Audio fallback
+    }
+  }
+
+  playTrashEmpty() {
+    if (!this.soundEnabled) return
+
+    try {
+      this.initAudioContext()
+      if (!this.audioContext) return
+
+      if (this.audioContext.state === 'suspended') {
+        this.audioContext.resume()
+      }
+
+      const now = this.audioContext.currentTime
+      const freqs = [350, 220, 150, 80]
+      freqs.forEach((freq, idx) => {
+        const osc = this.audioContext.createOscillator()
+        const gain = this.audioContext.createGain()
+        const startTime = now + idx * 0.04
+
+        osc.type = 'square'
+        osc.frequency.setValueAtTime(freq, startTime)
+
+        gain.gain.setValueAtTime(0.08, startTime)
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.06)
+
+        osc.connect(gain)
+        gain.connect(this.audioContext.destination)
+
+        osc.start(startTime)
+        osc.stop(startTime + 0.06)
+      })
+    } catch {
+      // Audio fallback
+    }
+  }
+
+  playRestore() {
+    if (!this.soundEnabled) return
+
+    try {
+      this.initAudioContext()
+      if (!this.audioContext) return
+
+      if (this.audioContext.state === 'suspended') {
+        this.audioContext.resume()
+      }
+
+      const now = this.audioContext.currentTime
+      const freqs = [400, 600, 900]
+      freqs.forEach((freq, idx) => {
+        const osc = this.audioContext.createOscillator()
+        const gain = this.audioContext.createGain()
+        const startTime = now + idx * 0.05
+
+        osc.type = 'triangle'
+        osc.frequency.setValueAtTime(freq, startTime)
+
+        gain.gain.setValueAtTime(0.07, startTime)
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.08)
+
+        osc.connect(gain)
+        gain.connect(this.audioContext.destination)
+
+        osc.start(startTime)
+        osc.stop(startTime + 0.08)
+      })
+    } catch {
+      // Audio fallback
+    }
+  }
+
   playStartupChime() {
     if (!this.soundEnabled) return
 

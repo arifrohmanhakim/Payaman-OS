@@ -414,6 +414,8 @@ export default function Desktop() {
           title: 'Empty Trash',
           message: 'Are you sure you want to permanently delete all items in trash?',
           onConfirm: () => {
+            fileSystemService.emptyTrash()
+            soundService.playTrashEmpty()
             closeModal()
           },
         })
@@ -652,26 +654,52 @@ export default function Desktop() {
       const isOpen = Boolean(existingWindow)
       const isMinimized = existingWindow?.isMinimized
 
+      const isTrash = appId === 'wastebasket'
+      const isTrashEmpty = fileSystemService.isTrashEmpty()
+
       setContextMenu({
         isOpen: true,
         x: e.clientX,
         y: e.clientY,
         items: [
           {
-            header: appTitle,
+            header: isTrash ? 'Trash' : appTitle,
           },
           {
             label: isOpen
               ? isMinimized
                 ? 'Restore Window'
                 : 'Bring to Front'
-              : `Open ${appTitle}`,
+              : `Open ${isTrash ? 'Trash' : appTitle}`,
             icon: appDef?.iconType || 'apps',
             shortcut: '↵',
             onSelect: () => {
               openApp(appId)
             },
           },
+          ...(isTrash
+            ? [
+                {
+                  label: 'Empty Trash',
+                  icon: 'trash',
+                  disabled: isTrashEmpty,
+                  onSelect: () => {
+                    if (!isTrashEmpty) {
+                      showModal({
+                        type: 'empty_trash',
+                        title: 'Empty Trash',
+                        message: 'Are you sure you want to permanently delete all items in trash?',
+                        onConfirm: () => {
+                          fileSystemService.emptyTrash()
+                          soundService.playTrashEmpty()
+                          closeModal()
+                        },
+                      })
+                    }
+                  },
+                },
+              ]
+            : []),
           ...(isOpen
             ? [
                 {
@@ -704,7 +732,7 @@ export default function Desktop() {
         ],
       })
     },
-    [windows, openApp, closeWindow]
+    [windows, openApp, closeWindow, showModal, closeModal]
   )
 
   const handleDockCanvasContextMenu = useCallback(

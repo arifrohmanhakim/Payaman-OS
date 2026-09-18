@@ -2,7 +2,7 @@ export const wastebasketAppConfig = {
   id: 'wastebasket',
   title: 'Trash',
   iconType: 'trash',
-  defaultWidth: 380,
-  defaultHeight: 250,
+  defaultWidth: 520,
+  defaultHeight: 340,
   showOnDesktop: false,
 }
