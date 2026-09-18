@@ -14,6 +14,7 @@ import DesktopPetSprite from '../../apps/pet/DesktopPetSprite.jsx'
 import DesktopStickyNotes from '../../apps/stickynotes/DesktopStickyNotes.jsx'
 import DesktopWidgets from '../widgets/DesktopWidgets.jsx'
 import WidgetGalleryModal from '../widgets/WidgetGalleryModal.jsx'
+import QuickLookModal from '../common/QuickLookModal.jsx'
 import { soundService } from '../../services/soundService.js'
 import { fileSystemService } from '../../services/fileSystemService.js'
 import { useOS } from '../../hooks/useOS.js'
@@ -25,6 +26,7 @@ export default function Desktop() {
   const [selectedIconId, setSelectedIconId] = useState(null)
   const [isDragOverFile, setIsDragOverFile] = useState(false)
   const [isWidgetGalleryOpen, setIsWidgetGalleryOpen] = useState(false)
+  const [desktopQuickLookFile, setDesktopQuickLookFile] = useState(null)
   const [contextMenu, setContextMenu] = useState({
     isOpen: false,
     x: 0,
@@ -93,6 +95,8 @@ export default function Desktop() {
   const activeWindowIdRef = useRef(activeWindowId)
   const activeModalRef = useRef(activeModal)
   const contextMenuRef = useRef(contextMenu)
+  const selectedIconIdRef = useRef(selectedIconId)
+  const desktopQuickLookFileRef = useRef(desktopQuickLookFile)
 
   useEffect(() => {
     windowsRef.current = windows
@@ -113,6 +117,14 @@ export default function Desktop() {
   useEffect(() => {
     contextMenuRef.current = contextMenu
   }, [contextMenu])
+
+  useEffect(() => {
+    selectedIconIdRef.current = selectedIconId
+  }, [selectedIconId])
+
+  useEffect(() => {
+    desktopQuickLookFileRef.current = desktopQuickLookFile
+  }, [desktopQuickLookFile])
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -178,6 +190,31 @@ export default function Desktop() {
           e.preventDefault()
           soundService.playClick()
           snapWindow(activeWindowIdRef.current, 'top')
+        }
+      }
+
+      // 5. Spacebar (Desktop Icon Quick Look)
+      if ((e.code === 'Space' || e.key === ' ') && !['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
+        if (desktopQuickLookFileRef.current) {
+          e.preventDefault()
+          setDesktopQuickLookFile(null)
+          return
+        }
+
+        if (selectedIconIdRef.current && !activeWindowIdRef.current) {
+          e.preventDefault()
+          const appDef = getAppById(selectedIconIdRef.current)
+          if (appDef) {
+            setDesktopQuickLookFile({
+              id: appDef.id,
+              name: appDef.title,
+              title: appDef.title,
+              type: 'app',
+              category: appDef.category || 'app',
+              description: `Payaman OS Built-in Application (${appDef.title})`,
+              iconType: appDef.iconType,
+            })
+          }
         }
       }
     }
@@ -503,6 +540,23 @@ export default function Desktop() {
             label: `Open ${appTitle}`,
             shortcut: '↵',
             onSelect: () => openApp(iconId),
+          },
+          {
+            label: 'Quick Look...',
+            shortcut: 'Space',
+            onSelect: () => {
+              if (appDef) {
+                setDesktopQuickLookFile({
+                  id: appDef.id,
+                  name: appDef.title,
+                  title: appDef.title,
+                  type: 'app',
+                  category: appDef.category || 'app',
+                  description: `Payaman OS Built-in Application (${appDef.title})`,
+                  iconType: appDef.iconType,
+                })
+              }
+            },
           },
           {
             label: 'Get Info...',
@@ -918,6 +972,16 @@ export default function Desktop() {
         onAddWidget={addWidget}
         onResetWidgets={resetWidgets}
         onClearWidgets={clearAllWidgets}
+      />
+
+      {/* Desktop Quick Look Modal */}
+      <QuickLookModal
+        file={desktopQuickLookFile}
+        isOpen={Boolean(desktopQuickLookFile)}
+        onClose={() => setDesktopQuickLookFile(null)}
+        onOpenWithApp={(f) => {
+          if (f.id) openApp(f.id)
+        }}
       />
     </div>
   )

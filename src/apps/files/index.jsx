@@ -5,6 +5,7 @@ import { useOS } from '../../hooks/useOS.js'
 import { storageService } from '../../services/storageService.js'
 import AppIconGraphic from '../../components/common/AppIconGraphic.jsx'
 import FileViewerModal from '../../components/common/FileViewerModal.jsx'
+import QuickLookModal from '../../components/common/QuickLookModal.jsx'
 import Button from '../../components/ui/Button.jsx'
 import Input from '../../components/ui/Input.jsx'
 import { getFileCategory, getFileExtension } from '../../utils/fileTypes.js'
@@ -48,6 +49,7 @@ export default function FileManagerApp() {
   const [dialogInput, setDialogInput] = useState('')
   const [dialogSecondaryInput, setDialogSecondaryInput] = useState('')
   const [filePreview, setFilePreview] = useState(null)
+  const [quickLookFile, setQuickLookFile] = useState(null)
 
   const quickLinks = [
     { name: 'Home (~)', path: '/home/arif', icon: 'folder' },
@@ -172,6 +174,137 @@ export default function FileManagerApp() {
       setSelectedItem(null)
     }
   }, [selectedItem, storageSource, deleteItem, gdrive, setSelectedItem])
+
+  const loadItemPreviewData = useCallback(async (item) => {
+    if (!item) return null
+    if (storageSource === 'local') {
+      if (item.type === 'dir') {
+        return {
+          name: item.name,
+          type: 'dir',
+          size: 0,
+          mimeType: 'folder',
+        }
+      }
+      const res = readFileContent(item.name)
+      if (res.success) {
+        const category = getFileCategory(item.name)
+        let url = null
+        const content = res.content || ''
+        if (content.startsWith('data:') || content.startsWith('blob:') || content.startsWith('http')) {
+          url = content
+        } else if (category === 'image' && item.name.endsWith('.svg')) {
+          const blob = new Blob([content], { type: 'image/svg+xml' })
+          url = URL.createObjectURL(blob)
+        }
+        return {
+          name: item.name,
+          content,
+          url,
+          size: item.size || content.length,
+          mimeType: item.mimeType || '',
+        }
+      }
+      return { name: item.name, content: '', size: item.size || 0 }
+    } else {
+      // Google Drive
+      if (item.mimeType === 'application/vnd.google-apps.folder') {
+        return {
+          name: item.name,
+          type: 'dir',
+          mimeType: item.mimeType,
+        }
+      }
+      const category = getFileCategory(item.name, item.mimeType)
+      if (category === 'image' || category === 'pdf' || category === 'audio' || category === 'video') {
+        const blobRes = await gdrive.readFileBlob(item.id, item.mimeType)
+        return {
+          name: item.name,
+          mimeType: item.mimeType,
+          size: item.size,
+          blobUrl: blobRes.blobUrl,
+          webViewLink: item.webViewLink,
+        }
+      }
+      const res = await gdrive.readFileContent(item.id, item.mimeType)
+      return {
+        name: item.name,
+        mimeType: item.mimeType,
+        size: item.size,
+        content: res.success ? res.content : '',
+        webViewLink: item.webViewLink,
+      }
+    }
+  }, [storageSource, readFileContent, gdrive])
+
+  const selectedItemRef = useRef(selectedItem)
+  const quickLookFileRef = useRef(quickLookFile)
+  const previewItemKeyRef = useRef(null)
+
+  useEffect(() => {
+    selectedItemRef.current = selectedItem
+  }, [selectedItem])
+
+  useEffect(() => {
+    quickLookFileRef.current = quickLookFile
+  }, [quickLookFile])
+
+  const toggleQuickLook = useCallback(async (targetItem) => {
+    const item = targetItem || selectedItemRef.current
+    if (!item) return
+
+    if (quickLookFileRef.current) {
+      setQuickLookFile(null)
+      previewItemKeyRef.current = null
+      return
+    }
+
+    const data = await loadItemPreviewData(item)
+    if (data) {
+      previewItemKeyRef.current = item.id || item.name
+      setQuickLookFile(data)
+    }
+  }, [loadItemPreviewData])
+
+  useEffect(() => {
+    if (!quickLookFile) {
+      previewItemKeyRef.current = null
+      return
+    }
+    const currentKey = selectedItem ? (selectedItem.id || selectedItem.name) : null
+    if (currentKey && currentKey !== previewItemKeyRef.current) {
+      previewItemKeyRef.current = currentKey
+      loadItemPreviewData(selectedItem).then((data) => {
+        if (data) setQuickLookFile(data)
+      })
+    }
+  }, [selectedItem, quickLookFile, loadItemPreviewData])
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return
+      if (activeDialog) return
+
+      if (e.code === 'Space' || e.key === ' ') {
+        if (quickLookFileRef.current) {
+          e.preventDefault()
+          e.stopPropagation()
+          setQuickLookFile(null)
+          previewItemKeyRef.current = null
+          return
+        }
+
+        if (selectedItemRef.current) {
+          e.preventDefault()
+          e.stopPropagation()
+          toggleQuickLook(selectedItemRef.current)
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [activeDialog, toggleQuickLook])
 
   const handleImportGdriveSelected = async () => {
     if (!selectedItem) return
@@ -830,6 +963,15 @@ export default function FileManagerApp() {
           </div>
 
           <div className="flex items-center gap-1.5">
+            <Button
+              variant="default"
+              onClick={() => toggleQuickLook(selectedItem)}
+              className="px-2 py-0.5 bg-[var(--os-fg)] text-[var(--os-bg)] font-bold shadow-[1px_1px_0px_var(--os-shadow)]"
+              title="Quick Look preview (Spacebar)"
+            >
+              👁 Quick Look (Space)
+            </Button>
+
             {storageSource === 'local' ? (
               <>
                 <Button
@@ -963,6 +1105,21 @@ export default function FileManagerApp() {
           </form>
         </div>
       )}
+
+      {/* Instant Quick Look Overlay (Spacebar) */}
+      <QuickLookModal
+        file={quickLookFile}
+        isOpen={Boolean(quickLookFile)}
+        onClose={() => setQuickLookFile(null)}
+        onOpenWithApp={(f) => {
+          if (storageSource === 'local') {
+            const item = items.find((it) => it.name === f.name)
+            if (item) handleOpenLocalItem(item)
+          } else {
+            handleOpenGdriveItem(f)
+          }
+        }}
+      />
 
       {/* Penampil Berkas Serbaguna (Gambar, PDF, Dokumen, Teks) */}
       {filePreview && (
