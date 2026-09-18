@@ -15,6 +15,7 @@ import DesktopStickyNotes from '../../apps/stickynotes/DesktopStickyNotes.jsx'
 import DesktopWidgets from '../widgets/DesktopWidgets.jsx'
 import WidgetGalleryModal from '../widgets/WidgetGalleryModal.jsx'
 import QuickLookModal from '../common/QuickLookModal.jsx'
+import RetroTooltip from '../common/RetroTooltip.jsx'
 import { soundService } from '../../services/soundService.js'
 import { fileSystemService } from '../../services/fileSystemService.js'
 import { useOS } from '../../hooks/useOS.js'
@@ -1004,6 +1005,9 @@ export default function Desktop() {
           if (f.id) openApp(f.id)
         }}
       />
+
+      {/* Global Retro Tooltip System */}
+      <RetroTooltip />
     </div>
   )
 }
