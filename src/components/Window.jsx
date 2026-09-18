@@ -1,8 +1,8 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, memo } from "react";
 import { useTheme } from "../hooks/useOS.js";
 import { soundService } from "../services/soundService.js";
 
-export default function Window({
+function Window({
   windowData,
   isActive,
   onFocus,
@@ -26,6 +26,8 @@ export default function Window({
   const [snapPreview, setSnapPreview] = useState(null); // 'left' | 'right' | 'top' | null
   const [isMinimizingAnim, setIsMinimizingAnim] = useState(false);
 
+  const currentPosRef = useRef({ x, y });
+  const currentSizeRef = useRef({ width, height: height || 300 });
   const dragOffsetRef = useRef({ x: 0, y: 0 });
   const snapCandidateRef = useRef(null);
   const resizeStartRef = useRef({
@@ -35,6 +37,14 @@ export default function Window({
     startHeight: 0,
   });
   const windowRef = useRef(null);
+
+  useEffect(() => {
+    currentPosRef.current = { x, y };
+  }, [x, y]);
+
+  useEffect(() => {
+    currentSizeRef.current = { width, height: height || 300 };
+  }, [width, height]);
 
   useEffect(() => {
     const handleMouseMove = (event) => {
@@ -49,21 +59,25 @@ export default function Window({
 
         const nextX = Math.max(-width + 80, Math.min(screenW - 80, rawNextX));
         const nextY = Math.max(24, Math.min(screenH - 32, rawNextY));
-        onPositionChange(id, nextX, nextY);
+        
+        currentPosRef.current = { x: nextX, y: nextY };
+        if (windowRef.current) {
+          windowRef.current.style.transform = `translate3d(${nextX}px, ${nextY}px, 0) scale(1)`;
+        }
 
-        // Detect screen edges for snapping
+        // Detect screen edges for snapping only when state changes
+        let nextSnap = null;
         if (clientX <= 20) {
-          snapCandidateRef.current = "left";
-          setSnapPreview("left");
+          nextSnap = "left";
         } else if (clientX >= screenW - 20) {
-          snapCandidateRef.current = "right";
-          setSnapPreview("right");
+          nextSnap = "right";
         } else if (clientY <= 28) {
-          snapCandidateRef.current = "top";
-          setSnapPreview("top");
-        } else {
-          snapCandidateRef.current = null;
-          setSnapPreview(null);
+          nextSnap = "top";
+        }
+
+        if (snapCandidateRef.current !== nextSnap) {
+          snapCandidateRef.current = nextSnap;
+          setSnapPreview(nextSnap);
         }
       } else if (isResizing && onSizeChange && !isMaximized) {
         const deltaX = clientX - resizeStartRef.current.mouseX;
@@ -82,7 +96,11 @@ export default function Window({
           );
         }
 
-        onSizeChange(id, nextWidth, nextHeight);
+        currentSizeRef.current = { width: nextWidth, height: nextHeight };
+        if (windowRef.current) {
+          windowRef.current.style.width = `${nextWidth}px`;
+          windowRef.current.style.height = `${nextHeight}px`;
+        }
       }
     };
 
@@ -92,11 +110,18 @@ export default function Window({
         if (snapCandidateRef.current && onSnap) {
           soundService.playClick();
           onSnap(id, snapCandidateRef.current);
+        } else if (onPositionChange) {
+          onPositionChange(id, currentPosRef.current.x, currentPosRef.current.y);
         }
         snapCandidateRef.current = null;
         setSnapPreview(null);
       }
-      if (isResizing) setIsResizing(false);
+      if (isResizing) {
+        setIsResizing(false);
+        if (onSizeChange) {
+          onSizeChange(id, currentSizeRef.current.width, currentSizeRef.current.height);
+        }
+      }
     };
 
     if (isDragging || isResizing) {
@@ -114,6 +139,7 @@ export default function Window({
     isMaximized,
     resizeDirection,
     id,
+    width,
     onPositionChange,
     onSizeChange,
     onSnap,
@@ -127,8 +153,8 @@ export default function Window({
     const clientX = event.clientX / uiScale;
     const clientY = event.clientY / uiScale;
     dragOffsetRef.current = {
-      x: clientX - x,
-      y: clientY - y,
+      x: clientX - currentPosRef.current.x,
+      y: clientY - currentPosRef.current.y,
     };
   };
 
@@ -144,8 +170,8 @@ export default function Window({
     resizeStartRef.current = {
       mouseX: clientX,
       mouseY: clientY,
-      startWidth: width,
-      startHeight: height || 300,
+      startWidth: currentSizeRef.current.width,
+      startHeight: currentSizeRef.current.height,
     };
   };
 
@@ -366,3 +392,37 @@ export default function Window({
     </>
   );
 }
+
+function areWindowPropsEqual(prevProps, nextProps) {
+  if (prevProps.isActive !== nextProps.isActive) return false;
+  
+  const p = prevProps.windowData;
+  const n = nextProps.windowData;
+  if (
+    p.id !== n.id ||
+    p.title !== n.title ||
+    p.x !== n.x ||
+    p.y !== n.y ||
+    p.width !== n.width ||
+    p.height !== n.height ||
+    p.zIndex !== n.zIndex ||
+    p.isMinimized !== n.isMinimized ||
+    p.isMaximized !== n.isMaximized ||
+    p.space !== n.space
+  ) {
+    return false;
+  }
+
+  if (prevProps.onFocus !== nextProps.onFocus) return false;
+  if (prevProps.onClose !== nextProps.onClose) return false;
+  if (prevProps.onMinimize !== nextProps.onMinimize) return false;
+  if (prevProps.onMaximize !== nextProps.onMaximize) return false;
+  if (prevProps.onSnap !== nextProps.onSnap) return false;
+  if (prevProps.onPositionChange !== nextProps.onPositionChange) return false;
+  if (prevProps.onSizeChange !== nextProps.onSizeChange) return false;
+  if (prevProps.onContextMenu !== nextProps.onContextMenu) return false;
+
+  return true;
+}
+
+export default memo(Window, areWindowPropsEqual);

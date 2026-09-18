@@ -31,11 +31,17 @@ export function useWindowManager(initialWindows = [], uiScale = 1.0) {
   })
 
   useEffect(() => {
-    storageService.setItem(STORAGE_KEY_WINDOWS, windows)
+    const timer = setTimeout(() => {
+      storageService.setItem(STORAGE_KEY_WINDOWS, windows)
+    }, 300)
+    return () => clearTimeout(timer)
   }, [windows])
 
   useEffect(() => {
-    storageService.setItem(STORAGE_KEY_ACTIVE_WINDOW, activeWindowId)
+    const timer = setTimeout(() => {
+      storageService.setItem(STORAGE_KEY_ACTIVE_WINDOW, activeWindowId)
+    }, 300)
+    return () => clearTimeout(timer)
   }, [activeWindowId])
 
   const focusWindow = useCallback((windowId) => {

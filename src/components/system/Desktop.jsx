@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef, Suspense } from 'react'
+import { useState, useCallback, useEffect, useRef, Suspense, memo } from 'react'
 import MenuBar from '../MenuBar.jsx'
 import DesktopIcon from '../DesktopIcon.jsx'
 import Window from '../Window.jsx'
@@ -23,6 +23,30 @@ import { useTheme, useOSWindowManager, useSystemUI } from '../../hooks/useOS.js'
 import { useDesktopIcons } from '../../hooks/useDesktopIcons.js'
 import { useDesktopWidgets } from '../../hooks/useDesktopWidgets.js'
 import { getDesktopApps, getAppById } from '../../apps/appRegistry.js'
+
+const WindowAppContent = memo(function WindowAppContent({
+  appId,
+  windowId,
+  windowData,
+  onClose,
+}) {
+  const appDef = getAppById(appId)
+  if (!appDef || !appDef.component) {
+    return null
+  }
+  const AppComponent = appDef.component
+  const handleClose = useCallback(() => {
+    onClose(windowId)
+  }, [onClose, windowId])
+
+  return (
+    <ErrorBoundary>
+      <Suspense fallback={<AppLoadingFallback title={appDef.title} />}>
+        <AppComponent onClose={handleClose} windowData={windowData} />
+      </Suspense>
+    </ErrorBoundary>
+  )
+})
 
 export default function Desktop() {
   const [selectedIconId, setSelectedIconId] = useState(null)
@@ -831,23 +855,13 @@ export default function Desktop() {
     [openApp, showModal, closeModal]
   )
 
-  const renderWindowContent = (appId, windowId, windowData) => {
-    const appDef = getAppById(appId)
-    if (!appDef || !appDef.component) {
-      return null
-    }
-    const AppComponent = appDef.component
-    return (
-      <ErrorBoundary>
-        <Suspense fallback={<AppLoadingFallback title={appDef.title} />}>
-          <AppComponent
-            onClose={() => closeWindow(windowId)}
-            windowData={windowData}
-          />
-        </Suspense>
-      </ErrorBoundary>
-    )
-  }
+  const handleFocusWindow = useCallback(
+    (id) => {
+      focusWindow(id)
+      closeContextMenu()
+    },
+    [focusWindow, closeContextMenu]
+  )
 
   const patternClass = `pattern-${pattern || 'halftone'}`
   const filteredWindows = windows.filter(
@@ -968,10 +982,7 @@ export default function Desktop() {
           key={win.id}
           windowData={win}
           isActive={activeWindowId === win.id}
-          onFocus={(id) => {
-            focusWindow(id)
-            closeContextMenu()
-          }}
+          onFocus={handleFocusWindow}
           onClose={closeWindow}
           onMinimize={minimizeWindow}
           onMaximize={toggleMaximizeWindow}
@@ -980,7 +991,12 @@ export default function Desktop() {
           onSizeChange={updateWindowSize}
           onContextMenu={handleWindowContextMenu}
         >
-          {renderWindowContent(win.appId, win.id, win)}
+          <WindowAppContent
+            appId={win.appId}
+            windowId={win.id}
+            windowData={win}
+            onClose={closeWindow}
+          />
         </Window>
       ))}
 
