@@ -12,6 +12,7 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
       { divider: true },
       { label: 'Spotlight Search...', action: 'spotlight', shortcut: '⌘Space' },
       { label: 'Launchpad', action: 'launchpad', shortcut: 'F4' },
+      { label: 'Desktop Widgets...', action: 'desktop_widgets', shortcut: '⌥W' },
       { label: 'Start Screen Saver', action: 'start_screensaver' },
       { label: 'Toggle Fullscreen', action: 'toggle_fullscreen', shortcut: 'F11' },
       { divider: true },
@@ -631,6 +632,8 @@ export function getMenuBarConfig(activeAppId, activeAppTitle) {
           items: [
             { label: 'Icon View', action: 'view_icon' },
             { label: 'List View', action: 'view_list' },
+            { divider: true },
+            { label: 'Desktop Widgets...', action: 'desktop_widgets', shortcut: '⌥W' },
             { divider: true },
             { label: 'Clean Desktop', action: 'clean_desktop' },
           ],

@@ -12,15 +12,19 @@ import ErrorBoundary from '../common/ErrorBoundary.jsx'
 import ContextMenu from '../common/ContextMenu.jsx'
 import DesktopPetSprite from '../../apps/pet/DesktopPetSprite.jsx'
 import DesktopStickyNotes from '../../apps/stickynotes/DesktopStickyNotes.jsx'
+import DesktopWidgets from '../widgets/DesktopWidgets.jsx'
+import WidgetGalleryModal from '../widgets/WidgetGalleryModal.jsx'
 import { soundService } from '../../services/soundService.js'
 import { fileSystemService } from '../../services/fileSystemService.js'
 import { useOS } from '../../hooks/useOS.js'
 import { useDesktopIcons } from '../../hooks/useDesktopIcons.js'
+import { useDesktopWidgets } from '../../hooks/useDesktopWidgets.js'
 import { getDesktopApps, getAppById } from '../../apps/appRegistry.js'
 
 export default function Desktop() {
   const [selectedIconId, setSelectedIconId] = useState(null)
   const [isDragOverFile, setIsDragOverFile] = useState(false)
+  const [isWidgetGalleryOpen, setIsWidgetGalleryOpen] = useState(false)
   const [contextMenu, setContextMenu] = useState({
     isOpen: false,
     x: 0,
@@ -74,6 +78,15 @@ export default function Desktop() {
     sortIconsByName,
     resetPositions,
   } = useDesktopIcons(uiScale)
+
+  const {
+    widgets,
+    addWidget,
+    removeWidget,
+    updateWidgetPosition,
+    resetWidgets,
+    clearAllWidgets,
+  } = useDesktopWidgets(uiScale)
 
   const windowsRef = useRef(windows)
   const switcherRef = useRef(switcher)
@@ -384,6 +397,10 @@ export default function Desktop() {
       case 'go_root':
         openApp('files')
         break
+      case 'desktop_widgets':
+      case 'widgets':
+        setIsWidgetGalleryOpen(true)
+        break
       default:
         break
     }
@@ -420,6 +437,12 @@ export default function Desktop() {
             label: 'New Note',
             shortcut: '⌘N',
             onSelect: () => openApp('write'),
+          },
+          { divider: true },
+          {
+            label: 'Desktop Widgets...',
+            shortcut: '⌥W',
+            onSelect: () => setIsWidgetGalleryOpen(true),
           },
           { divider: true },
           {
@@ -796,6 +819,17 @@ export default function Desktop() {
           onContextMenu={handleDesktopContextMenu}
           className="relative w-full h-full pointer-events-auto"
         >
+          {/* Active Desktop Widgets */}
+          <DesktopWidgets
+            widgets={widgets}
+            uiScale={uiScale}
+            onPositionChange={updateWidgetPosition}
+            onCloseWidget={removeWidget}
+          />
+
+          {/* Desktop Sticky Notes */}
+          <DesktopStickyNotes />
+
           {desktopApps.map((app, index) => (
             <DesktopIcon
               key={app.id}
@@ -840,9 +874,6 @@ export default function Desktop() {
       {/* Floating Desktop Pet */}
       <DesktopPetSprite />
 
-      {/* Floating Desktop Sticky Notes */}
-      <DesktopStickyNotes />
-
       <Dock
         onItemContextMenu={handleDockItemContextMenu}
         onCanvasContextMenu={handleDockCanvasContextMenu}
@@ -878,6 +909,15 @@ export default function Desktop() {
         isOpen={switcher.isOpen}
         windows={windows}
         selectedIndex={switcher.selectedIndex}
+      />
+
+      {/* Desktop Widgets Selection Modal */}
+      <WidgetGalleryModal
+        isOpen={isWidgetGalleryOpen}
+        onClose={() => setIsWidgetGalleryOpen(false)}
+        onAddWidget={addWidget}
+        onResetWidgets={resetWidgets}
+        onClearWidgets={clearAllWidgets}
       />
     </div>
   )

@@ -13,7 +13,7 @@ export default function DesktopStickyNotes() {
   }
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-30 overflow-hidden">
+    <div className="absolute inset-0 pointer-events-none z-2 overflow-hidden">
       {stickies.map((note) => (
         <div key={note.id} className="pointer-events-auto">
           <StickyNoteItem
