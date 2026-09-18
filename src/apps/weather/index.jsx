@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { useWeather } from './useWeather.js'
 import AppIconGraphic from '../../components/common/AppIconGraphic.jsx'
+import Button from '../../components/ui/Button.jsx'
+import Input from '../../components/ui/Input.jsx'
 
 export default function WeatherApp() {
   const {
@@ -57,13 +59,12 @@ export default function WeatherApp() {
       {/* Search & Top Controls */}
       <div className="p-2 border-b-2 border-[var(--os-border)] flex items-center justify-between gap-2 shrink-0 bg-[var(--os-bg)]">
         <div className="relative flex-1 max-w-sm">
-          <input
+          <Input
             ref={searchInputRef}
             type="text"
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="Search city (e.g. Jakarta, Tokyo, London)..."
-            className="w-full bg-[var(--os-bg)] border border-[var(--os-border)] px-2 py-1 text-xs font-mono text-[var(--os-fg)] focus:outline-none focus:ring-1 focus:ring-[var(--os-border)] placeholder:opacity-40"
           />
 
           {/* Search dropdown */}
@@ -92,36 +93,32 @@ export default function WeatherApp() {
         </div>
 
         <div className="flex items-center gap-1.5">
-          <button
-            type="button"
+          <Button
+            variant="default"
             onClick={toggleUnit}
             title={`Switch to °${unit === 'C' ? 'F' : 'C'}`}
-            className="px-2 py-1 border border-[var(--os-border)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] font-bold text-xs"
+            className="px-2 py-1 font-bold text-xs"
           >
             °{unit}
-          </button>
+          </Button>
 
-          <button
-            type="button"
+          <Button
+            variant="default"
             onClick={refresh}
             disabled={isLoading}
             title="Refresh weather data"
-            className="px-2 py-1 border border-[var(--os-border)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] disabled:opacity-40"
+            className="px-2 py-1"
           >
             {isLoading ? '...' : '↻'}
-          </button>
+          </Button>
 
-          <button
-            type="button"
+          <Button
+            variant={activeTab === 'cities' ? 'primary' : 'default'}
             onClick={() => setActiveTab((t) => (t === 'overview' ? 'cities' : 'overview'))}
-            className={`px-2 py-1 border border-[var(--os-border)] ${
-              activeTab === 'cities'
-                ? 'bg-[var(--os-fg)] text-[var(--os-bg)]'
-                : 'hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)]'
-            }`}
+            className="px-2 py-1 text-xs"
           >
-            {activeTab === 'cities' ? 'Overview' : 'Cities'}
-          </button>
+            {activeTab === 'cities' ? 'Overview' : `Saved (${savedCities.length})`}
+          </Button>
         </div>
       </div>
 

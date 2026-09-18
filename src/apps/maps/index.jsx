@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useMaps } from './useMaps.js'
+import Button from '../../components/ui/Button.jsx'
+import Input from '../../components/ui/Input.jsx'
 
 export default function MapsApp() {
   const {
@@ -65,13 +67,12 @@ export default function MapsApp() {
       <div className="p-2 border-b-2 border-[var(--os-border)] flex flex-wrap items-center justify-between gap-2 shrink-0 bg-[var(--os-bg)]">
         {/* Search Field */}
         <div className="relative flex-1 min-w-48 max-w-sm">
-          <input
+          <Input
             ref={searchInputRef}
             type="text"
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="Search address, landmark, city..."
-            className="w-full bg-[var(--os-bg)] border border-[var(--os-border)] px-2 py-1 text-xs font-mono text-[var(--os-fg)] focus:outline-none focus:ring-1 focus:ring-[var(--os-border)] placeholder:opacity-40"
           />
 
           {/* Autocomplete Dropdown */}
@@ -99,66 +100,67 @@ export default function MapsApp() {
 
         {/* Map Controls */}
         <div className="flex items-center gap-1.5">
-          <button
-            type="button"
+          <Button
+            variant="default"
             onClick={zoomIn}
             title="Zoom In"
-            className="w-7 h-7 flex items-center justify-center border border-[var(--os-border)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] font-bold text-sm"
+            className="w-7 h-7 flex items-center justify-center font-bold text-sm p-0"
           >
             +
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="default"
             onClick={zoomOut}
             title="Zoom Out"
-            className="w-7 h-7 flex items-center justify-center border border-[var(--os-border)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] font-bold text-sm"
+            className="w-7 h-7 flex items-center justify-center font-bold text-sm p-0"
           >
             -
-          </button>
+          </Button>
 
-          <button
-            type="button"
+          <Button
+            variant="default"
             onClick={locateUser}
             disabled={isLocating}
-            title="Locate Current Position"
-            className="px-2 py-1 border border-[var(--os-border)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] font-bold text-xs disabled:opacity-40"
+            title="My Location (GPS)"
+            className="px-2 py-1 text-xs"
           >
-            {isLocating ? 'Locating...' : '[•] My Location'}
-          </button>
+            {isLocating ? 'Locating...' : '📍 GPS'}
+          </Button>
 
-          <button
-            type="button"
-            onClick={toggleFilter}
-            title="Toggle Retro Monochrome / Full Color"
-            className={`px-2 py-1 border border-[var(--os-border)] font-bold text-xs ${
-              mapFilter === 'retro'
-                ? 'bg-[var(--os-fg)] text-[var(--os-bg)]'
-                : 'hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)]'
-            }`}
-          >
-            {mapFilter === 'retro' ? '1-Bit' : 'Color'}
-          </button>
-
-          <button
-            type="button"
+          <Button
+            variant="default"
             onClick={toggleLayer}
-            title="Toggle OSM Layer Style"
-            className="px-2 py-1 border border-[var(--os-border)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] font-bold text-xs uppercase"
+            title="Switch Map Tile Source"
+            className="px-2 py-1 text-xs"
           >
-            {layer === 'mapnik' ? 'Std' : 'Hot'}
-          </button>
+            {layer === 'standard' ? '🗺️ Standard' : '🚲 Cycle'}
+          </Button>
 
-          <button
-            type="button"
-            onClick={() => setShowBookmarks((b) => !b)}
-            className={`px-2 py-1 border border-[var(--os-border)] text-xs ${
-              showBookmarks
-                ? 'bg-[var(--os-fg)] text-[var(--os-bg)] font-bold'
-                : 'hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)]'
-            }`}
+          <Button
+            variant="default"
+            onClick={toggleFilter}
+            title="Toggle Monochromatic Retro Filter"
+            className="px-2 py-1 text-xs"
           >
-            Places ({savedPlaces.length})
-          </button>
+            {mapFilter === 'retro' ? '📺 Retro' : '🎨 Color'}
+          </Button>
+
+          <Button
+            variant="default"
+            onClick={saveCurrentPlace}
+            title="Bookmark Location"
+            className="px-2 py-1 text-xs"
+          >
+            {isCurrentSaved ? '★ Saved' : '☆ Save'}
+          </Button>
+
+          <Button
+            variant={showBookmarks ? 'primary' : 'default'}
+            onClick={() => setShowBookmarks(!showBookmarks)}
+            className="px-2 py-1 text-xs"
+          >
+            Bookmarks ({savedPlaces.length})
+          </Button>
         </div>
       </div>
 

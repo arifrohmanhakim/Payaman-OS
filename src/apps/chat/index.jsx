@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react'
 import { useChat } from './useChat.js'
 import AppIconGraphic from '../../components/common/AppIconGraphic.jsx'
+import Button from '../../components/ui/Button.jsx'
 
 const STARTER_PROMPTS = [
   'Ceritakan lelucon yang lucu dan cerdas!',
@@ -63,14 +64,14 @@ export default function PayamanChatApp() {
           </div>
         </div>
 
-        <button
-          type="button"
+        <Button
+          variant="default"
           onClick={clearChat}
           title="Start fresh conversation"
-          className="px-2.5 py-1 border border-[var(--os-border)] hover:bg-[var(--os-fg)] hover:text-[var(--os-bg)] text-xs font-semibold"
+          className="px-2.5 py-1 text-xs"
         >
           + New Chat
-        </button>
+        </Button>
       </div>
 
       {/* Main Chat Messages Stream */}
@@ -182,13 +183,14 @@ export default function PayamanChatApp() {
             className="flex-1 bg-[var(--os-bg)] border border-[var(--os-border)] p-2 text-xs font-mono text-[var(--os-fg)] resize-none focus:outline-none focus:ring-1 focus:ring-[var(--os-border)] placeholder:opacity-40"
           />
 
-          <button
+          <Button
             type="submit"
+            variant="primary"
             disabled={!inputText.trim() || isLoading}
-            className="px-4 py-3 border-2 border-[var(--os-border)] bg-[var(--os-fg)] text-[var(--os-bg)] font-bold text-xs hover:opacity-90 active:scale-95 disabled:opacity-40 transition-all cursor-pointer h-full"
+            className="px-4 py-3 h-full"
           >
             {isLoading ? '...' : 'Send ↵'}
-          </button>
+          </Button>
         </form>
       </div>
     </div>
